@@ -1,11 +1,16 @@
 /* --- Exotrac Global Theme --- */
 :root {
     --exotrac-navy: #0b1629;
+    --exotrac-navy-light: #1e293b;
     --exotrac-gold: #c2850c;
+    --exotrac-gold-light: rgba(194, 133, 12, 0.1); /* Very light orange */
     --exotrac-btn: #111827;
     --exotrac-light-bg: #f8fafc;
-    --error-red: #c21d1d;
+    --error-red: #d92d20;
+    --error-red-light: rgba(217, 45, 32, 0.1); /* Very light red */
     --border-color: #e2e8f0;
+    --sidebar-width: 280px;
+    --sidebar-collapsed-width: 85px;
 }
 
 html, body {
@@ -17,15 +22,18 @@ body {
     background-color: var(--exotrac-light-bg);
     font-family: 'Inter', -apple-system, sans-serif;
     display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    flex-direction: row;
 }
 
-main {
-    flex: 1 0 auto;
+/* --- Constant/Sticky Header --- */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: white;
+    width: 100%;
 }
 
-/* --- Header & Navbar --- */
 .navbar {
     background-color: white !important;
     padding: 0.6rem 1.5rem;
@@ -33,39 +41,133 @@ main {
     box-shadow: 0 1px 2px rgba(0,0,0,0.02);
 }
 
-.navbar-brand {
-    font-weight: 700;
-    color: var(--exotrac-navy) !important;
-    font-size: 1.2rem;
-    letter-spacing: -0.5px;
-}
-
 .admin-dash-text {
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.4rem;
+    font-weight: 700; /* Bold as requested */
     color: var(--exotrac-navy);
-    margin-left: 1.5rem;
 }
 
-/* --- Profile Dropdown Trigger --- */
+/* --- Sidebar Style --- */
+#sidebar {
+    width: var(--sidebar-width);
+    background: radial-gradient(circle at center, var(--exotrac-navy-light) 0%, var(--exotrac-navy) 100%);
+    min-height: 100vh;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    left: 0;
+    color: white;
+    z-index: 1001;
+}
+
+    #sidebar.collapsed {
+        width: var(--sidebar-collapsed-width);
+    }
+
+.sidebar-header {
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 80px;
+    overflow: hidden;
+}
+
+.sidebar-nav {
+    flex-grow: 1;
+    padding: 0.5rem 0;
+    list-style: none;
+    margin: 0;
+}
+
+.nav-item-link {
+    display: flex;
+    align-items: center;
+    margin: 4px 15px;
+    padding: 12px 18px;
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    border-radius: 10px;
+}
+
+    .nav-item-link i {
+        font-size: 1.2rem;
+        min-width: 25px;
+        text-align: center;
+    }
+
+    .nav-item-link span {
+        margin-left: 12px;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .nav-item-link:hover {
+        background-color: rgba(255,255,255,0.08);
+        color: white;
+    }
+
+    .nav-item-link.active {
+        background-color: var(--exotrac-gold) !important;
+        color: white !important;
+        box-shadow: 0 4px 12px rgba(194, 133, 12, 0.3);
+    }
+
+/* Collapsed Logic */
+#sidebar.collapsed .nav-item-link span,
+#sidebar.collapsed .sidebar-header span,
+#sidebar.collapsed .collapse-btn span {
+    display: none;
+}
+
+#sidebar.collapsed .nav-item-link {
+    margin: 6px 12px;
+    padding: 12px 0;
+    justify-content: center;
+}
+
+/* --- Footer --- */
+.sidebar-footer {
+    padding: 20px 15px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.collapse-btn {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* --- Profile Dropdown & Effects --- */
 .profile-dropdown-trigger {
     padding: 4px 12px 4px 6px !important;
     border-radius: 8px;
-    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     gap: 10px;
     text-decoration: none;
     color: var(--exotrac-navy) !important;
-    border: 1px solid transparent;
+    transition: background-color 0.3s ease;
 }
 
-    /* The active orange/gold state */
-    .profile-dropdown-trigger.show,
-    .profile-dropdown-trigger:active {
-        background-color: var(--exotrac-gold) !important;
-        color: white !important;
-    }
+/* The 2-second temporary class */
+.profile-clicked {
+    background-color: var(--exotrac-gold) !important;
+    color: white !important;
+}
 
 .profile-circle {
     width: 32px;
@@ -80,53 +182,50 @@ main {
     font-size: 0.75rem;
 }
 
-/* --- Rounded Dropdown Box --- */
-.dropdown-menu {
-    border: 1px solid var(--border-color);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
-    padding: 6px;
-    min-width: 180px;
-    margin-top: 8px !important;
-}
-
+/* Dropdown Items */
 .dropdown-item {
-    border-radius: 8px;
-    padding: 8px 12px;
     font-size: 0.85rem;
-    font-weight: 500;
+    padding: 10px 16px;
     display: flex;
     align-items: center;
     gap: 10px;
-    color: #1e293b;
+    transition: all 0.2s ease;
 }
 
-    .dropdown-item i {
-        font-size: 1rem;
-        width: 18px;
-        text-align: center;
-    }
+/* Profile Settings Hover (Light Orange) */
+.item-settings:hover {
+    background-color: var(--exotrac-gold-light) !important;
+    color: var(--exotrac-gold) !important;
+}
 
-    .dropdown-item:hover {
-        background-color: #f1f5f9;
-    }
-
+/* Logout Text & Hover (Light Red) */
 .text-logout {
     color: var(--error-red) !important;
+    font-weight: 500;
 }
 
-/* --- Footer --- */
+    .text-logout:hover {
+        background-color: var(--error-red-light) !important;
+        color: var(--error-red) !important;
+    }
+
+/* Wrapper and Main */
+#main-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+main {
+    flex: 1 0 auto;
+    padding: 40px;
+}
+
 .footer {
-    flex-shrink: 0;
     background-color: white;
     border-top: 1px solid var(--border-color);
-    padding: 12px 0;
+    padding: 25px 0;
     color: #64748b;
-    font-size: 0.8rem;
-}
-
-/* Focus states */
-.btn:focus, .form-control:focus {
-    box-shadow: 0 0 0 0.2rem rgba(11, 22, 41, 0.1);
-    border-color: var(--exotrac-navy);
+    font-size: 0.85rem;
 }

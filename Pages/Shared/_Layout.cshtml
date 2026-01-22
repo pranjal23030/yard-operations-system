@@ -4,47 +4,107 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Exotrac YMS</title>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm">
-            <div class="container-fluid mx-lg-4">
-                <a class="navbar-brand d-flex align-items-center gap-2" asp-area="" asp-page="/Index">
-                    <img src="~/images/exotrac-logo.png" alt="Logo" style="height: 24px;" />
-                    <span>Exotrac</span>
-                </a>
 
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <div class="d-none d-md-block">
-                        <span class="admin-dash-text">Admin Dashboard</span>
-                    </div>
-                }
-
-                <div class="ms-auto">
-                    <partial name="_LoginPartial" />
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <main role="main" class="container-fluid px-lg-5 py-4">
-        @RenderBody()
-    </main>
-
-    <footer class="footer">
-        <div class="container-fluid text-center">
-            &copy; 2026 - <span class="fw-bold text-dark">Exotrac</span> Yard Management System. All Rights Reserved.
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <img src="~/images/exotrac-logo.png" alt="Logo" style="height: 35px;" />
+            <span class="fw-bold fs-4">Exotrac</span>
         </div>
-    </footer>
+
+        <nav class="sidebar-nav">
+            <a asp-page="/Index" class="nav-item-link active">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item-link">
+                <i class="fa-solid fa-users-gear"></i>
+                <span>User Management</span>
+            </a>
+            <a href="#" class="nav-item-link">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <span>Location Management</span>
+            </a>
+            <a href="#" class="nav-item-link">
+                <i class="fa-solid fa-truck-front"></i>
+                <span>Trailer Management</span>
+            </a>
+            <a href="#" class="nav-item-link">
+                <i class="fa-solid fa-id-card-clip"></i>
+                <span>Carrier Management</span>
+            </a>
+            <a href="#" class="nav-item-link">
+                <i class="fa-solid fa-gears"></i>
+                <span>Operations</span>
+            </a>
+            <a href="#" class="nav-item-link">
+                <i class="fa-solid fa-user-shield"></i>
+                <span>Role Management</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="collapse-btn" id="sidebarToggle">
+                <i class="fa-solid fa-angles-left" id="toggleIcon"></i>
+                <span>Collapse Sidebar</span>
+            </button>
+        </div>
+    </aside>
+
+    <div id="main-wrapper">
+        <header>
+            <nav class="navbar navbar-expand-sm">
+                <div class="container-fluid">
+                    <span class="admin-dash-text">Admin Dashboard</span>
+                    <div class="ms-auto">
+                        <partial name="_LoginPartial" />
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <main role="main">
+            @RenderBody()
+        </main>
+
+        <footer class="footer">
+            <div class="container-fluid text-center">
+                &copy; 2026 - <span class="fw-bold text-dark">Exotrac</span> Yard Management System. All Rights Reserved.
+            </div>
+        </footer>
+    </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('sidebarToggle');
+        const toggleIcon = document.getElementById('toggleIcon');
+
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+
+            if (sidebar.classList.contains('collapsed')) {
+                toggleIcon.classList.remove('fa-angles-left');
+                toggleIcon.classList.add('fa-bars');
+            } else {
+                toggleIcon.classList.remove('fa-bars');
+                toggleIcon.classList.add('fa-angles-left');
+            }
+        });
+
+        // Toggle 'active' class on click
+        $('.nav-item-link').on('click', function() {
+            $('.nav-item-link').removeClass('active');
+            $(this).addClass('active');
+        });
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
