@@ -3,11 +3,11 @@
     --exotrac-navy: #0b1629;
     --exotrac-navy-light: #1e293b;
     --exotrac-gold: #c2850c;
-    --exotrac-gold-light: rgba(194, 133, 12, 0.1); /* Very light orange */
+    --exotrac-gold-light: rgba(194, 133, 12, 0.1);
     --exotrac-btn: #111827;
     --exotrac-light-bg: #f8fafc;
     --error-red: #d92d20;
-    --error-red-light: rgba(217, 45, 32, 0.1); /* Very light red */
+    --error-red-light: rgba(217, 45, 32, 0.1);
     --border-color: #e2e8f0;
     --sidebar-width: 280px;
     --sidebar-collapsed-width: 85px;
@@ -23,41 +23,20 @@ body {
     font-family: 'Inter', -apple-system, sans-serif;
     display: flex;
     flex-direction: row;
+    overflow-x: hidden;
 }
 
-/* --- Constant/Sticky Header --- */
-header {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background-color: white;
-    width: 100%;
-}
-
-.navbar {
-    background-color: white !important;
-    padding: 0.6rem 1.5rem;
-    border-bottom: 1px solid var(--border-color) !important;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
-}
-
-.admin-dash-text {
-    font-size: 1.4rem;
-    font-weight: 700; /* Bold as requested */
-    color: var(--exotrac-navy);
-}
-
-/* --- Sidebar Style --- */
+/* --- Fixed Sidebar --- */
 #sidebar {
     width: var(--sidebar-width);
     background: radial-gradient(circle at center, var(--exotrac-navy-light) 0%, var(--exotrac-navy) 100%);
-    min-height: 100vh;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    flex-direction: column;
-    position: sticky;
+    height: 100vh;
+    position: fixed; /* Changed to fixed to eliminate scrolling gaps */
     top: 0;
     left: 0;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
     color: white;
     z-index: 1001;
 }
@@ -80,14 +59,24 @@ header {
     padding: 0.5rem 0;
     list-style: none;
     margin: 0;
+    overflow-y: auto;
 }
+
+    /* Custom Scrollbar */
+    .sidebar-nav::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .sidebar-nav::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,0.1);
+    }
 
 .nav-item-link {
     display: flex;
     align-items: center;
     margin: 4px 15px;
-    padding: 12px 18px;
-    color: rgba(255,255,255,0.7);
+    padding: 15px 18px;
+    color: rgba(255,255,255,0.9);
     text-decoration: none;
     transition: all 0.2s ease;
     white-space: nowrap;
@@ -102,13 +91,12 @@ header {
 
     .nav-item-link span {
         margin-left: 12px;
-        font-size: 0.9rem;
+        font-size: 1rem;
         font-weight: 500;
     }
 
     .nav-item-link:hover {
         background-color: rgba(255,255,255,0.08);
-        color: white;
     }
 
     .nav-item-link.active {
@@ -117,7 +105,7 @@ header {
         box-shadow: 0 4px 12px rgba(194, 133, 12, 0.3);
     }
 
-/* Collapsed Logic */
+/* Collapsed States */
 #sidebar.collapsed .nav-item-link span,
 #sidebar.collapsed .sidebar-header span,
 #sidebar.collapsed .collapse-btn span {
@@ -130,7 +118,6 @@ header {
     justify-content: center;
 }
 
-/* --- Footer --- */
 .sidebar-footer {
     padding: 20px 15px;
     border-top: 1px solid rgba(255,255,255,0.1);
@@ -148,10 +135,44 @@ header {
     padding: 12px;
     border-radius: 8px;
     cursor: pointer;
-    transition: 0.3s;
 }
 
-/* --- Profile Dropdown & Effects --- */
+/* --- Main Content Wrapper --- */
+#main-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin-left: var(--sidebar-width); /* Push content to the right of sidebar */
+    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Adjust margin when sidebar is collapsed */
+body:has(#sidebar.collapsed) #main-wrapper {
+    margin-left: var(--sidebar-collapsed-width);
+}
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: white;
+    width: 100%;
+}
+
+.navbar {
+    background-color: white !important;
+    padding: 0.6rem 1.5rem;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.admin-dash-text {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--exotrac-navy);
+}
+
+/* Profile Dropdown Styling */
 .profile-dropdown-trigger {
     padding: 4px 12px 4px 6px !important;
     border-radius: 8px;
@@ -160,13 +181,6 @@ header {
     gap: 10px;
     text-decoration: none;
     color: var(--exotrac-navy) !important;
-    transition: background-color 0.3s ease;
-}
-
-/* The 2-second temporary class */
-.profile-clicked {
-    background-color: var(--exotrac-gold) !important;
-    color: white !important;
 }
 
 .profile-circle {
@@ -182,23 +196,19 @@ header {
     font-size: 0.75rem;
 }
 
-/* Dropdown Items */
 .dropdown-item {
     font-size: 0.85rem;
     padding: 10px 16px;
     display: flex;
     align-items: center;
     gap: 10px;
-    transition: all 0.2s ease;
 }
 
-/* Profile Settings Hover (Light Orange) */
 .item-settings:hover {
     background-color: var(--exotrac-gold-light) !important;
     color: var(--exotrac-gold) !important;
 }
 
-/* Logout Text & Hover (Light Red) */
 .text-logout {
     color: var(--error-red) !important;
     font-weight: 500;
@@ -206,16 +216,7 @@ header {
 
     .text-logout:hover {
         background-color: var(--error-red-light) !important;
-        color: var(--error-red) !important;
     }
-
-/* Wrapper and Main */
-#main-wrapper {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-}
 
 main {
     flex: 1 0 auto;

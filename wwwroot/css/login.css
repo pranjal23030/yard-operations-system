@@ -16,7 +16,7 @@ body, html {
     min-height: 100vh;
 }
 
-/* Left Side: Hero Section */
+/* Hero Section */
 .hero-section {
     background-color: var(--exotrac-navy);
     background: radial-gradient(circle at center, #1e293b 0%, #0b1629 100%);
@@ -87,7 +87,7 @@ body, html {
     margin-bottom: 0;
 }
 
-/* Right Side: Form Section */
+/* Form Section */
 .form-section {
     flex: 0.9;
     display: flex;
@@ -137,7 +137,7 @@ body, html {
         box-shadow: none;
     }
 
-/* Refined Button Hover */
+/* Button Hover */
 .btn-signin {
     background-color: var(--exotrac-btn);
     color: white;
@@ -147,14 +147,14 @@ body, html {
     width: 100%;
     margin-top: 1.5rem;
     border: none;
-    transition: all 0.3s ease; /* Smooth Fade transition */
+    transition: all 0.3s ease;
 }
 
     .btn-signin:hover {
-        background-color: #1f2937 !important; /* Slightly lighter */
+        background-color: #1f2937 !important;
         opacity: 0.9;
         color: white !important;
-        transform: translateY(-1px); /* Professional subtle lift */
+        transform: translateY(-1px);
     }
 
 /* Error Toast Layout */
