@@ -21,6 +21,11 @@ html, body {
 body {
     background-color: var(--exotrac-light-bg);
     font-family: 'Inter', -apple-system, sans-serif;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 15px;
+    line-height: 1.5;
     display: flex;
     flex-direction: row;
     overflow-x: hidden;
