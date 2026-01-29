@@ -6,20 +6,23 @@
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="nav-item dropdown">
-            <a class="profile-dropdown-trigger dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a class="profile-dropdown-trigger dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="User menu">
                 <div class="profile-circle">AD</div>
-                <span class="fw-medium">Admin</span>
+                <span class="fw-medium d-none d-sm-inline">Admin</span>
             </a>
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="profileDropdown">
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm profile-menu" aria-labelledby="profileDropdown">
                 <li>
                     <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
-                        <i class="fa-regular fa-user"></i> Profile Settings
+                        <i class="fa-regular fa-user"></i>
+                        <span>Profile</span>
                     </a>
                 </li>
+                <li><hr class="dropdown-divider" /></li>
                 <li>
                     <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
                         <button type="submit" class="dropdown-item text-logout border-0 bg-transparent w-100">
-                            <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                            <span>Logout</span>
                         </button>
                     </form>
                 </li>

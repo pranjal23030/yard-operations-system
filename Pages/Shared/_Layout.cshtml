@@ -15,8 +15,15 @@
 
     <aside id="sidebar">
         <div class="sidebar-header">
-            <img src="~/images/exotrac-logo.png" alt="Logo" style="height: 35px;" />
-            <span class="fw-bold fs-4">Exotrac</span>
+            <div class="sidebar-brand">
+                <div class="sidebar-logo-box">
+                    <img src="~/images/exotrac-logo.png" alt="Exotrac" class="sidebar-logo-img" />
+                </div>
+                <div class="sidebar-brand-text">
+                    <span class="sidebar-brand-title">Exotrac</span>
+                    <span class="sidebar-brand-subtitle">Administrator</span>
+                </div>
+            </div>
         </div>
 
         <nav class="sidebar-nav">
@@ -25,28 +32,40 @@
                 <span>Dashboard</span>
             </a>
             <a href="#" class="nav-item-link">
-                <i class="fa-solid fa-users-gear"></i>
-                <span>User Management</span>
+                <i class="fa-solid fa-table-cells-large"></i>
+                <span>Slot Allocation</span>
             </a>
             <a href="#" class="nav-item-link">
-                <i class="fa-solid fa-map-location-dot"></i>
-                <span>Location Management</span>
-            </a>
-            <a href="#" class="nav-item-link">
-                <i class="fa-solid fa-truck-front"></i>
-                <span>Trailer Management</span>
-            </a>
-            <a href="#" class="nav-item-link">
-                <i class="fa-solid fa-id-card-clip"></i>
-                <span>Carrier Management</span>
-            </a>
-            <a href="#" class="nav-item-link">
-                <i class="fa-solid fa-gears"></i>
+                <i class="fa-solid fa-wave-square"></i>
                 <span>Operations</span>
             </a>
             <a href="#" class="nav-item-link">
-                <i class="fa-solid fa-user-shield"></i>
-                <span>Role Management</span>
+                <i class="fa-solid fa-truck"></i>
+                <span>Trailers</span>
+            </a>
+            <a href="#" class="nav-item-link">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>Locations</span>
+            </a>
+            <a href="#" class="nav-item-link">
+                <i class="fa-solid fa-building"></i>
+                <span>Carriers</span>
+            </a>
+            <a href="#" class="nav-item-link">
+                <i class="fa-solid fa-eye"></i>
+                <span>Monitoring</span>
+            </a>
+            <a href="#" class="nav-item-link">
+                <i class="fa-solid fa-users"></i>
+                <span>Users</span>
+            </a>
+            <a href="#" class="nav-item-link">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Roles</span>
+            </a>
+            <a href="#" class="nav-item-link">
+                <i class="fa-solid fa-gear"></i>
+                <span>Configuration</span>
             </a>
         </nav>
 
@@ -60,10 +79,10 @@
 
     <div id="main-wrapper">
         <header>
-            <nav class="navbar navbar-expand-sm">
+            <nav class="navbar navbar-expand-sm admin-header">
                 <div class="container-fluid">
-                    <span class="admin-dash-text">Admin Dashboard</span>
-                    <div class="ms-auto">
+                    <span class="admin-dash-text">Operations Dashboard</span>
+                    <div class="ms-auto d-flex align-items-center gap-2">
                         <partial name="_LoginPartial" />
                     </div>
                 </div>
@@ -74,9 +93,19 @@
             @RenderBody()
         </main>
 
-        <footer class="footer">
-            <div class="container-fluid text-center">
-                &copy; 2026 - <span class="fw-bold text-dark">Exotrac</span> Yard Management System. All Rights Reserved.
+        <footer class="footer admin-footer">
+            <div class="container-fluid">
+                <div class="admin-footer-inner">
+                    <div class="admin-footer-left">
+                        <i class="fa-solid fa-wave-square footer-icon" aria-hidden="true"></i>
+                        <span class="footer-brand">Exotrac</span>
+                        <span class="footer-sep">|</span>
+                        <span class="footer-sub">Automated Yard Slot Allocation</span>
+                    </div>
+                    <div class="admin-footer-right">
+                        <span>© @DateTime.Now.Year All rights reserved</span>
+                    </div>
+                </div>
             </div>
         </footer>
     </div>
@@ -90,23 +119,28 @@
         const toggleBtn = document.getElementById('sidebarToggle');
         const toggleIcon = document.getElementById('toggleIcon');
 
-        toggleBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('collapsed');
+        if (toggleBtn && sidebar) {
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
 
-            if (sidebar.classList.contains('collapsed')) {
-                toggleIcon.classList.remove('fa-angles-left');
-                toggleIcon.classList.add('fa-bars');
-            } else {
-                toggleIcon.classList.remove('fa-bars');
-                toggleIcon.classList.add('fa-angles-left');
-            }
-        });
+                if (toggleIcon) {
+                    if (sidebar.classList.contains('collapsed')) {
+                        toggleIcon.classList.remove('fa-angles-left');
+                        toggleIcon.classList.add('fa-bars');
+                    } else {
+                        toggleIcon.classList.remove('fa-bars');
+                        toggleIcon.classList.add('fa-angles-left');
+                    }
+                }
+            });
+        }
 
         // Toggle 'active' class on click
         $('.nav-item-link').on('click', function() {
             $('.nav-item-link').removeClass('active');
             $(this).addClass('active');
         });
+
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
