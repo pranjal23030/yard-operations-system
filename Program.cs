@@ -10,13 +10,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => {
-    options.SignIn.RequireConfirmedAccount = true;
-    options.User.RequireUniqueEmail = true;
-    options.Lockout.AllowedForNewUsers = true;  // Enable lockout
-})
-.AddRoles<IdentityRole>()
-.AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services
+    .AddDefaultIdentity<ApplicationUser>(options =>
+    {
+        options.SignIn.RequireConfirmedAccount = false;
+    })
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddRazorPages(options =>
 {
@@ -50,6 +50,7 @@ app.MapRazorPages()
 using (var scope = app.Services.CreateScope())
 {
     await DbSeeder.SeedRoles(scope.ServiceProvider);
+    await DbSeeder.SeedDefaultAdmin(scope.ServiceProvider);  // Add this line
 }
 
 app.Run();
