@@ -112,6 +112,10 @@ namespace ExotracYMS.Areas.Identity.Pages.Account
 
             if (result.Succeeded)
             {
+                // UPDATE LAST LOGIN TIMESTAMP
+                user.LastLogin = DateTime.UtcNow;
+                await _userManager.UpdateAsync(user);
+
                 _logger.LogInformation("User with ID '{UserId}' logged in with 2fa.", user.Id);
                 return LocalRedirect(returnUrl);
             }
