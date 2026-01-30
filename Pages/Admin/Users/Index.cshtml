@@ -2,15 +2,145 @@
 @model ExotracYMS.Pages.Admin.Users.IndexModel
 @{
     ViewData["Title"] = "Users";
+    ViewData["PageHeader"] = "User Management";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/users.css" asp-append-version="true" />
 }
 
 @if (TempData["Success"] != null)
 {
-    <div class="alert alert-success">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fa-solid fa-check-circle me-2"></i>
         @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
 
-<a asp-page="./Create" class="btn btn-primary mb-3">
-    Add New User
-</a>
+<div class="users-header">
+    <h1 class="users-title">All Users</h1>
+    <a asp-page="./Create" class="btn-add-user">
+        <i class="fa-solid fa-plus"></i>
+        Add New User
+    </a>
+</div>
+
+<form method="get" id="filterForm">
+    <div class="filters-row">
+        <div class="search-box">
+            <i class="fa-solid fa-search search-icon"></i>
+            <input type="text" 
+                   name="SearchTerm" 
+                   value="@Model.SearchTerm" 
+                   class="form-control" 
+                   placeholder="Search users..." 
+                   onchange="document.getElementById('filterForm').submit()" />
+        </div>
+
+        <select name="RoleFilter" 
+                class="filter-select" 
+                onchange="document.getElementById('filterForm').submit()">
+            @foreach (var role in Model.RoleOptions)
+            {
+                <option value="@role.Value" selected="@(Model.RoleFilter == role.Value)">
+                    @role.Text
+                </option>
+            }
+        </select>
+
+        <select name="StatusFilter" 
+                class="filter-select" 
+                onchange="document.getElementById('filterForm').submit()">
+            @foreach (var status in Model.StatusOptions)
+            {
+                <option value="@status.Value" selected="@(Model.StatusFilter == status.Value)">
+                    @status.Text
+                </option>
+            }
+        </select>
+    </div>
+</form>
+
+<div class="users-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Assigned Location</th>
+                <th>Status</th>
+                <th>Last Login</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Users.Any())
+            {
+                @foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td><span class="user-name">@user.FullName</span></td>
+                        <td><a href="mailto:@user.Email" class="user-email">@user.Email</a></td>
+                        <td><span class="role-badge">@user.Role</span></td>
+                        <td><span class="text-muted">@user.AssignedLocation</span></td>
+                        <td><span class="status-badge status-@user.Status.ToLower()">@user.Status</span></td>
+                        <td>
+                            <span class="last-login">
+                                @if (user.LastLogin.HasValue)
+                                {
+                                    @user.LastLogin.Value.ToLocalTime().ToString("yyyy-MM-dd hh:mm tt")
+                                }
+                                else
+                                {
+                                    <span>Never</span>
+                                }
+                            </span>
+                        </td>
+                        <td>
+                            <button class="action-btn" type="button" data-bs-toggle="dropdown">
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#"><i class="fa-solid fa-edit"></i> Edit</a></li>
+                                <li><a class="dropdown-item text-danger" href="#"><i class="fa-solid fa-trash"></i> Delete</a></li>
+                            </ul>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" class="text-center py-5 text-muted">
+                        <i class="fa-solid fa-users fa-3x mb-3 d-block"></i>
+                        No users found
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="pagination-footer">
+    <div class="pagination-info">Showing @Model.Users.Count of @Model.Users.Count users</div>
+    <div class="pagination-controls">
+        <button class="page-btn" disabled><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn" disabled><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-dismiss success alerts after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    </script>
+}

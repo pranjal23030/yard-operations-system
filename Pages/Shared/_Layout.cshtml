@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
 
@@ -27,7 +28,7 @@
         </div>
 
         <nav class="sidebar-nav">
-            <a asp-page="/Index" class="nav-item-link active">
+            <a asp-page="/Index" class="nav-item-link">
                 <i class="fa-solid fa-chart-line"></i>
                 <span>Dashboard</span>
             </a>
@@ -81,8 +82,8 @@
         <header>
             <nav class="navbar navbar-expand-sm admin-header">
                 <div class="container-fluid">
-                    <span class="admin-dash-text">Operations Dashboard</span>
-                    <div class="ms-auto d-flex align-items-center gap-2">
+                    <span class="admin-dash-text">@ViewData["PageHeader"]</span>
+                    <div class="ms-auto d-flex align-items: gap-2">
                         <partial name="_LoginPartial" />
                     </div>
                 </div>
@@ -135,12 +136,15 @@
             });
         }
 
-        // Toggle 'active' class on click
-        $('.nav-item-link').on('click', function() {
-            $('.nav-item-link').removeClass('active');
-            $(this).addClass('active');
+        // Highlight active nav link based on current page
+        const currentPath = window.location.pathname;
+        $('.nav-item-link').each(function() {
+            const href = $(this).attr('href') || $(this).attr('asp-page');
+            if (currentPath.includes(href) || (href === '/Index' && currentPath === '/')) {
+                $('.nav-item-link').removeClass('active');
+                $(this).addClass('active');
+            }
         });
-
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
