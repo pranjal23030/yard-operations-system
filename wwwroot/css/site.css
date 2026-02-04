@@ -1,6 +1,5 @@
 /* --- Exotrac Global Theme --- */
 :root {
-    /* Match login.css color palette exactly */
     --primary: hsl(210, 50%, 25%);
     --primary-foreground: hsl(0, 0%, 100%);
     --accent: hsl(175, 60%, 35%);
@@ -32,7 +31,6 @@
     --sidebar-width: 240px;
     --sidebar-collapsed-width: 64px;
 
-    /* Sidebar colors matching login palette */
     --sidebar-bg: hsl(210, 50%, 25%);
     --sidebar-bg-2: hsl(210, 50%, 30%);
     --sidebar-accent: rgba(255,255,255,0.08);
@@ -46,7 +44,6 @@ html, body {
 }
 
 body {
-    /* Change to light background - the dark navy will be in sidebar and footer only */
     background-color: var(--background);
     font-family: 'Inter', -apple-system, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
@@ -62,7 +59,6 @@ body {
 /* --- Fixed Sidebar --- */
 #sidebar {
     width: var(--sidebar-width);
-    /* Use solid primary color to match login page and footer */
     background: var(--primary);
     height: 100vh;
     position: fixed;
@@ -234,7 +230,7 @@ body {
     min-height: 100vh;
     margin-left: var(--sidebar-width); /* Push content to the right of sidebar */
     transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    /* Light content surface over darker page background, similar to login card */
+    
     background-color: var(--background);
 }
 
@@ -327,7 +323,6 @@ main {
     font-size: 0.85rem;
 }
 
-/* Lovable-like footer */
 .footer.admin-footer {
     background: var(--primary);
     color: var(--primary-foreground);

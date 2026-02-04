@@ -51,7 +51,7 @@ body, html {
 
 .login-content-wrapper {
     width: 100%;
-    max-width: 30rem; /* 480px - slightly slimmer but still spacious */
+    max-width: 30rem;
 }
 
 /* Logo & Title Section */

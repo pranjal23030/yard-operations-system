@@ -77,7 +77,7 @@ namespace ExotracYMS.Pages.Admin.Users
 
             await _userManager.AddToRoleAsync(user, Input.Role);
 
-            TempData["Success"] = $"✓ User {user.FirstName} {user.LastName} created successfully!";
+            TempData["Success"] = $"User {user.FirstName} {user.LastName} created successfully!";
             return RedirectToPage("./Index");
         }
 
