@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace ExotracYMS.Data.Migrations
+namespace YardOps.Data.Migrations
 {
     public partial class CreateIdentitySchema : Migration
     {

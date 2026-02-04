@@ -5,12 +5,12 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using ExotracYMS.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using YardOps.Data;
 
-namespace ExotracYMS.Areas.Identity.Pages.Account.Manage
+namespace YardOps.Areas.Identity.Pages.Account.Manage
 {
     public class SetPasswordModel : PageModel
     {

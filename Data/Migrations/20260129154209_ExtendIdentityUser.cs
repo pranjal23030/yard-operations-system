@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ExotracYMS.Data.Migrations
+namespace YardOps.Data.Migrations
 {
     /// <inheritdoc />
     public partial class ExtendIdentityUser : Migration

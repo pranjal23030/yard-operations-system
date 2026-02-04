@@ -2,10 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using YardOps;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace ExotracYMS.Areas.Identity.Pages.Account
+namespace YardOps.Areas.Identity.Pages.Account
 {
     /// <summary>
     ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used

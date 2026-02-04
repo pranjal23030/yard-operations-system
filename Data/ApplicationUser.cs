@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace ExotracYMS.Data
+namespace YardOps.Data
 {
     public class ApplicationUser : IdentityUser
     {

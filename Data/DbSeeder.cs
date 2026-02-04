@@ -1,6 +1,7 @@
-﻿using ExotracYMS.Data;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using YardOps.Data;
 
 public static class DbSeeder
 {
@@ -21,9 +22,13 @@ public static class DbSeeder
     public static async Task SeedDefaultAdmin(IServiceProvider serviceProvider)
     {
         var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var configuration = serviceProvider.GetRequiredService<IConfiguration>();
 
-        string adminEmail = "admin@exotrac.com";
-        string adminPassword = "Admin@123";
+        // Read admin credentials from appsettings.json
+        string adminEmail = configuration["DefaultAdmin:Email"] ?? "admin@yardops.com";
+        string adminPassword = configuration["DefaultAdmin:Password"] ?? "Admin@123";
+        string firstName = configuration["DefaultAdmin:FirstName"] ?? "System";
+        string lastName = configuration["DefaultAdmin:LastName"] ?? "Administrator";
 
         var adminUser = await userManager.FindByEmailAsync(adminEmail);
         if (adminUser == null)
@@ -32,8 +37,8 @@ public static class DbSeeder
             {
                 UserName = adminEmail,
                 Email = adminEmail,
-                FirstName = "System",
-                LastName = "Administrator",
+                FirstName = firstName,
+                LastName = lastName,
                 Status = "Active",
                 CreatedAt = DateTime.UtcNow,
                 EmailConfirmed = true

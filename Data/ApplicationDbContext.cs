@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExotracYMS.Data
+namespace YardOps.Data
 {
     public class ApplicationDbContext
         : IdentityDbContext<ApplicationUser>

@@ -1,4 +1,5 @@
-﻿@using ExotracYMS.Data
+﻿@using YardOps.Areas.Identity.Pages.Account.Manage
+@using YardOps.Data
 @inject SignInManager<ApplicationUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();

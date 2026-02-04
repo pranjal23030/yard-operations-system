@@ -1,4 +1,4 @@
-﻿using ExotracYMS.Data;
+﻿using YardOps.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExotracYMS.Pages.Admin.Users
+namespace YardOps.Pages.Admin.Users
 {
     [Authorize(Roles = "Admin")]
     public class IndexModel : PageModel

@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using ExotracYMS.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -16,8 +15,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using YardOps.Data;
 
-namespace ExotracYMS.Areas.Identity.Pages.Account
+namespace YardOps.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {
