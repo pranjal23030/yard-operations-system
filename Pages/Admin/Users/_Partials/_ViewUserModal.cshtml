@@ -1,0 +1,62 @@
+<div class="modal fade" id="viewUserModal" tabindex="-1" aria-labelledby="viewUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-custom">
+            <div class="modal-header modal-header-custom">
+                <h5 class="modal-title modal-title-custom" id="viewUserModalLabel">User Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body view-modal-body">
+                <div class="view-user-header">
+                    <div class="view-user-avatar" id="viewUserAvatar">
+                        <span id="viewUserInitials"></span>
+                    </div>
+                    <div class="view-user-info">
+                        <h4 class="view-user-name" id="viewUserName"></h4>
+                        <p class="view-user-email" id="viewUserEmailHeader"></p>
+                        <span class="status-badge" id="viewUserStatusBadge"></span>
+                    </div>
+                </div>
+                <div class="view-user-details">
+                    <div class="view-detail-item">
+                        <div class="view-detail-icon"><i class="fa-regular fa-envelope"></i></div>
+                        <div class="view-detail-content">
+                            <span class="view-detail-label">Email</span>
+                            <span class="view-detail-value" id="viewUserEmail"></span>
+                        </div>
+                    </div>
+                    <div class="view-detail-item">
+                        <div class="view-detail-icon"><i class="fa-regular fa-circle-user"></i></div>
+                        <div class="view-detail-content">
+                            <span class="view-detail-label">Role</span>
+                            <span class="view-detail-value" id="viewUserRole"></span>
+                        </div>
+                    </div>
+                    <div class="view-detail-item">
+                        <div class="view-detail-icon"><i class="fa-solid fa-signal"></i></div>
+                        <div class="view-detail-content">
+                            <span class="view-detail-label">Status</span>
+                            <span class="view-detail-value" id="viewUserStatus"></span>
+                        </div>
+                    </div>
+                    <div class="view-detail-item">
+                        <div class="view-detail-icon"><i class="fa-solid fa-location-dot"></i></div>
+                        <div class="view-detail-content">
+                            <span class="view-detail-label">Assigned Location(s)</span>
+                            <span class="view-detail-value" id="viewUserLocation"></span>
+                        </div>
+                    </div>
+                    <div class="view-detail-item">
+                        <div class="view-detail-icon"><i class="fa-regular fa-clock"></i></div>
+                        <div class="view-detail-content">
+                            <span class="view-detail-label">Last Login</span>
+                            <span class="view-detail-value" id="viewUserLastLogin"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer modal-footer-custom">
+                <button type="button" class="btn-cancel-neutral" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

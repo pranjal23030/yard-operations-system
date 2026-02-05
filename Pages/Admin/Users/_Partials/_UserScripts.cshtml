@@ -1,0 +1,108 @@
+@using YardOps.Pages.Admin.Users
+@model IndexModel
+
+<script>
+    // Auto-dismiss alerts after 5 seconds
+    setTimeout(function () {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+
+    // Auto-open create modal if there are validation errors
+    @if (Model.ShowCreateModal)
+    {
+        <text>
+        document.addEventListener('DOMContentLoaded', function() {
+            var modal = new bootstrap.Modal(document.getElementById('createUserModal'));
+            modal.show();
+        });
+        </text>
+    }
+
+    // Auto-open edit modal if there are validation errors
+    @if (Model.ShowEditModal)
+    {
+        <text>
+        document.addEventListener('DOMContentLoaded', function() {
+            var modal = new bootstrap.Modal(document.getElementById('editUserModal'));
+            modal.show();
+        });
+        </text>
+    }
+
+    // Toggle password visibility for Create modal
+    function toggleCreatePassword() {
+        const passwordField = document.getElementById("createPasswordField");
+        const toggleIcon = document.getElementById("createPasswordIcon");
+
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            toggleIcon.classList.remove("fa-regular", "fa-eye");
+            toggleIcon.classList.add("fa-solid", "fa-eye-slash");
+        } else {
+            passwordField.type = "password";
+            toggleIcon.classList.remove("fa-solid", "fa-eye-slash");
+            toggleIcon.classList.add("fa-regular", "fa-eye");
+        }
+    }
+
+    // Handle delete modal data population
+    document.getElementById('deleteUserModal').addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var userId = button.getAttribute('data-user-id');
+        var userName = button.getAttribute('data-user-name');
+
+        document.getElementById('deleteUserId').value = userId;
+        document.getElementById('deleteUserName').textContent = userName;
+    });
+
+    // Handle view modal data population
+    document.getElementById('viewUserModal').addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+
+        var userName = button.getAttribute('data-user-name');
+        var userInitials = button.getAttribute('data-user-initials');
+        var userEmail = button.getAttribute('data-user-email');
+        var userRole = button.getAttribute('data-user-role');
+        var userStatus = button.getAttribute('data-user-status');
+        var userLocation = button.getAttribute('data-user-location');
+        var userLastLogin = button.getAttribute('data-user-lastlogin');
+
+        document.getElementById('viewUserInitials').textContent = userInitials;
+        document.getElementById('viewUserName').textContent = userName;
+        document.getElementById('viewUserEmailHeader').textContent = userEmail;
+        document.getElementById('viewUserEmail').textContent = userEmail;
+        document.getElementById('viewUserRole').textContent = userRole;
+        document.getElementById('viewUserStatus').textContent = userStatus;
+        document.getElementById('viewUserLocation').textContent = userLocation;
+        document.getElementById('viewUserLastLogin').textContent = userLastLogin;
+
+        var statusBadge = document.getElementById('viewUserStatusBadge');
+        statusBadge.textContent = userStatus;
+        statusBadge.className = 'status-badge status-' + userStatus.toLowerCase();
+    });
+
+    // Handle edit modal data population
+    document.getElementById('editUserModal').addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+
+        var userId = button.getAttribute('data-user-id');
+        var firstName = button.getAttribute('data-user-firstname');
+        var lastName = button.getAttribute('data-user-lastname');
+        var email = button.getAttribute('data-user-email');
+        var role = button.getAttribute('data-user-role');
+        var status = button.getAttribute('data-user-status');
+        var location = button.getAttribute('data-user-location');
+
+        document.getElementById('editUserId').value = userId;
+        document.getElementById('editFirstName').value = firstName;
+        document.getElementById('editLastName').value = lastName;
+        document.getElementById('editEmail').value = email;
+        document.getElementById('editRole').value = role;
+        document.getElementById('editStatus').value = status;
+        document.getElementById('editLocation').value = location;
+    });
+</script>

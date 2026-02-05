@@ -1,0 +1,94 @@
+@using YardOps.Pages.Admin.Users
+@model IndexModel
+
+<div class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="createUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-custom">
+            <div class="modal-header modal-header-custom">
+                <h5 class="modal-title modal-title-custom" id="createUserModalLabel">Add New User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" asp-page-handler="Create">
+                <div class="modal-body modal-body-custom">
+                    @if (!ViewData.ModelState.IsValid && Model.ShowCreateModal)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            <i class="fa-solid fa-exclamation-circle me-2"></i>
+                            <strong>Please fix the following errors:</strong>
+                            <ul class="mb-0 mt-2">
+                                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                {
+                                    <li>@error.ErrorMessage</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label asp-for="Input.FirstName" class="form-label-custom">First Name</label>
+                                <input asp-for="Input.FirstName" class="form-input-custom" placeholder="John" />
+                                <span asp-validation-for="Input.FirstName" class="validation-error-custom"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label asp-for="Input.LastName" class="form-label-custom">Last Name</label>
+                                <input asp-for="Input.LastName" class="form-input-custom" placeholder="Smith" />
+                                <span asp-validation-for="Input.LastName" class="validation-error-custom"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label asp-for="Input.Email" class="form-label-custom">Email Address</label>
+                        <input asp-for="Input.Email" class="form-input-custom" placeholder="john.smith@yardops.com" />
+                        <span asp-validation-for="Input.Email" class="validation-error-custom"></span>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label asp-for="Input.Role" class="form-label-custom">Role</label>
+                                <select asp-for="Input.Role" asp-items="Model.Roles" class="form-select-custom">
+                                    <option value="">Select role</option>
+                                </select>
+                                <span asp-validation-for="Input.Role" class="validation-error-custom"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">Assigned Location</label>
+                                <select class="form-select-custom" name="AssignedLocation">
+                                    <option value="">Select location</option>
+                                    <option value="All Locations">All Locations</option>
+                                    <option value="Yard A">Yard A</option>
+                                    <option value="Yard B">Yard B</option>
+                                    <option value="Warehouse 1">Warehouse 1</option>
+                                </select>
+                                <small class="form-hint-custom">This is for display purposes only</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label asp-for="Input.Password" class="form-label-custom">Temporary Password</label>
+                        <div class="password-input-wrapper">
+                            <input asp-for="Input.Password" id="createPasswordField" class="form-input-custom" placeholder="Min. 6 characters" type="password" />
+                            <button type="button" class="password-toggle-btn" onclick="toggleCreatePassword()" aria-label="Toggle password visibility">
+                                <i id="createPasswordIcon" class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Input.Password" class="validation-error-custom"></span>
+                        <small class="form-hint-custom">User can change this password after first login</small>
+                    </div>
+                </div>
+                <div class="modal-footer modal-footer-custom">
+                    <button type="button" class="btn-cancel-neutral" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-primary-custom">Create User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

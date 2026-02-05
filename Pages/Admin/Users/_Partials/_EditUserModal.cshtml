@@ -1,0 +1,98 @@
+@using YardOps.Pages.Admin.Users
+@model IndexModel
+
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-custom">
+            <div class="modal-header modal-header-custom">
+                <h5 class="modal-title modal-title-custom" id="editUserModalLabel">Edit User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" asp-page-handler="Edit">
+                <input type="hidden" asp-for="EditInput.UserId" id="editUserId" />
+                <div class="modal-body modal-body-custom">
+                    @if (!ViewData.ModelState.IsValid && Model.ShowEditModal)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            <i class="fa-solid fa-exclamation-circle me-2"></i>
+                            <strong>Please fix the following errors:</strong>
+                            <ul class="mb-0 mt-2">
+                                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                {
+                                    <li>@error.ErrorMessage</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label asp-for="EditInput.FirstName" class="form-label-custom">First Name</label>
+                                <input asp-for="EditInput.FirstName" id="editFirstName" class="form-input-custom" placeholder="John" />
+                                <span asp-validation-for="EditInput.FirstName" class="validation-error-custom"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label asp-for="EditInput.LastName" class="form-label-custom">Last Name</label>
+                                <input asp-for="EditInput.LastName" id="editLastName" class="form-input-custom" placeholder="Smith" />
+                                <span asp-validation-for="EditInput.LastName" class="validation-error-custom"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label asp-for="EditInput.Email" class="form-label-custom">Email Address</label>
+                        <input asp-for="EditInput.Email" id="editEmail" class="form-input-custom" placeholder="john.smith@yardops.com" />
+                        <span asp-validation-for="EditInput.Email" class="validation-error-custom"></span>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label asp-for="EditInput.Role" class="form-label-custom">Role</label>
+                                <select asp-for="EditInput.Role" id="editRole" class="form-select-custom">
+                                    <option value="">Select role</option>
+                                    @foreach (var role in Model.Roles)
+                                    {
+                                        <option value="@role.Value">@role.Text</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="EditInput.Role" class="validation-error-custom"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label asp-for="EditInput.Status" class="form-label-custom">Status</label>
+                                <select asp-for="EditInput.Status" id="editStatus" class="form-select-custom">
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                    <option value="Pending">Pending</option>
+                                </select>
+                                <span asp-validation-for="EditInput.Status" class="validation-error-custom"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label asp-for="EditInput.AssignedLocation" class="form-label-custom">Assigned Location</label>
+                        <select asp-for="EditInput.AssignedLocation" id="editLocation" class="form-select-custom">
+                            <option value="">Select location</option>
+                            <option value="All Locations">All Locations</option>
+                            <option value="Yard A">Yard A</option>
+                            <option value="Yard B">Yard B</option>
+                            <option value="Warehouse 1">Warehouse 1</option>
+                            <option value="Not Assigned">Not Assigned</option>
+                        </select>
+                        <small class="form-hint-custom">This is for display purposes only</small>
+                    </div>
+                </div>
+                <div class="modal-footer modal-footer-custom">
+                    <button type="button" class="btn-cancel-neutral" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-primary-custom">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
