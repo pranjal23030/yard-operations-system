@@ -1,31 +1,174 @@
 ﻿@page
-@using YardOps.Areas.Identity.Pages.Account.Manage
-@model IndexModel
+@model YardOps.Areas.Identity.Pages.Account.Manage.IndexModel
 @{
     ViewData["Title"] = "Profile";
-    ViewData["ActivePage"] = ManageNavPages.Index;
+    ViewData["PageHeader"] = "Profile Settings";
 }
 
-<h3>@ViewData["Title"]</h3>
-<partial name="_StatusMessage" for="StatusMessage" />
-<div class="row">
-    <div class="col-md-6">
-        <form id="profile-form" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled />
-                <label asp-for="Username" class="form-label"></label>
+@section Styles {
+    <link rel="stylesheet" href="~/css/profile.css" asp-append-version="true" />
+}
+
+<div class="profile-container">
+    <!-- Profile Information Card -->
+    <div class="profile-card">
+        <div class="profile-card-header">
+            <i class="fa-regular fa-user"></i>
+            <h2 class="profile-card-title">Profile Information</h2>
+        </div>
+        <div class="profile-card-body">
+            <!-- Success Message -->
+            @if (!string.IsNullOrEmpty(Model.StatusMessage))
+            {
+                <div class="profile-alert profile-alert-success">
+                    <i class="fa-solid fa-check-circle"></i>
+                    @Model.StatusMessage
+                </div>
+            }
+
+            <!-- Avatar Section -->
+            <div class="profile-avatar-section">
+                <div class="profile-avatar">
+                    <div class="profile-avatar-circle">@Model.Initials</div>
+                </div>
+                <div class="profile-user-info">
+                    <h3>@Model.FullName</h3>
+                    <p class="profile-user-email">@Model.Email</p>
+                    <p class="profile-user-role">Role: <span>@Model.Role</span></p>
+                </div>
             </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number."/>
-                <label asp-for="Input.PhoneNumber" class="form-label"></label>
-                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-            </div>
-            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
-        </form>
+
+            <!-- Profile Form -->
+            <form method="post" asp-page-handler="SaveProfile">
+                <div asp-validation-summary="ModelOnly" class="profile-alert profile-alert-error" style="@(ViewData.ModelState.ErrorCount == 0 ? "display:none" : "")"></div>
+
+                <div class="profile-form-row">
+                    <div class="profile-form-group">
+                        <label asp-for="ProfileInput.FirstName" class="profile-form-label">First Name</label>
+                        <input asp-for="ProfileInput.FirstName" class="profile-form-input" placeholder="Enter first name" />
+                        <span asp-validation-for="ProfileInput.FirstName" class="profile-form-error"></span>
+                    </div>
+                    <div class="profile-form-group">
+                        <label asp-for="ProfileInput.LastName" class="profile-form-label">Last Name</label>
+                        <input asp-for="ProfileInput.LastName" class="profile-form-input" placeholder="Enter last name" />
+                        <span asp-validation-for="ProfileInput.LastName" class="profile-form-error"></span>
+                    </div>
+                </div>
+
+                <div class="profile-form-row">
+                    <div class="profile-form-group">
+                        <label asp-for="ProfileInput.Email" class="profile-form-label">Email Address</label>
+                        <input asp-for="ProfileInput.Email" class="profile-form-input" placeholder="Enter email address" />
+                        <span asp-validation-for="ProfileInput.Email" class="profile-form-error"></span>
+                    </div>
+                    <div class="profile-form-group">
+                        <label asp-for="ProfileInput.PhoneNumber" class="profile-form-label">Phone Number</label>
+                        <input asp-for="ProfileInput.PhoneNumber" class="profile-form-input" placeholder="+1 (555) 123-4567" />
+                        <span asp-validation-for="ProfileInput.PhoneNumber" class="profile-form-error"></span>
+                    </div>
+                </div>
+
+                <div class="profile-form-actions">
+                    <button type="submit" class="btn-save-profile">
+                        <i class="fa-regular fa-floppy-disk"></i>
+                        Save Profile
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Change Password Card -->
+    <div class="profile-card">
+        <div class="profile-card-header">
+            <i class="fa-solid fa-key"></i>
+            <h2 class="profile-card-title">Change Password</h2>
+        </div>
+        <div class="profile-card-body">
+            <!-- Success Message -->
+            @if (!string.IsNullOrEmpty(Model.PasswordStatusMessage))
+            {
+                <div class="profile-alert profile-alert-success">
+                    <i class="fa-solid fa-check-circle"></i>
+                    @Model.PasswordStatusMessage
+                </div>
+            }
+
+            <form method="post" asp-page-handler="ChangePassword">
+                <!-- Current Password - Full Width -->
+                <div class="profile-form-row full-width">
+                    <div class="profile-form-group">
+                        <label asp-for="PasswordInput.OldPassword" class="profile-form-label">Current Password</label>
+                        <div class="profile-password-wrapper">
+                            <input asp-for="PasswordInput.OldPassword" id="currentPassword" class="profile-form-input" placeholder="Enter current password" type="password" />
+                            <button type="button" class="profile-password-toggle" onclick="togglePassword('currentPassword', 'currentPasswordIcon')">
+                                <i id="currentPasswordIcon" class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="PasswordInput.OldPassword" class="profile-form-error"></span>
+                    </div>
+                </div>
+
+                <!-- New Password and Confirm - Side by Side -->
+                <div class="profile-form-row">
+                    <div class="profile-form-group">
+                        <label asp-for="PasswordInput.NewPassword" class="profile-form-label">New Password</label>
+                        <div class="profile-password-wrapper">
+                            <input asp-for="PasswordInput.NewPassword" id="newPassword" class="profile-form-input" placeholder="Enter new password" type="password" />
+                            <button type="button" class="profile-password-toggle" onclick="togglePassword('newPassword', 'newPasswordIcon')">
+                                <i id="newPasswordIcon" class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="PasswordInput.NewPassword" class="profile-form-error"></span>
+                    </div>
+                    <div class="profile-form-group">
+                        <label asp-for="PasswordInput.ConfirmPassword" class="profile-form-label">Confirm New Password</label>
+                        <div class="profile-password-wrapper">
+                            <input asp-for="PasswordInput.ConfirmPassword" id="confirmPassword" class="profile-form-input" placeholder="Confirm new password" type="password" />
+                            <button type="button" class="profile-password-toggle" onclick="togglePassword('confirmPassword', 'confirmPasswordIcon')">
+                                <i id="confirmPasswordIcon" class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="PasswordInput.ConfirmPassword" class="profile-form-error"></span>
+                    </div>
+                </div>
+
+                <div class="profile-form-actions">
+                    <button type="submit" class="btn-update-password">
+                        Update Password
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-regular", "fa-eye");
+                icon.classList.add("fa-solid", "fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-solid", "fa-eye-slash");
+                icon.classList.add("fa-regular", "fa-eye");
+            }
+        }
+
+        // Auto-dismiss success alerts after 5 seconds
+        setTimeout(function () {
+            const alerts = document.querySelectorAll('.profile-alert-success');
+            alerts.forEach(alert => {
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 5000);
+    </script>
 }
