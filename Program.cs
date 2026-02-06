@@ -24,7 +24,7 @@ builder.Services
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// Register Email Sender
+// Email Sender
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 builder.Services.AddRazorPages(options =>

@@ -57,7 +57,7 @@ namespace YardOps.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
-                    // Activate the user account
+                    // Activate user account
                     user.Status = "Active";
                     await _userManager.UpdateAsync(user);
                     

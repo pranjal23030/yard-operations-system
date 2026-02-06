@@ -63,7 +63,7 @@ namespace YardOps.Pages.Admin.Users
             await LoadRolesForCreate();
         }
 
-        /* ===================== CREATE USER ===================== */
+        // Create User
         public async Task<IActionResult> OnPostCreateAsync()
         {
             ModelState.Clear();
@@ -155,14 +155,14 @@ namespace YardOps.Pages.Admin.Users
             }
             catch (Exception)
             {
-                // User was created but email failed - still show success but warn about email
+                // User created but email failed
                 TempData["Success"] = $"User {user.FirstName} {user.LastName} created. Email sending failed - please resend confirmation manually.";
             }
 
             return RedirectToPage();
         }
 
-        /* ===================== EDIT USER ===================== */
+        // Edit User
         public async Task<IActionResult> OnPostEditAsync()
         {
             ModelState.Clear();
@@ -217,7 +217,7 @@ namespace YardOps.Pages.Admin.Users
             return RedirectToPage();
         }
 
-        /* ===================== DELETE USER ===================== */
+        // Delete User
         public async Task<IActionResult> OnPostDeleteAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -240,7 +240,7 @@ namespace YardOps.Pages.Admin.Users
             return RedirectToPage();
         }
 
-        /* ===================== RESEND CONFIRMATION EMAIL ===================== */
+        // Resend Confirmation Email
         public async Task<IActionResult> OnPostResendConfirmationAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -298,7 +298,7 @@ namespace YardOps.Pages.Admin.Users
             return RedirectToPage();
         }
 
-        /* ===================== HELPERS ===================== */
+        // Helpers
         private async Task ReloadPageData()
         {
             await LoadFiltersAsync();
