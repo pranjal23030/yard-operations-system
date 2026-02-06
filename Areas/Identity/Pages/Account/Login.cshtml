@@ -1,7 +1,6 @@
 ﻿@page
 @using YardOps.Areas.Identity.Pages.Account
 @model LoginModel
-
 @{
     ViewData["Title"] = "Log in";
     Layout = null;
@@ -22,10 +21,8 @@
 </head>
 <body>
     <div class="login-container">
-        <!-- Main Content -->
         <div class="login-main-content">
             <div class="login-content-wrapper">
-                <!-- Logo & Title -->
                 <div class="login-header">
                     <div class="logo-icon-container">
                         <img src="~/images/yardops-logo.png" alt="YardOps Logo" class="logo-icon" />
@@ -34,7 +31,6 @@
                     <p class="login-brand-subtitle">Yard Operations System</p>
                 </div>
 
-                <!-- Login Card -->
                 <div class="login-card">
                     <div class="login-card-header">
                         <h2 class="login-card-title">System Access</h2>
@@ -74,23 +70,28 @@
                     </form>
                 </div>
 
-                <!-- Help Text -->
                 <p class="login-help-text">Contact your administrator for access issues</p>
             </div>
         </div>
 
-        <!-- Footer -->
         <div class="login-footer">
             <p>© @DateTime.Now.Year All rights reserved</p>
         </div>
 
-        <!-- Error Toast -->
-        @if (!ViewData.ModelState.IsValid)
+        @if (!string.IsNullOrEmpty(Model.LoginErrorMessage))
         {
             <div class="error-toast" id="errorToast">
                 <div>
-                    <h5>Access denied</h5>
-                    <p>Invalid email or password. Please try again.</p>
+                    @if (Model.LoginErrorMessage.Contains("confirm your email"))
+                    {
+                        <h5><i class="fa-solid fa-envelope me-2"></i>Email Not Confirmed</h5>
+                        <p>@Model.LoginErrorMessage</p>
+                    }
+                    else
+                    {
+                        <h5>Access denied</h5>
+                        <p>@Model.LoginErrorMessage</p>
+                    }
                 </div>
                 <button type="button" class="toast-close" onclick="closeToast()" aria-label="Close">&times;</button>
             </div>
@@ -101,7 +102,6 @@
     <partial name="_ValidationScriptsPartial" />
 
     <script>
-        // Toggle Password Visibility
         function togglePassword() {
             const passwordField = document.getElementById("password-field");
             const toggleIcon = document.getElementById("toggle-icon");
@@ -117,7 +117,6 @@
             }
         }
 
-        // Close Toast Notification
         function closeToast() {
             const toast = document.getElementById("errorToast");
             if (toast) {

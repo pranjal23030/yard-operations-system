@@ -14,21 +14,26 @@
 @if (TempData["Success"] != null)
 {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="fa-solid fa-check-circle me-2"></i>@TempData["Success"]
+        <i class="fa-solid fa-check-circle me-2"></i>
+        @TempData["Success"]
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
+
 @if (TempData["Deleted"] != null)
 {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="fa-solid fa-check-circle me-2"></i>@TempData["Deleted"]
+        <i class="fa-solid fa-check-circle me-2"></i>
+        @TempData["Deleted"]
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
+
 @if (TempData["Error"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <i class="fa-solid fa-circle-exclamation me-2"></i>@TempData["Error"]
+        <i class="fa-solid fa-circle-exclamation me-2"></i>
+        @TempData["Error"]
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
@@ -37,7 +42,8 @@
 <div class="users-header">
     <h1 class="users-title">All Users</h1>
     <button type="button" class="btn-add-user" data-bs-toggle="modal" data-bs-target="#createUserModal">
-        <i class="fa-solid fa-plus"></i> Add New User
+        <i class="fa-solid fa-plus"></i>
+        Add New User
     </button>
 </div>
 
@@ -79,8 +85,8 @@
                 <th>Name</th>
                 <th>Email</th>
                 <th>Role</th>
-                <th>Assigned Location</th>
                 <th>Status</th>
+                <th>Email Verified</th>
                 <th>Last Login</th>
                 <th>Actions</th>
             </tr>
@@ -94,8 +100,17 @@
                         <td><span class="user-name">@user.FullName</span></td>
                         <td><a href="mailto:@user.Email" class="user-email">@user.Email</a></td>
                         <td><span class="role-badge">@user.Role</span></td>
-                        <td><span class="text-muted">@user.AssignedLocation</span></td>
                         <td><span class="status-badge status-@user.Status.ToLower()">@user.Status</span></td>
+                        <td>
+                            @if (user.EmailConfirmed)
+                            {
+                                <span class="email-verified"><i class="fa-solid fa-check-circle"></i> Verified</span>
+                            }
+                            else
+                            {
+                                <span class="email-unverified"><i class="fa-solid fa-clock"></i> Pending</span>
+                            }
+                        </td>
                         <td>
                             <span class="last-login">
                                 @(user.LastLogin.HasValue ? user.LastLogin.Value.ToLocalTime().ToString("yyyy-MM-dd hh:mm tt") : "Never")
@@ -113,6 +128,7 @@
                                        data-user-initials="@user.Initials" data-user-email="@user.Email"
                                        data-user-role="@user.Role" data-user-status="@user.Status"
                                        data-user-location="@user.AssignedLocation"
+                                       data-user-emailconfirmed="@user.EmailConfirmed.ToString().ToLower()"
                                        data-user-lastlogin="@(user.LastLogin.HasValue ? user.LastLogin.Value.ToLocalTime().ToString("yyyy-MM-dd hh:mm tt") : "Never")">
                                         <i class="fa-solid fa-eye me-2"></i>View
                                     </a>
@@ -127,7 +143,17 @@
                                         <i class="fa-solid fa-pen-to-square me-2"></i>Edit
                                     </a>
                                 </li>
-                                <li><a class="dropdown-item action-item" href="#"><i class="fa-solid fa-key me-2"></i>Reset Password</a></li>
+                                @if (!user.EmailConfirmed)
+                                {
+                                    <li>
+                                        <form method="post" asp-page-handler="ResendConfirmation" style="margin: 0;">
+                                            <input type="hidden" name="userId" value="@user.Id" />
+                                            <button type="submit" class="dropdown-item action-item">
+                                                <i class="fa-solid fa-envelope me-2"></i>Resend Confirmation
+                                            </button>
+                                        </form>
+                                    </li>
+                                }
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <a class="dropdown-item action-item-delete" href="#"

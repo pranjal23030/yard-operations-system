@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
+using System.Text.Encodings.Web;
 using YardOps.Data;
 using YardOps.Models.ViewModels.Users;
 
@@ -14,20 +18,27 @@ namespace YardOps.Pages.Admin.Users
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IEmailSender _emailSender;
+        private readonly IConfiguration _configuration;
 
         private const int PageSize = 10;
 
-        public IndexModel(UserManager<ApplicationUser> userManager,
-                          RoleManager<IdentityRole> roleManager)
+        public IndexModel(
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager,
+            IEmailSender emailSender,
+            IConfiguration configuration)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _emailSender = emailSender;
+            _configuration = configuration;
         }
 
-        public List<UserViewModel> Users { get; set; } = new();
-        public List<SelectListItem> RoleOptions { get; set; } = new();
-        public List<SelectListItem> StatusOptions { get; set; } = new();
-        public List<SelectListItem> Roles { get; set; } = new();
+        public List<UserViewModel> Users { get; set; } = [];
+        public List<SelectListItem> RoleOptions { get; set; } = [];
+        public List<SelectListItem> StatusOptions { get; set; } = [];
+        public List<SelectListItem> Roles { get; set; } = [];
 
         public int CurrentPage { get; set; } = 1;
         public int TotalPages { get; set; }
@@ -52,6 +63,7 @@ namespace YardOps.Pages.Admin.Users
             await LoadRolesForCreate();
         }
 
+        /* ===================== CREATE USER ===================== */
         public async Task<IActionResult> OnPostCreateAsync()
         {
             ModelState.Clear();
@@ -72,18 +84,21 @@ namespace YardOps.Pages.Admin.Users
                 return Page();
             }
 
+            // Get default password from configuration
+            var defaultPassword = _configuration["DefaultUserPassword"] ?? "Password@123";
+
             var user = new ApplicationUser
             {
                 UserName = Input.Email,
                 Email = Input.Email,
                 FirstName = Input.FirstName,
                 LastName = Input.LastName,
-                Status = "Active",
+                Status = "Inactive",  // Set to Inactive until email confirmed
                 CreatedAt = DateTime.UtcNow,
-                EmailConfirmed = true
+                EmailConfirmed = false  // Requires email confirmation
             };
 
-            var result = await _userManager.CreateAsync(user, Input.Password);
+            var result = await _userManager.CreateAsync(user, defaultPassword);
             if (!result.Succeeded)
             {
                 foreach (var e in result.Errors)
@@ -95,10 +110,59 @@ namespace YardOps.Pages.Admin.Users
             }
 
             await _userManager.AddToRoleAsync(user, Input.Role);
-            TempData["Success"] = $"{user.FirstName} {user.LastName} created successfully.";
+
+            // Generate email confirmation token and send email
+            try
+            {
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+                var confirmationLink = Url.Page(
+                    "/Account/ConfirmEmail",
+                    pageHandler: null,
+                    values: new { area = "Identity", userId = user.Id, code = encodedToken },
+                    protocol: Request.Scheme);
+
+                var emailBody = $@"
+                    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
+                        <h2 style='color: #214263;'>Welcome to YardOps!</h2>
+                        <p>Hello {user.FirstName},</p>
+                        <p>Your YardOps account has been created by an administrator.</p>
+                        <p>Please confirm your email address to activate your account by clicking the button below:</p>
+                        <p style='margin: 30px 0;'>
+                            <a href='{HtmlEncoder.Default.Encode(confirmationLink!)}' 
+                               style='background-color: #214263; color: white; padding: 12px 24px; 
+                                      text-decoration: none; border-radius: 6px; display: inline-block;'>
+                                Confirm Email Address
+                            </a>
+                        </p>
+                        <p>After confirming your email, you can log in with the following temporary password:</p>
+                        <p style='background-color: #f5f5f5; padding: 10px; border-radius: 4px; font-family: monospace;'>
+                            <strong>{defaultPassword}</strong>
+                        </p>
+                        <p style='color: #666; font-size: 14px;'>
+                            For security reasons, please change your password after your first login.
+                        </p>
+                        <hr style='border: none; border-top: 1px solid #eee; margin: 30px 0;'>
+                        <p style='color: #999; font-size: 12px;'>
+                            If you did not expect this email, please contact your administrator.
+                        </p>
+                    </div>";
+
+                await _emailSender.SendEmailAsync(user.Email, "Confirm your YardOps account", emailBody);
+
+                TempData["Success"] = $"User {user.FirstName} {user.LastName} created successfully. A confirmation email has been sent.";
+            }
+            catch (Exception)
+            {
+                // User was created but email failed - still show success but warn about email
+                TempData["Success"] = $"User {user.FirstName} {user.LastName} created. Email sending failed - please resend confirmation manually.";
+            }
+
             return RedirectToPage();
         }
 
+        /* ===================== EDIT USER ===================== */
         public async Task<IActionResult> OnPostEditAsync()
         {
             ModelState.Clear();
@@ -124,6 +188,14 @@ namespace YardOps.Pages.Admin.Users
 
             if (user.Email != EditInput.Email)
             {
+                var exists = await _userManager.FindByEmailAsync(EditInput.Email);
+                if (exists != null && exists.Id != user.Id)
+                {
+                    ModelState.AddModelError("EditInput.Email", "Email already exists.");
+                    ShowEditModal = true;
+                    await ReloadPageData();
+                    return Page();
+                }
                 user.Email = EditInput.Email;
                 user.UserName = EditInput.Email;
             }
@@ -145,6 +217,7 @@ namespace YardOps.Pages.Admin.Users
             return RedirectToPage();
         }
 
+        /* ===================== DELETE USER ===================== */
         public async Task<IActionResult> OnPostDeleteAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -167,6 +240,65 @@ namespace YardOps.Pages.Admin.Users
             return RedirectToPage();
         }
 
+        /* ===================== RESEND CONFIRMATION EMAIL ===================== */
+        public async Task<IActionResult> OnPostResendConfirmationAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                TempData["Error"] = "User not found.";
+                return RedirectToPage();
+            }
+
+            if (user.EmailConfirmed)
+            {
+                TempData["Error"] = "User email is already confirmed.";
+                return RedirectToPage();
+            }
+
+            var defaultPassword = _configuration["DefaultUserPassword"] ?? "Password@123";
+
+            try
+            {
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+                var confirmationLink = Url.Page(
+                    "/Account/ConfirmEmail",
+                    pageHandler: null,
+                    values: new { area = "Identity", userId = user.Id, code = encodedToken },
+                    protocol: Request.Scheme);
+
+                var emailBody = $@"
+                    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
+                        <h2 style='color: #214263;'>Confirm Your YardOps Account</h2>
+                        <p>Hello {user.FirstName},</p>
+                        <p>Please confirm your email address to activate your account:</p>
+                        <p style='margin: 30px 0;'>
+                            <a href='{HtmlEncoder.Default.Encode(confirmationLink!)}' 
+                               style='background-color: #214263; color: white; padding: 12px 24px; 
+                                      text-decoration: none; border-radius: 6px; display: inline-block;'>
+                                Confirm Email Address
+                            </a>
+                        </p>
+                        <p>Your temporary password is: <strong>{defaultPassword}</strong></p>
+                        <p style='color: #666; font-size: 14px;'>
+                            Please change your password after your first login.
+                        </p>
+                    </div>";
+
+                await _emailSender.SendEmailAsync(user.Email!, "Confirm your YardOps account", emailBody);
+                TempData["Success"] = $"Confirmation email resent to {user.Email}.";
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "Failed to send confirmation email. Please try again.";
+            }
+
+            return RedirectToPage();
+        }
+
+        /* ===================== HELPERS ===================== */
         private async Task ReloadPageData()
         {
             await LoadFiltersAsync();
@@ -204,7 +336,8 @@ namespace YardOps.Pages.Admin.Users
                     Status = user.Status,
                     LastLogin = user.LastLogin,
                     AssignedLocation = "Not Assigned",
-                    CreatedAt = user.CreatedAt
+                    CreatedAt = user.CreatedAt,
+                    EmailConfirmed = user.EmailConfirmed
                 });
             }
 
@@ -217,18 +350,18 @@ namespace YardOps.Pages.Admin.Users
 
         private async Task LoadFiltersAsync()
         {
-            RoleOptions = new() { new("All Roles", "all") };
+            RoleOptions = [new("All Roles", "all")];
             RoleOptions.AddRange(await _roleManager.Roles
                 .Select(r => new SelectListItem(r.Name!, r.Name!))
                 .ToListAsync());
 
-            StatusOptions = new()
-            {
+            StatusOptions =
+            [
                 new("All Statuses", "all"),
                 new("Active", "Active"),
                 new("Inactive", "Inactive"),
                 new("Pending", "Pending")
-            };
+            ];
         }
 
         private async Task LoadRolesForCreate()

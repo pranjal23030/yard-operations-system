@@ -72,21 +72,20 @@
                         </div>
                     </div>
 
-                    <div class="form-group-custom">
-                        <label asp-for="Input.Password" class="form-label-custom">Temporary Password</label>
-                        <div class="password-input-wrapper">
-                            <input asp-for="Input.Password" id="createPasswordField" class="form-input-custom" placeholder="Min. 6 characters" type="password" />
-                            <button type="button" class="password-toggle-btn" onclick="toggleCreatePassword()" aria-label="Toggle password visibility">
-                                <i id="createPasswordIcon" class="fa-regular fa-eye"></i>
-                            </button>
+                    <div class="email-info-box">
+                        <i class="fa-solid fa-envelope"></i>
+                        <div>
+                            <strong>Email Confirmation Required</strong>
+                            <p>A confirmation email will be sent to the user with a temporary password. The account will be activated once the email is confirmed.</p>
                         </div>
-                        <span asp-validation-for="Input.Password" class="validation-error-custom"></span>
-                        <small class="form-hint-custom">User can change this password after first login</small>
                     </div>
                 </div>
                 <div class="modal-footer modal-footer-custom">
                     <button type="button" class="btn-cancel-neutral" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-primary-custom">Create User</button>
+                    <button type="submit" class="btn-primary-custom">
+                        <i class="fa-solid fa-paper-plane me-1"></i>
+                        Create & Send Invite
+                    </button>
                 </div>
             </form>
         </div>
