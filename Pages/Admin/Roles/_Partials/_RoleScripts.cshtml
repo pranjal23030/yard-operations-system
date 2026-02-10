@@ -1,0 +1,128 @@
+@using YardOps.Pages.Admin.Roles
+@model IndexModel
+
+<script>
+    // Auto-dismiss alerts after 5 seconds
+    setTimeout(function () {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+
+    // Auto-open create modal if there are validation errors
+    @if (Model.ShowCreateModal)
+    {
+        <text>
+        document.addEventListener('DOMContentLoaded', function() {
+            var modal = new bootstrap.Modal(document.getElementById('createRoleModal'));
+            modal.show();
+        });
+        </text>
+    }
+
+    // Auto-open edit modal if there are validation errors
+    @if (Model.ShowEditModal)
+    {
+        <text>
+        document.addEventListener('DOMContentLoaded', function() {
+            var modal = new bootstrap.Modal(document.getElementById('editRoleModal'));
+            modal.show();
+        });
+        </text>
+    }
+
+    // Handle delete modal data population
+    document.getElementById('deleteRoleModal').addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var roleId = button.getAttribute('data-role-id');
+        var roleName = button.getAttribute('data-role-name');
+        var userCount = parseInt(button.getAttribute('data-role-usercount'));
+
+        document.getElementById('deleteRoleId').value = roleId;
+        document.getElementById('deleteRoleName').textContent = roleName;
+
+        var deleteBtn = document.getElementById('deleteRoleBtn');
+        var userWarning = document.getElementById('deleteUserWarning');
+
+        if (userCount > 0) {
+            document.getElementById('deleteUserCount').textContent = userCount;
+            userWarning.style.display = 'flex';
+            deleteBtn.disabled = true;
+            deleteBtn.classList.add('btn-disabled');
+        } else {
+            userWarning.style.display = 'none';
+            deleteBtn.disabled = false;
+            deleteBtn.classList.remove('btn-disabled');
+        }
+    });
+
+    // Handle view modal data population
+    document.getElementById('viewRoleModal').addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+
+        var roleName = button.getAttribute('data-role-name');
+        var roleDescription = button.getAttribute('data-role-description');
+        var roleStatus = button.getAttribute('data-role-status');
+        var isSystemRole = button.getAttribute('data-role-issystem') === 'true';
+        var userCount = button.getAttribute('data-role-usercount');
+
+        // Set role name
+        document.getElementById('viewRoleName').textContent = roleName;
+        
+        // Set description
+        document.getElementById('viewRoleDescription').textContent = roleDescription || 'No description';
+        
+        // Set status badge with text AND styling
+        var statusBadge = document.getElementById('viewRoleStatusBadge');
+        statusBadge.textContent = roleStatus;
+        statusBadge.className = 'status-badge status-' + roleStatus.toLowerCase();
+        
+        // Set user count with text
+        document.getElementById('viewRoleUserCount').textContent = userCount + ' user(s)';
+
+        // Show/hide system badge
+        var systemBadge = document.getElementById('viewRoleSystemBadge');
+        systemBadge.style.display = isSystemRole ? 'inline-block' : 'none';
+    });
+
+    // Handle edit modal data population
+    document.getElementById('editRoleModal').addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+
+        var roleId = button.getAttribute('data-role-id');
+        var roleName = button.getAttribute('data-role-name');
+        var roleDescription = button.getAttribute('data-role-description');
+        var roleStatus = button.getAttribute('data-role-status');
+        var isSystemRole = button.getAttribute('data-role-issystem') === 'true';
+
+        document.getElementById('editRoleId').value = roleId;
+        document.getElementById('editRoleName').value = roleName;
+        document.getElementById('editRoleDescription').value = roleDescription || '';
+        document.getElementById('editRoleStatus').value = roleStatus;
+        document.getElementById('editIsSystemRole').value = isSystemRole;
+
+        var nameInput = document.getElementById('editRoleName');
+        var systemWarning = document.getElementById('systemRoleWarning');
+
+        if (isSystemRole) {
+            // Use readonly instead of disabled so the value is still submitted
+            nameInput.readOnly = true;
+            nameInput.classList.add('input-disabled');
+            systemWarning.style.display = 'flex';
+        } else {
+            nameInput.readOnly = false;
+            nameInput.classList.remove('input-disabled');
+            systemWarning.style.display = 'none';
+        }
+    });
+
+    // Reset name field when edit modal is hidden (for next open)
+    document.getElementById('editRoleModal').addEventListener('hidden.bs.modal', function () {
+        var nameInput = document.getElementById('editRoleName');
+        nameInput.readOnly = false;
+        nameInput.classList.remove('input-disabled');
+        document.getElementById('systemRoleWarning').style.display = 'none';
+    });
+</script>

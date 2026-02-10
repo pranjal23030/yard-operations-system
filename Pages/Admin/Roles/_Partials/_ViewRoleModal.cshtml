@@ -1,0 +1,39 @@
+@using YardOps.Pages.Admin.Roles
+@model IndexModel
+
+<div class="modal fade" id="viewRoleModal" tabindex="-1" aria-labelledby="viewRoleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-custom">
+            <div class="modal-header modal-header-custom">
+                <h5 class="modal-title modal-title-custom" id="viewRoleModalLabel">Role Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body modal-body-custom">
+                <div class="view-role-header-simple">
+                    <span class="view-role-name" id="viewRoleName"></span>
+                    <span class="system-badge" id="viewRoleSystemBadge" style="display: none;">System</span>
+                </div>
+                
+                <div class="view-role-details-simple">
+                    <div class="view-detail-row">
+                        <div class="view-detail-label">Description</div>
+                        <div class="view-detail-value" id="viewRoleDescription"></div>
+                    </div>
+                    <div class="view-detail-row">
+                        <div class="view-detail-label">Status</div>
+                        <div class="view-detail-value">
+                            <span class="status-badge" id="viewRoleStatusBadge"></span>
+                        </div>
+                    </div>
+                    <div class="view-detail-row">
+                        <div class="view-detail-label">Assigned Users</div>
+                        <div class="view-detail-value" id="viewRoleUserCount"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer modal-footer-custom">
+                <button type="button" class="btn-cancel-neutral" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

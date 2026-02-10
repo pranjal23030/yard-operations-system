@@ -1,0 +1,235 @@
+@page
+@using YardOps.Pages.Admin.Roles
+@model IndexModel
+@{
+    ViewData["Title"] = "Roles";
+    ViewData["PageHeader"] = "Role Management";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/users.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/roles.css" asp-append-version="true" />
+}
+
+<!-- Alerts -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fa-solid fa-check-circle me-2"></i>
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["Deleted"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fa-solid fa-check-circle me-2"></i>
+        @TempData["Deleted"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fa-solid fa-circle-exclamation me-2"></i>
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- Role Structure Info Box -->
+<div class="role-structure-box">
+    <div class="role-structure-content">
+        <div class="role-structure-icon">
+            <i class="fa-regular fa-circle-check"></i>
+        </div>
+        <div class="role-structure-text">
+            <strong>Role Structure</strong>
+            <p>Define roles for organizing users. System roles (Admin, Yard Manager, Driver) are protected.</p>
+        </div>
+    </div>
+    <button type="button" class="btn-add-user" data-bs-toggle="modal" data-bs-target="#createRoleModal">
+        <i class="fa-solid fa-plus"></i>
+        Add Role
+    </button>
+</div>
+
+<!-- Header -->
+<div class="users-header">
+    <h1 class="users-title">All Roles</h1>
+</div>
+
+<!-- Roles Table -->
+<div class="users-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Role Name</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Users</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Roles.Any())
+            {
+                @foreach (var role in Model.Roles)
+                {
+                    <tr>
+                        <td>
+                            <span class="role-name-cell">
+                                @role.Name
+                                @if (role.IsSystemRole)
+                                {
+                                    <span class="system-badge">System</span>
+                                }
+                            </span>
+                        </td>
+                        <td>
+                            <span class="role-description">@(role.Description ?? "No description")</span>
+                        </td>
+                        <td><span class="status-badge status-@role.Status.ToLower()">@role.Status</span></td>
+                        <td><span class="user-count">@role.UserCount</span></td>
+                        <td>
+                            <button class="action-btn" type="button" data-bs-toggle="dropdown">
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end action-dropdown">
+                                <li>
+                                    <a class="dropdown-item action-item" href="#"
+                                       data-bs-toggle="modal" data-bs-target="#viewRoleModal"
+                                       data-role-id="@role.Id" 
+                                       data-role-name="@role.Name"
+                                       data-role-description="@role.Description"
+                                       data-role-status="@role.Status"
+                                       data-role-issystem="@role.IsSystemRole.ToString().ToLower()"
+                                       data-role-usercount="@role.UserCount">
+                                        <i class="fa-solid fa-eye me-2"></i>View
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item action-item" href="#"
+                                       data-bs-toggle="modal" data-bs-target="#editRoleModal"
+                                       data-role-id="@role.Id" 
+                                       data-role-name="@role.Name"
+                                       data-role-description="@role.Description"
+                                       data-role-status="@role.Status"
+                                       data-role-issystem="@role.IsSystemRole.ToString().ToLower()">
+                                        <i class="fa-solid fa-pen-to-square me-2"></i>Edit
+                                    </a>
+                                </li>
+                                @if (!role.IsSystemRole)
+                                {
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item action-item-delete" href="#"
+                                           data-bs-toggle="modal" data-bs-target="#deleteRoleModal"
+                                           data-role-id="@role.Id" 
+                                           data-role-name="@role.Name"
+                                           data-role-usercount="@role.UserCount">
+                                            <i class="fa-solid fa-trash me-2"></i>Delete
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" class="text-center py-5 text-muted">
+                        <i class="fa-solid fa-user-shield fa-3x mb-3 d-block"></i>
+                        No roles found
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Summary Footer -->
+<div class="roles-summary-footer">
+    <div class="summary-stats">
+        <div class="summary-stat">
+            <span class="stat-value">@Model.TotalRoles</span>
+            <span class="stat-label">Total Roles</span>
+        </div>
+        <div class="summary-stat">
+            <span class="stat-value">@Model.TotalUsers</span>
+            <span class="stat-label">Total Users</span>
+        </div>
+        <div class="summary-stat">
+            <span class="stat-value">@Model.TotalSystemRoles</span>
+            <span class="stat-label">System Roles</span>
+        </div>
+    </div>
+    <div class="summary-note">
+        <i class="fa-solid fa-shield-halved me-1"></i>
+        System roles are protected and cannot be deleted.
+    </div>
+</div>
+
+<!-- Pagination -->
+@if (Model.TotalPages > 1)
+{
+    <div class="pagination-footer">
+        <div class="pagination-info">
+            @{
+                var startItem = Model.TotalRoles == 0 ? 0 : ((Model.CurrentPage - 1) * 10) + 1;
+                var endItem = Math.Min(Model.CurrentPage * 10, Model.TotalRoles);
+            }
+            Showing @startItem to @endItem of @Model.TotalRoles roles
+        </div>
+        <div class="pagination-controls">
+            @if (Model.CurrentPage > 1)
+            {
+                <a href="?PageNumber=@(Model.CurrentPage - 1)" class="page-btn">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </a>
+            }
+            else
+            {
+                <button class="page-btn" disabled><i class="fa-solid fa-chevron-left"></i></button>
+            }
+
+            @for (var i = 1; i <= Model.TotalPages; i++)
+            {
+                if (i == Model.CurrentPage)
+                {
+                    <button class="page-btn active">@i</button>
+                }
+                else
+                {
+                    <a href="?PageNumber=@i" class="page-btn">@i</a>
+                }
+            }
+
+            @if (Model.CurrentPage < Model.TotalPages)
+            {
+                <a href="?PageNumber=@(Model.CurrentPage + 1)" class="page-btn">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </a>
+            }
+            else
+            {
+                <button class="page-btn" disabled><i class="fa-solid fa-chevron-right"></i></button>
+            }
+        </div>
+    </div>
+}
+
+<!-- Modals (Partials) -->
+<partial name="_Partials/_CreateRoleModal" />
+<partial name="_Partials/_EditRoleModal" />
+<partial name="_Partials/_ViewRoleModal" />
+<partial name="_Partials/_DeleteRoleModal" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_Partials/_RoleScripts" />
+}
