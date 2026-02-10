@@ -316,6 +316,9 @@ namespace YardOps.Pages.Admin.Users
                     u.LastName.Contains(SearchTerm) ||
                     u.Email!.Contains(SearchTerm));
 
+            // Order by CreatedAt
+            usersQuery = usersQuery.OrderBy(u => u.CreatedAt);
+
             var users = await usersQuery.ToListAsync();
             var list = new List<UserViewModel>();
 
