@@ -17,7 +17,7 @@ namespace YardOps.Pages.Admin.Users
     public class IndexModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IEmailSender _emailSender;
         private readonly IConfiguration _configuration;
 
@@ -25,7 +25,7 @@ namespace YardOps.Pages.Admin.Users
 
         public IndexModel(
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager,
+            RoleManager<ApplicationRole> roleManager,
             IEmailSender emailSender,
             IConfiguration configuration)
         {

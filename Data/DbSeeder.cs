@@ -7,14 +7,38 @@ public static class DbSeeder
 {
     public static async Task SeedRoles(IServiceProvider serviceProvider)
     {
-        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
 
-        string[] roleNames = { "Admin", "YardManager", "Driver" };
-        foreach (var roleName in roleNames)
+        var roles = new List<ApplicationRole>
         {
-            if (!await roleManager.RoleExistsAsync(roleName))
+            new ApplicationRole
             {
-                await roleManager.CreateAsync(new IdentityRole(roleName));
+                Name = "Admin",
+                Description = "System administrator with full access",
+                IsSystemRole = true,
+                Status = "Active"
+            },
+            new ApplicationRole
+            {
+                Name = "YardManager",
+                Description = "Manages yard operations and drivers",
+                IsSystemRole = true,
+                Status = "Active"
+            },
+            new ApplicationRole
+            {
+                Name = "Driver",
+                Description = "Driver with limited operational access",
+                IsSystemRole = true,
+                Status = "Active"
+            }
+        };
+
+        foreach (var role in roles)
+        {
+            if (!await roleManager.RoleExistsAsync(role.Name!))
+            {
+                await roleManager.CreateAsync(role);
             }
         }
     }
@@ -24,7 +48,6 @@ public static class DbSeeder
         var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var configuration = serviceProvider.GetRequiredService<IConfiguration>();
 
-        // Read admin credentials from appsettings.json
         string adminEmail = configuration["DefaultAdmin:Email"] ?? "admin@yardops.com";
         string adminPassword = configuration["DefaultAdmin:Password"] ?? "Admin@123";
         string firstName = configuration["DefaultAdmin:FirstName"] ?? "System";
@@ -52,7 +75,6 @@ public static class DbSeeder
         }
         else
         {
-            // Ensure the existing admin user has the Admin role
             if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
             {
                 await userManager.AddToRoleAsync(adminUser, "Admin");
