@@ -1,0 +1,25 @@
+<script>
+    function togglePassword(inputId, iconId) {
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
+
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.remove("fa-regular", "fa-eye");
+            icon.classList.add("fa-solid", "fa-eye-slash");
+        } else {
+            input.type = "password";
+            icon.classList.remove("fa-solid", "fa-eye-slash");
+            icon.classList.add("fa-regular", "fa-eye");
+        }
+    }
+
+    setTimeout(function () {
+        const alerts = document.querySelectorAll('.profile-alert-success');
+        alerts.forEach(alert => {
+            alert.style.transition = 'opacity 0.5s';
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 500);
+        });
+    }, 5000);
+</script>

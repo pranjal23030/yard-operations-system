@@ -2,11 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using YardOps.Data;
+using YardOps.Models.ViewModels.Profile;
 
 namespace YardOps.Areas.Identity.Pages.Account.Manage
 {
@@ -41,46 +41,6 @@ namespace YardOps.Areas.Identity.Pages.Account.Manage
         [BindProperty]
         public PasswordInputModel PasswordInput { get; set; }
 
-        public class ProfileInputModel
-        {
-            [Required(ErrorMessage = "First name is required")]
-            [Display(Name = "First Name")]
-            public string FirstName { get; set; }
-
-            [Required(ErrorMessage = "Last name is required")]
-            [Display(Name = "Last Name")]
-            public string LastName { get; set; }
-
-            [Required(ErrorMessage = "Email is required")]
-            [EmailAddress(ErrorMessage = "Invalid email address")]
-            [Display(Name = "Email Address")]
-            public string Email { get; set; }
-
-            [Phone(ErrorMessage = "Invalid phone number")]
-            [Display(Name = "Phone Number")]
-            public string PhoneNumber { get; set; }
-        }
-
-        public class PasswordInputModel
-        {
-            [Required(ErrorMessage = "Current password is required")]
-            [DataType(DataType.Password)]
-            [Display(Name = "Current Password")]
-            public string OldPassword { get; set; }
-
-            [Required(ErrorMessage = "New password is required")]
-            [StringLength(100, ErrorMessage = "Password must be at least {2} characters", MinimumLength = 6)]
-            [DataType(DataType.Password)]
-            [Display(Name = "New Password")]
-            public string NewPassword { get; set; }
-
-            [Required(ErrorMessage = "Please confirm your new password")]
-            [DataType(DataType.Password)]
-            [Display(Name = "Confirm New Password")]
-            [Compare("NewPassword", ErrorMessage = "Passwords do not match")]
-            public string ConfirmPassword { get; set; }
-        }
-
         private async Task LoadDisplayDataAsync(ApplicationUser user)
         {
             Email = user.Email;
@@ -95,9 +55,7 @@ namespace YardOps.Areas.Identity.Pages.Account.Manage
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
-            {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
 
             await LoadDisplayDataAsync(user);
 
@@ -110,7 +68,6 @@ namespace YardOps.Areas.Identity.Pages.Account.Manage
             };
 
             PasswordInput = new PasswordInputModel();
-
             return Page();
         }
 
@@ -118,9 +75,7 @@ namespace YardOps.Areas.Identity.Pages.Account.Manage
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
-            {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
 
             // Clear password validation - we're only saving profile
             ModelState.Remove("PasswordInput.OldPassword");
@@ -176,9 +131,8 @@ namespace YardOps.Areas.Identity.Pages.Account.Manage
             if (!result.Succeeded)
             {
                 foreach (var error in result.Errors)
-                {
                     ModelState.AddModelError(string.Empty, error.Description);
-                }
+
                 await LoadDisplayDataAsync(user);
                 PasswordInput = new PasswordInputModel();
                 return Page();
@@ -193,9 +147,7 @@ namespace YardOps.Areas.Identity.Pages.Account.Manage
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
-            {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
 
             // Clear profile validation - we're only changing password
             ModelState.Remove("ProfileInput.FirstName");
@@ -238,9 +190,8 @@ namespace YardOps.Areas.Identity.Pages.Account.Manage
             if (!changePasswordResult.Succeeded)
             {
                 foreach (var error in changePasswordResult.Errors)
-                {
                     ModelState.AddModelError("PasswordInput.OldPassword", error.Description);
-                }
+
                 await LoadDisplayDataAsync(user);
                 ProfileInput = new ProfileInputModel
                 {
