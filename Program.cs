@@ -27,6 +27,9 @@ builder.Services
 // Email Sender
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
+builder.Services.AddHttpContextAccessor();           // Required for IHttpContextAccessor
+builder.Services.AddScoped<ActivityLogger>();       // Scoped = new instance per request
+
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizeFolder("/");
