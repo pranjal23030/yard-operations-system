@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using YardOps.Data;
+using YardOps.Services;
 
 namespace YardOps.Areas.Identity.Pages.Account
 {
@@ -16,15 +17,18 @@ namespace YardOps.Areas.Identity.Pages.Account
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly ActivityLogger _activityLogger;
 
         public LoginModel(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
-            ILogger<LoginModel> logger)
+            ILogger<LoginModel> logger,
+            ActivityLogger activityLogger)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
+            _activityLogger = activityLogger;
         }
 
         [BindProperty]
@@ -98,6 +102,13 @@ namespace YardOps.Areas.Identity.Pages.Account
                     }
 
                     _logger.LogInformation("User logged in.");
+
+                    // Audit: Log successful login
+                    await _activityLogger.LogAsync(
+                        action: "Login",
+                        description: $"User {Input.Email} logged in successfully"
+                    );
+
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using YardOps.Data;
 using YardOps.Models.ViewModels.Roles;
+using YardOps.Services;
 
 namespace YardOps.Pages.Admin.Roles
 {
@@ -13,15 +14,18 @@ namespace YardOps.Pages.Admin.Roles
     {
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ActivityLogger _activityLogger;
 
         private const int PageSize = 10;
 
         public IndexModel(
             RoleManager<ApplicationRole> roleManager,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            ActivityLogger activityLogger)
         {
             _roleManager = roleManager;
             _userManager = userManager;
+            _activityLogger = activityLogger;
         }
 
         public List<RoleViewModel> Roles { get; set; } = [];
@@ -89,6 +93,19 @@ namespace YardOps.Pages.Admin.Roles
                 return Page();
             }
 
+            // Audit: Log role creation
+            await _activityLogger.LogAsync(
+                action: "CreateRole",
+                description: $"Created role {Input.Name}",
+                extraData: new
+                {
+                    RoleId = role.Id,
+                    RoleName = role.Name,
+                    Description = role.Description,
+                    Status = role.Status
+                }
+            );
+
             TempData["Success"] = $"Role '{role.Name}' created successfully.";
             return RedirectToPage();
         }
@@ -102,6 +119,10 @@ namespace YardOps.Pages.Admin.Roles
                 TempData["Error"] = "Role not found.";
                 return RedirectToPage();
             }
+
+            // Track changed fields for audit log
+            var changedFields = new List<string>();
+            var originalName = role.Name;
 
             // For system roles, preserve the original name (ignore what was submitted)
             if (role.IsSystemRole)
@@ -129,11 +150,25 @@ namespace YardOps.Pages.Admin.Roles
                     await ReloadPageData();
                     return Page();
                 }
-                role.Name = EditInput.Name;
+
+                if (role.Name != EditInput.Name)
+                {
+                    changedFields.Add($"Name: '{role.Name}' → '{EditInput.Name}'");
+                    role.Name = EditInput.Name;
+                }
             }
 
-            role.Description = EditInput.Description;
-            role.Status = EditInput.Status;
+            if (role.Description != EditInput.Description)
+            {
+                changedFields.Add($"Description: '{role.Description}' → '{EditInput.Description}'");
+                role.Description = EditInput.Description;
+            }
+
+            if (role.Status != EditInput.Status)
+            {
+                changedFields.Add($"Status: '{role.Status}' → '{EditInput.Status}'");
+                role.Status = EditInput.Status;
+            }
 
             var result = await _roleManager.UpdateAsync(role);
             if (!result.Succeeded)
@@ -145,6 +180,18 @@ namespace YardOps.Pages.Admin.Roles
                 await ReloadPageData();
                 return Page();
             }
+
+            // Audit: Log role edit with changed fields
+            await _activityLogger.LogAsync(
+                action: "EditRole",
+                description: $"Edited role {role.Name}",
+                extraData: new
+                {
+                    RoleId = role.Id,
+                    IsSystemRole = role.IsSystemRole,
+                    ChangedFields = changedFields
+                }
+            );
 
             TempData["Success"] = $"Role '{role.Name}' updated successfully.";
             return RedirectToPage();
@@ -176,6 +223,9 @@ namespace YardOps.Pages.Admin.Roles
                 return RedirectToPage();
             }
 
+            // Store role info before deletion
+            var roleName = role.Name;
+
             var result = await _roleManager.DeleteAsync(role);
             if (!result.Succeeded)
             {
@@ -183,7 +233,18 @@ namespace YardOps.Pages.Admin.Roles
                 return RedirectToPage();
             }
 
-            TempData["Deleted"] = $"Role '{role.Name}' has been deleted.";
+            // Audit: Log role deletion
+            await _activityLogger.LogAsync(
+                action: "DeleteRole",
+                description: $"Deleted role {roleName}",
+                extraData: new
+                {
+                    DeletedRoleId = roleId,
+                    DeletedRoleName = roleName
+                }
+            );
+
+            TempData["Deleted"] = $"Role '{roleName}' has been deleted.";
             return RedirectToPage();
         }
 

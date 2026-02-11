@@ -8,8 +8,10 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 using System.Text.Encodings.Web;
+using System.Text.Json;
 using YardOps.Data;
 using YardOps.Models.ViewModels.Users;
+using YardOps.Services;
 
 namespace YardOps.Pages.Admin.Users
 {
@@ -20,6 +22,7 @@ namespace YardOps.Pages.Admin.Users
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IEmailSender _emailSender;
         private readonly IConfiguration _configuration;
+        private readonly ActivityLogger _activityLogger;
 
         private const int PageSize = 10;
 
@@ -27,12 +30,14 @@ namespace YardOps.Pages.Admin.Users
             UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager,
             IEmailSender emailSender,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ActivityLogger activityLogger)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _emailSender = emailSender;
             _configuration = configuration;
+            _activityLogger = activityLogger;
         }
 
         public List<UserViewModel> Users { get; set; } = [];
@@ -111,6 +116,19 @@ namespace YardOps.Pages.Admin.Users
 
             await _userManager.AddToRoleAsync(user, Input.Role);
 
+            // Audit: Log user creation
+            await _activityLogger.LogAsync(
+                action: "CreateUser",
+                description: $"Created user {Input.Email}",
+                extraData: new
+                {
+                    NewUserId = user.Id,
+                    NewRole = Input.Role,
+                    FirstName = Input.FirstName,
+                    LastName = Input.LastName
+                }
+            );
+
             // Generate email confirmation token and send email
             try
             {
@@ -182,9 +200,26 @@ namespace YardOps.Pages.Admin.Users
                 return RedirectToPage();
             }
 
-            user.FirstName = EditInput.FirstName;
-            user.LastName = EditInput.LastName;
-            user.Status = EditInput.Status;
+            // Track changed fields for audit log
+            var changedFields = new List<string>();
+
+            if (user.FirstName != EditInput.FirstName)
+            {
+                changedFields.Add($"FirstName: '{user.FirstName}' → '{EditInput.FirstName}'");
+                user.FirstName = EditInput.FirstName;
+            }
+
+            if (user.LastName != EditInput.LastName)
+            {
+                changedFields.Add($"LastName: '{user.LastName}' → '{EditInput.LastName}'");
+                user.LastName = EditInput.LastName;
+            }
+
+            if (user.Status != EditInput.Status)
+            {
+                changedFields.Add($"Status: '{user.Status}' → '{EditInput.Status}'");
+                user.Status = EditInput.Status;
+            }
 
             if (user.Email != EditInput.Email)
             {
@@ -196,6 +231,7 @@ namespace YardOps.Pages.Admin.Users
                     await ReloadPageData();
                     return Page();
                 }
+                changedFields.Add($"Email: '{user.Email}' → '{EditInput.Email}'");
                 user.Email = EditInput.Email;
                 user.UserName = EditInput.Email;
             }
@@ -207,11 +243,24 @@ namespace YardOps.Pages.Admin.Users
 
             if (currentRole != EditInput.Role)
             {
+                changedFields.Add($"Role: '{currentRole}' → '{EditInput.Role}'");
+
                 if (currentRole != null)
                     await _userManager.RemoveFromRoleAsync(user, currentRole);
 
                 await _userManager.AddToRoleAsync(user, EditInput.Role);
             }
+
+            // Audit: Log user edit with changed fields
+            await _activityLogger.LogAsync(
+                action: "EditUser",
+                description: $"Edited user {user.Email}",
+                extraData: new
+                {
+                    UserId = user.Id,
+                    ChangedFields = changedFields
+                }
+            );
 
             TempData["Success"] = $"{user.FirstName} {user.LastName} updated successfully.";
             return RedirectToPage();
@@ -235,8 +284,25 @@ namespace YardOps.Pages.Admin.Users
                 return RedirectToPage();
             }
 
+            // Store user info before deletion
+            var userEmail = user.Email;
+            var userFullName = $"{user.FirstName} {user.LastName}";
+
             await _userManager.DeleteAsync(user);
-            TempData["Deleted"] = $"{user.FirstName} {user.LastName} has been removed from the system.";
+
+            // Audit: Log user deletion
+            await _activityLogger.LogAsync(
+                action: "DeleteUser",
+                description: $"Deleted user {userEmail}",
+                extraData: new
+                {
+                    DeletedUserId = userId,
+                    DeletedUserEmail = userEmail,
+                    DeletedUserName = userFullName
+                }
+            );
+
+            TempData["Deleted"] = $"{userFullName} has been removed from the system.";
             return RedirectToPage();
         }
 

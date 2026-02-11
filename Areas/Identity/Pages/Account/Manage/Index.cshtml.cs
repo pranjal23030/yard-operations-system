@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using YardOps.Data;
 using YardOps.Models.ViewModels.Profile;
+using YardOps.Services;
 
 namespace YardOps.Areas.Identity.Pages.Account.Manage
 {
@@ -14,13 +15,16 @@ namespace YardOps.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ActivityLogger _activityLogger;
 
         public IndexModel(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager,
+            ActivityLogger activityLogger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _activityLogger = activityLogger;
         }
 
         // Display properties
@@ -107,10 +111,27 @@ namespace YardOps.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
+            // Track changed fields for audit log
+            var changedFields = new List<string>();
+
             // Update user properties
-            user.FirstName = ProfileInput.FirstName;
-            user.LastName = ProfileInput.LastName;
-            user.PhoneNumber = ProfileInput.PhoneNumber;
+            if (user.FirstName != ProfileInput.FirstName)
+            {
+                changedFields.Add($"FirstName: '{user.FirstName}' → '{ProfileInput.FirstName}'");
+                user.FirstName = ProfileInput.FirstName;
+            }
+
+            if (user.LastName != ProfileInput.LastName)
+            {
+                changedFields.Add($"LastName: '{user.LastName}' → '{ProfileInput.LastName}'");
+                user.LastName = ProfileInput.LastName;
+            }
+
+            if (user.PhoneNumber != ProfileInput.PhoneNumber)
+            {
+                changedFields.Add($"PhoneNumber: '{user.PhoneNumber ?? "None"}' → '{ProfileInput.PhoneNumber ?? "None"}'");
+                user.PhoneNumber = ProfileInput.PhoneNumber;
+            }
 
             // Handle email change
             if (user.Email != ProfileInput.Email)
@@ -123,6 +144,7 @@ namespace YardOps.Areas.Identity.Pages.Account.Manage
                     PasswordInput = new PasswordInputModel();
                     return Page();
                 }
+                changedFields.Add($"Email: '{user.Email}' → '{ProfileInput.Email}'");
                 user.Email = ProfileInput.Email;
                 user.UserName = ProfileInput.Email;
             }
@@ -136,6 +158,20 @@ namespace YardOps.Areas.Identity.Pages.Account.Manage
                 await LoadDisplayDataAsync(user);
                 PasswordInput = new PasswordInputModel();
                 return Page();
+            }
+
+            // Audit: Log profile update (only if changes were made)
+            if (changedFields.Count > 0)
+            {
+                await _activityLogger.LogAsync(
+                    action: "UpdateProfile",
+                    description: $"Updated profile for {user.Email}",
+                    extraData: new
+                    {
+                        UserId = user.Id,
+                        ChangedFields = changedFields
+                    }
+                );
             }
 
             await _signInManager.RefreshSignInAsync(user);
@@ -202,6 +238,16 @@ namespace YardOps.Areas.Identity.Pages.Account.Manage
                 };
                 return Page();
             }
+
+            // Audit: Log password change (do NOT log passwords)
+            await _activityLogger.LogAsync(
+                action: "ChangePassword",
+                description: $"Changed password for {user.Email}",
+                extraData: new
+                {
+                    UserId = user.Id
+                }
+            );
 
             await _signInManager.RefreshSignInAsync(user);
             PasswordStatusMessage = "Your password has been changed successfully.";
