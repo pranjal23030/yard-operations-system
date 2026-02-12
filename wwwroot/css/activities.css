@@ -1,0 +1,177 @@
+/* Activity Log Page Specific Styles */
+
+/* User Cell with Avatar */
+.user-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-avatar-small {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.user-info-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.user-email-small {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+}
+
+/* Timestamp */
+.timestamp-value {
+    font-size: 0.85rem;
+    color: var(--foreground);
+    white-space: nowrap;
+}
+
+/* Action Badges */
+.action-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: capitalize;
+    white-space: nowrap;
+}
+
+/* Action-specific colors */
+.action-login {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.action-createuser {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.action-edituser {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.action-deleteuser {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.action-createrole {
+    background-color: #e0e7ff;
+    color: #3730a3;
+}
+
+.action-editrole {
+    background-color: #fce7f3;
+    color: #9d174d;
+}
+
+.action-deleterole {
+    background-color: #fecaca;
+    color: #7f1d1d;
+}
+
+.action-updateprofile {
+    background-color: #cffafe;
+    color: #0e7490;
+}
+
+.action-changepassword {
+    background-color: #f3e8ff;
+    color: #6b21a8;
+}
+
+/* Default action badge (fallback for unknown actions) */
+.action-badge:not(.action-login):not(.action-createuser):not(.action-edituser):not(.action-deleteuser):not(.action-createrole):not(.action-editrole):not(.action-deleterole):not(.action-updateprofile):not(.action-changepassword) {
+    background-color: var(--muted);
+    color: var(--foreground);
+}
+
+/* Description Text - Full display, allows wrapping */
+.description-text-full {
+    font-size: 0.85rem;
+    color: var(--foreground);
+    line-height: 1.4;
+}
+
+/* Details Text - Inline JSON display */
+.details-text {
+    font-size: 0.8rem;
+    color: var(--muted-foreground);
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+/* Date Filter Styles */
+.filter-date-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-date-label {
+    font-size: 0.8rem;
+    color: var(--muted-foreground);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.filter-date {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    height: 42px;
+    padding: 0 12px;
+    background-color: white;
+    font-size: 0.85rem;
+    color: var(--foreground);
+    cursor: pointer;
+    min-width: 140px;
+}
+
+.filter-date:hover {
+    border-color: var(--accent);
+}
+
+.filter-date:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(45, 164, 157, 0.15);
+}
+
+/* Clear Filters Button */
+.btn-clear-filters {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-clear-filters:hover {
+    background-color: #fee2e2;
+    border-color: #fca5a5;
+    color: #b91c1c;
+}

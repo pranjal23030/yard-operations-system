@@ -1,0 +1,207 @@
+@page
+@using YardOps.Pages.Admin.Activities
+@model IndexModel
+@{
+    ViewData["Title"] = "Activity Log";
+    ViewData["PageHeader"] = "Activity Log";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/users.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/activities.css" asp-append-version="true" />
+}
+
+<!-- Alerts -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fa-solid fa-check-circle me-2"></i>
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fa-solid fa-circle-exclamation me-2"></i>
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- Header - Removed "Back to Users" button, now using sidebar navigation -->
+<div class="users-header">
+    <h1 class="users-title">Activity Log</h1>
+</div>
+
+<!-- Filters -->
+<form method="get" id="filterForm">
+    <input type="hidden" name="PageNumber" value="1" />
+    <div class="filters-row">
+        <!-- Search Box -->
+        <div class="search-box">
+            <i class="fa-solid fa-search search-icon"></i>
+            <input type="text" name="SearchTerm" value="@Model.SearchTerm" class="form-control"
+                   placeholder="Search by user, action, description..." onchange="this.form.submit()" />
+        </div>
+
+        <!-- Action Filter Dropdown -->
+        <div class="filter-dropdown-wrapper">
+            <select name="ActionFilter" class="filter-select" onchange="this.form.submit()">
+                @foreach (var action in Model.ActionOptions)
+                {
+                    var isSelected = Model.ActionFilter == action.Value || (string.IsNullOrEmpty(Model.ActionFilter) && action.Value == "all");
+                    <option value="@action.Value" selected="@isSelected">@action.Text</option>
+                }
+            </select>
+        </div>
+
+        <!-- Date From -->
+        <div class="filter-date-wrapper">
+            <label class="filter-date-label">From</label>
+            <input type="date" name="DateFrom" value="@Model.DateFrom?.ToString("yyyy-MM-dd")" 
+                   class="filter-date" onchange="this.form.submit()" />
+        </div>
+
+        <!-- Date To -->
+        <div class="filter-date-wrapper">
+            <label class="filter-date-label">To</label>
+            <input type="date" name="DateTo" value="@Model.DateTo?.ToString("yyyy-MM-dd")" 
+                   class="filter-date" onchange="this.form.submit()" />
+        </div>
+
+        <!-- Clear Filters -->
+        @if (!string.IsNullOrEmpty(Model.SearchTerm) || 
+             (!string.IsNullOrEmpty(Model.ActionFilter) && Model.ActionFilter != "all") || 
+             Model.DateFrom.HasValue || Model.DateTo.HasValue)
+        {
+            <a asp-page="/Admin/Activities/Index" class="btn-clear-filters">
+                <i class="fa-solid fa-times me-1"></i>Clear
+            </a>
+        }
+    </div>
+</form>
+
+<!-- Activities Table -->
+<div class="users-table">
+    <table>
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Timestamp</th>
+                <th>Action</th>
+                <th>Description</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Activities.Any())
+            {
+                @foreach (var log in Model.Activities)
+                {
+                    <tr>
+                        <!-- User Column -->
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-avatar-small">@log.Initials</div>
+                                <div class="user-info-cell">
+                                    <span class="user-name">@log.UserFullName</span>
+                                    <span class="user-email-small">@log.UserEmail</span>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Timestamp Column -->
+                        <td>
+                            <span class="timestamp-value">@log.Timestamp</span>
+                        </td>
+
+                        <!-- Action Column with Badge -->
+                        <td>
+                            <span class="action-badge action-@log.Action.ToLower().Replace(" ", "-")">@log.Action</span>
+                        </td>
+
+                        <!-- Description Column - Full text, no truncation -->
+                        <td>
+                            <span class="description-text-full">@(log.Description ?? "—")</span>
+                        </td>
+
+                        <!-- Details Column - Inline formatted JsonData, no accordion -->
+                        <td>
+                            <span class="details-text">@log.FormattedJsonData</span>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" class="text-center py-5 text-muted">
+                        <i class="fa-solid fa-clipboard-list fa-3x mb-3 d-block"></i>
+                        No activities found
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination -->
+<div class="pagination-footer">
+    <div class="pagination-info">
+        @{
+            var startItem = Model.TotalActivities == 0 ? 0 : ((Model.CurrentPage - 1) * 10) + 1;
+            var endItem = Math.Min(Model.CurrentPage * 10, Model.TotalActivities);
+        }
+        Showing @startItem to @endItem of @Model.TotalActivities activities
+    </div>
+    <div class="pagination-controls">
+        @if (Model.CurrentPage > 1)
+        {
+            <a href="?PageNumber=@(Model.CurrentPage - 1)&SearchTerm=@Model.SearchTerm&ActionFilter=@Model.ActionFilter&DateFrom=@Model.DateFrom?.ToString("yyyy-MM-dd")&DateTo=@Model.DateTo?.ToString("yyyy-MM-dd")" class="page-btn">
+                <i class="fa-solid fa-chevron-left"></i>
+            </a>
+        }
+        else
+        {
+            <button class="page-btn" disabled><i class="fa-solid fa-chevron-left"></i></button>
+        }
+
+        @for (var i = 1; i <= Model.TotalPages; i++)
+        {
+            if (i == Model.CurrentPage)
+            {
+                <button class="page-btn active">@i</button>
+            }
+            else
+            {
+                <a href="?PageNumber=@i&SearchTerm=@Model.SearchTerm&ActionFilter=@Model.ActionFilter&DateFrom=@Model.DateFrom?.ToString("yyyy-MM-dd")&DateTo=@Model.DateTo?.ToString("yyyy-MM-dd")" class="page-btn">@i</a>
+            }
+        }
+
+        @if (Model.CurrentPage < Model.TotalPages)
+        {
+            <a href="?PageNumber=@(Model.CurrentPage + 1)&SearchTerm=@Model.SearchTerm&ActionFilter=@Model.ActionFilter&DateFrom=@Model.DateFrom?.ToString("yyyy-MM-dd")&DateTo=@Model.DateTo?.ToString("yyyy-MM-dd")" class="page-btn">
+                <i class="fa-solid fa-chevron-right"></i>
+            </a>
+        }
+        else
+        {
+            <button class="page-btn" disabled><i class="fa-solid fa-chevron-right"></i></button>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(function () {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    </script>
+}

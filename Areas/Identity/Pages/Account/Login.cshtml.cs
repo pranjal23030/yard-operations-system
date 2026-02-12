@@ -82,24 +82,46 @@ namespace YardOps.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                // Check if user exists and email is confirmed
+                // Check if user exists
                 var user = await _userManager.FindByEmailAsync(Input.Email);
-                if (user != null && !user.EmailConfirmed)
+                
+                if (user == null)
+                {
+                    LoginErrorMessage = "Invalid email or password. Please try again.";
+                    return Page();
+                }
+
+                // Email must be confirmed
+                if (!user.EmailConfirmed)
                 {
                     LoginErrorMessage = "Please confirm your email before logging in. Check your inbox for the confirmation link.";
                     return Page();
                 }
 
+                // Account must be Active
+                if (user.Status != "Active")
+                {
+                    _logger.LogWarning($"Login blocked for {user.Email} - Status: {user.Status}");
+                    
+                    // Provide specific message based on status
+                    LoginErrorMessage = user.Status switch
+                    {
+                        "Inactive" => "Your account has been deactivated. Please contact an administrator for assistance.",
+                        "Pending" => "Your account is pending activation. Please contact an administrator.",
+                        _ => "Your account is not active. Please contact an administrator."
+                    };
+                    
+                    return Page();
+                }
+
+                // Attempt password sign-in
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 
                 if (result.Succeeded)
                 {
                     // Update last login timestamp
-                    if (user != null)
-                    {
-                        user.LastLogin = DateTime.UtcNow;
-                        await _userManager.UpdateAsync(user);
-                    }
+                    user.LastLogin = DateTime.UtcNow;
+                    await _userManager.UpdateAsync(user);
 
                     _logger.LogInformation("User logged in.");
 
