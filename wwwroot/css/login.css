@@ -340,3 +340,120 @@ body, html {
 .toast-close:hover {
     opacity: 1;
 }
+
+/* Forgot Password Link */
+.forgot-password-link {
+    color: var(--accent);
+    font-size: 0.85rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.forgot-password-link:hover {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
+/* Back to Login Link */
+.back-to-login-link {
+    color: var(--primary);
+    font-size: 0.9rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.back-to-login-link:hover {
+    color: var(--accent);
+}
+
+/* Confirmation Icon */
+.confirmation-icon {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.confirmation-icon i {
+    font-size: 4rem;
+    color: var(--accent);
+}
+
+.confirmation-icon.success i {
+    color: #22c55e;
+}
+
+/* Confirmation Message */
+.confirmation-message {
+    background-color: #f9fafb;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.confirmation-message p {
+    margin-bottom: 12px;
+    color: #555;
+    line-height: 1.6;
+}
+
+.confirmation-message p:last-child {
+    margin-bottom: 0;
+}
+
+/* Password Requirements */
+.password-requirements {
+    background-color: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.password-requirements p {
+    color: #0369a1;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.requirements-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.requirements-list li {
+    color: #0284c7;
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+    padding-left: 4px;
+}
+
+.requirements-list li i {
+    color: #0ea5e9;
+    margin-right: 8px;
+    font-size: 0.75rem;
+}
+
+/* Login Divider */
+.login-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.login-divider::before,
+.login-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.login-divider span {
+    padding: 0 16px;
+    color: #9ca3af;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
