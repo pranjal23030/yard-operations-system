@@ -127,9 +127,8 @@
                                        data-user-id="@user.Id" data-user-name="@user.FullName"
                                        data-user-initials="@user.Initials" data-user-email="@user.Email"
                                        data-user-role="@user.Role" data-user-status="@user.Status"
-                                       data-user-location="@user.AssignedLocation"
                                        data-user-emailconfirmed="@user.EmailConfirmed.ToString().ToLower()"
-                                       data-user-lastlogin="@(user.LastLogin.HasValue ? user.LastLogin.Value.ToLocalTime().ToString("yyyy-MM-dd hh:mm tt") : "Never")">
+                                       data-user-lastlogin="@(user.LastLogin.HasValue? user.LastLogin.Value.ToLocalTime().ToString("yyyy-MM-dd hh:mm tt") : "Never")">
                                         <i class="fa-solid fa-eye me-2"></i>View
                                     </a>
                                 </li>
@@ -138,8 +137,8 @@
                                        data-bs-toggle="modal" data-bs-target="#editUserModal"
                                        data-user-id="@user.Id" data-user-firstname="@user.FirstName"
                                        data-user-lastname="@user.LastName" data-user-email="@user.Email"
-                                       data-user-role="@user.Role" data-user-status="@user.Status"
-                                       data-user-location="@user.AssignedLocation">
+                                       data-user-role="@user.Role" data-user-status="@user.Status">
+                                        
                                         <i class="fa-solid fa-pen-to-square me-2"></i>Edit
                                     </a>
                                 </li>

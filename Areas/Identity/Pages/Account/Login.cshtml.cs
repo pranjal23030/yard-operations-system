@@ -16,17 +16,20 @@ namespace YardOps.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ILogger<LoginModel> _logger;
         private readonly ActivityLogger _activityLogger;
 
         public LoginModel(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
+            RoleManager<ApplicationRole> roleManager,
             ILogger<LoginModel> logger,
             ActivityLogger activityLogger)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _roleManager = roleManager;
             _logger = logger;
             _activityLogger = activityLogger;
         }
@@ -91,19 +94,18 @@ namespace YardOps.Areas.Identity.Pages.Account
                     return Page();
                 }
 
-                // Email must be confirmed
+                // Security Check 1: Email must be confirmed
                 if (!user.EmailConfirmed)
                 {
                     LoginErrorMessage = "Please confirm your email before logging in. Check your inbox for the confirmation link.";
                     return Page();
                 }
 
-                // Account must be Active
+                // Security Check 2: User account must be Active
                 if (user.Status != "Active")
                 {
-                    _logger.LogWarning($"Login blocked for {user.Email} - Status: {user.Status}");
+                    _logger.LogWarning($"Login blocked for {user.Email} - User Status: {user.Status}");
                     
-                    // Provide specific message based on status
                     LoginErrorMessage = user.Status switch
                     {
                         "Inactive" => "Your account has been deactivated. Please contact an administrator for assistance.",
@@ -112,6 +114,23 @@ namespace YardOps.Areas.Identity.Pages.Account
                     };
                     
                     return Page();
+                }
+
+                // Security Check 3: User's assigned Role must be Active
+                var userRoles = await _userManager.GetRolesAsync(user);
+                if (userRoles.Any())
+                {
+                    foreach (var roleName in userRoles)
+                    {
+                        var role = await _roleManager.FindByNameAsync(roleName);
+                        if (role != null && role.Status != "Active")
+                        {
+                            _logger.LogWarning($"Login blocked for {user.Email} - Role '{roleName}' Status: {role.Status}");
+                            
+                            LoginErrorMessage = "Your assigned role has been deactivated. Please contact an administrator for assistance.";
+                            return Page();
+                        }
+                    }
                 }
 
                 // Attempt password sign-in

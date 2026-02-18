@@ -339,7 +339,6 @@ namespace YardOps.Pages.Admin.Users
                     Role = role,
                     Status = user.Status,
                     LastLogin = user.LastLogin,
-                    AssignedLocation = "Not Assigned",
                     CreatedAt = user.CreatedAt,
                     EmailConfirmed = user.EmailConfirmed
                 });

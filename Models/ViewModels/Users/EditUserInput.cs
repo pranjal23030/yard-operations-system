@@ -21,7 +21,5 @@ namespace YardOps.Models.ViewModels.Users
 
         [Required]
         public string Status { get; set; } = "";
-
-        public string? AssignedLocation { get; set; }
     }
 }

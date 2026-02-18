@@ -47,29 +47,12 @@
                         <span asp-validation-for="Input.Email" class="validation-error-custom"></span>
                     </div>
 
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="form-group-custom">
-                                <label asp-for="Input.Role" class="form-label-custom">Role</label>
-                                <select asp-for="Input.Role" asp-items="Model.Roles" class="form-select-custom">
-                                    <option value="">Select role</option>
-                                </select>
-                                <span asp-validation-for="Input.Role" class="validation-error-custom"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group-custom">
-                                <label class="form-label-custom">Assigned Location</label>
-                                <select class="form-select-custom" name="AssignedLocation">
-                                    <option value="">Select location</option>
-                                    <option value="All Locations">All Locations</option>
-                                    <option value="Yard A">Yard A</option>
-                                    <option value="Yard B">Yard B</option>
-                                    <option value="Warehouse 1">Warehouse 1</option>
-                                </select>
-                                <small class="form-hint-custom">This is for display purposes only</small>
-                            </div>
-                        </div>
+                    <div class="form-group-custom">
+                        <label asp-for="Input.Role" class="form-label-custom">Role</label>
+                        <select asp-for="Input.Role" asp-items="Model.Roles" class="form-select-custom">
+                            <option value="">Select role</option>
+                        </select>
+                        <span asp-validation-for="Input.Role" class="validation-error-custom"></span>
                     </div>
 
                     <div class="email-info-box">

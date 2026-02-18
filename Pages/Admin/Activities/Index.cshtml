@@ -88,8 +88,8 @@
     <table>
         <thead>
             <tr>
-                <th>User</th>
                 <th>Timestamp</th>
+                <th>User</th>
                 <th>Action</th>
                 <th>Description</th>
                 <th>Details</th>
@@ -101,20 +101,18 @@
                 @foreach (var log in Model.Activities)
                 {
                     <tr>
-                        <!-- User Column -->
-                        <td>
-                            <div class="user-cell">
-                                <div class="user-avatar-small">@log.Initials</div>
-                                <div class="user-info-cell">
-                                    <span class="user-name">@log.UserFullName</span>
-                                    <span class="user-email-small">@log.UserEmail</span>
-                                </div>
-                            </div>
-                        </td>
 
                         <!-- Timestamp Column -->
                         <td>
                             <span class="timestamp-value">@log.Timestamp</span>
+                        </td>
+
+                        <!-- User Column - REMOVED avatar, kept name and email -->
+                        <td>
+                            <div class="user-info-cell-simple">
+                                <span class="user-name">@log.UserFullName</span>
+                                <span class="user-email-small">@log.UserEmail</span>
+                            </div>
                         </td>
 
                         <!-- Action Column with Badge -->

@@ -9,7 +9,6 @@
         public string Role { get; set; } = "";
         public string Status { get; set; } = "";
         public DateTime? LastLogin { get; set; }
-        public string AssignedLocation { get; set; } = "";
         public DateTime CreatedAt { get; set; }
         public bool EmailConfirmed { get; set; }
         public string FullName => $"{FirstName} {LastName}";

@@ -52,7 +52,6 @@
         var userEmail = button.getAttribute('data-user-email');
         var userRole = button.getAttribute('data-user-role');
         var userStatus = button.getAttribute('data-user-status');
-        var userLocation = button.getAttribute('data-user-location');
         var userLastLogin = button.getAttribute('data-user-lastlogin');
         var userEmailConfirmed = button.getAttribute('data-user-emailconfirmed');
 
@@ -62,7 +61,6 @@
         document.getElementById('viewUserEmail').textContent = userEmail;
         document.getElementById('viewUserRole').textContent = userRole;
         document.getElementById('viewUserStatus').textContent = userStatus;
-        document.getElementById('viewUserLocation').textContent = userLocation;
         document.getElementById('viewUserLastLogin').textContent = userLastLogin;
         
         // Email confirmed status
@@ -88,7 +86,6 @@
         var email = button.getAttribute('data-user-email');
         var role = button.getAttribute('data-user-role');
         var status = button.getAttribute('data-user-status');
-        var location = button.getAttribute('data-user-location');
 
         document.getElementById('editUserId').value = userId;
         document.getElementById('editFirstName').value = firstName;
@@ -96,6 +93,5 @@
         document.getElementById('editEmail').value = email;
         document.getElementById('editRole').value = role;
         document.getElementById('editStatus').value = status;
-        document.getElementById('editLocation').value = location;
     });
 </script>
