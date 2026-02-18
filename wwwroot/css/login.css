@@ -243,6 +243,10 @@ body, html {
     cursor: pointer;
     transition: background-color 0.2s, transform 0.1s;
     margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
 }
 
 .btn-signin:hover {
@@ -258,6 +262,32 @@ body, html {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
+}
+
+.btn-signin span,
+.btn-signin i {
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-signin i {
+    margin-right: 8px;
+}
+
+/* Ensure proper vertical centering */
+.confirmation-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Fix any button vertical alignment issues */
+button[type="submit"],
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Help Text */

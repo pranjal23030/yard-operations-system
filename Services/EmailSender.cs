@@ -42,10 +42,20 @@ namespace YardOps.Services
                     Body = htmlMessage,
                     IsBodyHtml = true
                 };
+                
                 mailMessage.To.Add(email);
 
+                // Fix email threading: Add unique Message-ID header
+                mailMessage.Headers.Add("Message-ID", $"<{Guid.NewGuid()}@yardops.com>");
+                
+                // Prevent threading by adding unique headers
+                mailMessage.Headers.Add("X-Entity-Ref-ID", Guid.NewGuid().ToString());
+                
+                // Add timestamp to make each email unique
+                mailMessage.Headers.Add("Date", DateTime.UtcNow.ToString("R"));
+
                 await client.SendMailAsync(mailMessage);
-                _logger.LogInformation("Email sent successfully to {Email}", email);
+                _logger.LogInformation("Email sent successfully to {Email} with subject: {Subject}", email, subject);
             }
             catch (Exception ex)
             {

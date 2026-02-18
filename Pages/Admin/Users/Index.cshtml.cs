@@ -120,30 +120,56 @@ namespace YardOps.Pages.Admin.Users
                     values: new { area = "Identity", userId = user.Id, code = encodedToken },
                     protocol: Request.Scheme);
                 var emailBody = $@"
-                    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
-                        <h2 style='color: #214263;'>Welcome to YardOps!</h2>
-                        <p>Hello {user.FirstName},</p>
-                        <p>Your YardOps account has been created by an administrator.</p>
-                        <p>Please confirm your email address to activate your account by clicking the button below:</p>
-                        <p style='margin: 30px 0;'>
-                            <a href='{HtmlEncoder.Default.Encode(confirmationLink!)}'
-                               style='background-color: #214263; color: white; padding: 12px 24px;
-                                      text-decoration: none; border-radius: 6px; display: inline-block;'>
-                                Confirm Email Address
-                            </a>
-                        </p>
-                        <p>After confirming your email, you can log in with the following temporary password:</p>
-                        <p style='background-color: #f5f5f5; padding: 10px; border-radius: 4px; font-family: monospace;'>
-                            <strong>{defaultPassword}</strong>
-                        </p>
-                        <p style='color: #666; font-size: 14px;'>
-                            For security reasons, please change your password after your first login.
-                        </p>
-                        <hr style='border: none; border-top: 1px solid #eee; margin: 30px 0;'>
-                        <p style='color: #999; font-size: 12px;'>
-                            If you did not expect this email, please contact your administrator.
-                        </p>
-                    </div>";
+    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff;'>
+        <div style='background: linear-gradient(135deg, #1c3c56 0%, #2da49d 100%); padding: 30px; text-align: center;'>
+            <h1 style='color: #ffffff; margin: 0; font-size: 28px;'>YardOps</h1>
+            <p style='color: rgba(255, 255, 255, 0.9); margin: 5px 0 0 0; font-size: 14px;'>Welcome to Your Account</p>
+        </div>
+        <div style='padding: 40px 30px;'>
+            <h2 style='color: #1c3c56; margin-top: 0;'>Welcome to YardOps!</h2>
+            <p style='color: #555; font-size: 16px; line-height: 1.6;'>
+                Hello <strong>{user.FirstName}</strong>,
+            </p>
+            <p style='color: #555; font-size: 16px; line-height: 1.6;'>
+                Your YardOps account has been created by an administrator. 
+                Please confirm your email address to activate your account and start using the system.
+            </p>
+            <div style='text-align: center; margin: 30px 0;'>
+                <a href='{HtmlEncoder.Default.Encode(confirmationLink!)}' 
+                   style='background-color: #2da49d; color: white; padding: 14px 32px; 
+                          text-decoration: none; border-radius: 6px; display: inline-block;
+                          font-weight: 600; font-size: 16px;'>
+                    Confirm Email Address
+                </a>
+            </div>
+            <div style='background-color: #f0f9ff; border-left: 4px solid #2da49d; padding: 16px; margin: 24px 0;'>
+                <p style='margin: 0 0 8px 0; color: #1c3c56; font-weight: 600;'>Your Temporary Password:</p>
+                <p style='background-color: #ffffff; padding: 12px; border-radius: 4px; font-family: monospace; font-size: 16px; color: #1c3c56; margin: 0;'>
+                    <strong>{defaultPassword}</strong>
+                </p>
+            </div>
+            <p style='color: #777; font-size: 14px; line-height: 1.6;'>
+                <strong>Next Steps:</strong>
+            </p>
+            <ol style='color: #555; font-size: 14px; line-height: 1.8; padding-left: 20px;'>
+                <li>Click the confirmation button above to verify your email</li>
+                <li>Sign in using your email and temporary password</li>
+                <li>Change your password immediately after first login</li>
+            </ol>
+            <p style='color: #777; font-size: 14px; line-height: 1.6; margin-top: 24px;'>
+                <strong>Security Reminder:</strong> For your account security, please change this temporary password after your first login.
+            </p>
+            <hr style='border: none; border-top: 1px solid #eee; margin: 30px 0;'>
+            <p style='color: #999; font-size: 12px; text-align: center;'>
+                If you did not expect this email, please contact your administrator immediately.
+            </p>
+        </div>
+        <div style='background-color: #f5f5f5; padding: 20px; text-align: center;'>
+            <p style='color: #888; font-size: 12px; margin: 0;'>
+                © {DateTime.Now.Year} YardOps. All rights reserved.
+            </p>
+        </div>
+    </div>";
                 await _emailSender.SendEmailAsync(user.Email, "Confirm your YardOps account", emailBody);
                 TempData["Success"] = $"User {user.FirstName} {user.LastName} created successfully. A confirmation email has been sent.";
             }
@@ -281,22 +307,53 @@ namespace YardOps.Pages.Admin.Users
                     values: new { area = "Identity", userId = user.Id, code = encodedToken },
                     protocol: Request.Scheme);
                 var emailBody = $@"
-                    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
-                        <h2 style='color: #214263;'>Confirm Your YardOps Account</h2>
-                        <p>Hello {user.FirstName},</p>
-                        <p>Please confirm your email address to activate your account:</p>
-                        <p style='margin: 30px 0;'>
-                            <a href='{HtmlEncoder.Default.Encode(confirmationLink!)}'
-                               style='background-color: #214263; color: white; padding: 12px 24px;
-                                      text-decoration: none; border-radius: 6px; display: inline-block;'>
-                                Confirm Email Address
-                            </a>
-                        </p>
-                        <p>Your temporary password is: <strong>{defaultPassword}</strong></p>
-                        <p style='color: #666; font-size: 14px;'>
-                            Please change your password after your first login.
-                        </p>
-                    </div>";
+        <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff;'>
+            <div style='background: linear-gradient(135deg, #1c3c56 0%, #2da49d 100%); padding: 30px; text-align: center;'>
+                <h1 style='color: #ffffff; margin: 0; font-size: 28px;'>YardOps</h1>
+                <p style='color: rgba(255, 255, 255, 0.9); margin: 5px 0 0 0; font-size: 14px;'>Email Confirmation Reminder</p>
+            </div>
+            <div style='padding: 40px 30px;'>
+                <h2 style='color: #1c3c56; margin-top: 0;'>Confirm Your Email Address</h2>
+                <p style='color: #555; font-size: 16px; line-height: 1.6;'>
+                    Hello <strong>{user.FirstName}</strong>,
+                </p>
+                <p style='color: #555; font-size: 16px; line-height: 1.6;'>
+                    This is a reminder to confirm your email address for your YardOps account. 
+                    Your account is currently inactive until you verify your email.
+                </p>
+                <div style='text-align: center; margin: 30px 0;'>
+                    <a href='{HtmlEncoder.Default.Encode(confirmationLink!)}' 
+                       style='background-color: #2da49d; color: white; padding: 14px 32px; 
+                              text-decoration: none; border-radius: 6px; display: inline-block;
+                              font-weight: 600; font-size: 16px;'>
+                        Confirm Email Address
+                    </a>
+                </div>
+                <div style='background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 16px; margin: 24px 0;'>
+                    <p style='margin: 0; color: #856404; font-size: 14px;'>
+                        <strong>⚠️ Action Required:</strong> You must confirm your email before you can sign in to YardOps.
+                    </p>
+                </div>
+                <div style='background-color: #f0f9ff; border-left: 4px solid #2da49d; padding: 16px; margin: 24px 0;'>
+                    <p style='margin: 0 0 8px 0; color: #1c3c56; font-weight: 600;'>Your Temporary Password:</p>
+                    <p style='background-color: #ffffff; padding: 12px; border-radius: 4px; font-family: monospace; font-size: 16px; color: #1c3c56; margin: 0;'>
+                        <strong>{defaultPassword}</strong>
+                    </p>
+                </div>
+                <p style='color: #777; font-size: 14px; line-height: 1.6;'>
+                    Use this password to sign in after confirming your email. For security reasons, please change it after your first login.
+                </p>
+                <hr style='border: none; border-top: 1px solid #eee; margin: 30px 0;'>
+                <p style='color: #999; font-size: 12px; text-align: center;'>
+                    If you did not request this email, please contact your administrator.
+                </p>
+            </div>
+            <div style='background-color: #f5f5f5; padding: 20px; text-align: center;'>
+                <p style='color: #888; font-size: 12px; margin: 0;'>
+                    © {DateTime.Now.Year} YardOps. All rights reserved.
+                </p>
+            </div>
+        </div>";
                 await _emailSender.SendEmailAsync(user.Email!, "Confirm your YardOps account", emailBody);
                 TempData["Success"] = $"Confirmation email resent to {user.Email}.";
             }
