@@ -1,4 +1,16 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using YardOps.Data
+
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    // Determine user role for layout rendering
+    var isAdmin = User.IsInRole("Admin");
+    var isYardManager = User.IsInRole("YardManager");
+    var isDriver = User.IsInRole("Driver");
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -14,80 +26,29 @@
 </head>
 <body>
 
-    <aside id="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-brand">
-                <div class="sidebar-logo-box">
-                    <img src="~/images/yardops-logo.png" alt="YardOps" class="sidebar-logo-img" />
-                </div>
-                <div class="sidebar-brand-text">
-                    <span class="sidebar-brand-title">YardOps</span>
-                    <span class="sidebar-brand-subtitle">Administrator</span>
-                </div>
-            </div>
-        </div>
-
-        <nav class="sidebar-nav">
-            <a asp-page="/Index" class="nav-item-link">
-                <i class="fa-solid fa-chart-line"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="#" class="nav-item-link">
-                <i class="fa-solid fa-table-cells-large"></i>
-                <span>Slot Allocation</span>
-            </a>
-            <a href="#" class="nav-item-link">
-                <i class="fa-solid fa-wave-square"></i>
-                <span>Operations</span>
-            </a>
-            <a href="#" class="nav-item-link">
-                <i class="fa-solid fa-truck"></i>
-                <span>Trailers</span>
-            </a>
-            <a href="#" class="nav-item-link">
-                <i class="fa-solid fa-location-dot"></i>
-                <span>Locations</span>
-            </a>
-            <a href="#" class="nav-item-link">
-                <i class="fa-solid fa-building"></i>
-                <span>Carriers</span>
-            </a>
-            <a href="#" class="nav-item-link">
-                <i class="fa-solid fa-eye"></i>
-                <span>Monitoring</span>
-            </a>
-            <a asp-page="/Admin/Users/Index" class="nav-item-link">
-                <i class="fa-solid fa-users"></i>
-                <span>Users</span>
-            </a>
-            <a asp-page="/Admin/Roles/Index" class="nav-item-link">
-                <i class="fa-solid fa-shield-halved"></i>
-                <span>Roles</span>
-            </a>
-            <a asp-page="/Admin/Activities/Index" class="nav-item-link">
-                <i class="fa-solid fa-list-check"></i>
-                <span>Activity Log</span>
-            </a>
-            <a href="#" class="nav-item-link">
-                <i class="fa-solid fa-gear"></i>
-                <span>Configuration</span>
-            </a>
-        </nav>
-
-        <div class="sidebar-footer">
-            <button class="collapse-btn" id="sidebarToggle">
-                <i class="fa-solid fa-angles-left" id="toggleIcon"></i>
-                <span>Collapse Sidebar</span>
-            </button>
-        </div>
-    </aside>
+    @* Render role-specific sidebar *@
+    @if (SignInManager.IsSignedIn(User))
+    {
+        if (isAdmin)
+        {
+            <partial name="_AdminSidebar" />
+        }
+        else if (isYardManager)
+        {
+            <partial name="_YardManagerSidebar" />
+        }
+        else if (isDriver)
+        {
+            <partial name="_DriverSidebar" />
+        }
+    }
 
     <div id="main-wrapper">
         <header>
             <nav class="navbar navbar-expand-sm admin-header">
                 <div class="container-fluid">
                     <span class="admin-dash-text">@ViewData["PageHeader"]</span>
-                    <div class="ms-auto d-flex align-items: gap-2">
+                    <div class="ms-auto d-flex align-items-center gap-2">
                         <partial name="_LoginPartial" />
                     </div>
                 </div>
@@ -105,7 +66,24 @@
                         <i class="fa-solid fa-wave-square footer-icon" aria-hidden="true"></i>
                         <span class="footer-brand">YardOps</span>
                         <span class="footer-sep">|</span>
-                        <span class="footer-sub">Yard Operations System</span>
+                        <span class="footer-sub">
+                            @if (isAdmin)
+                            {
+                                @:Administrator Portal
+                            }
+                            else if (isYardManager)
+                            {
+                                @:Yard Manager Portal
+                            }
+                            else if (isDriver)
+                            {
+                                @:Driver Portal
+                            }
+                            else
+                            {
+                                @:Yard Operations System
+                            }
+                        </span>
                     </div>
                     <div class="admin-footer-right">
                         <span>© @DateTime.Now.Year All rights reserved</span>
@@ -143,8 +121,8 @@
         // Highlight active nav link based on current page
         const currentPath = window.location.pathname;
         $('.nav-item-link').each(function() {
-            const href = $(this).attr('href') || $(this).attr('asp-page');
-            if (currentPath.includes(href) || (href === '/Index' && currentPath === '/')) {
+            const href = $(this).attr('href');
+            if (href && href !== '#' && currentPath.includes(href)) {
                 $('.nav-item-link').removeClass('active');
                 $(this).addClass('active');
             }

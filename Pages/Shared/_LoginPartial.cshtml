@@ -4,13 +4,42 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
+@{
+    // Get current user for avatar initials
+    var currentUser = await UserManager.GetUserAsync(User);
+    
+    // Determine avatar initials from user's actual name
+    string avatarInitials = "??";
+    if (currentUser != null)
+    {
+        var firstInitial = !string.IsNullOrEmpty(currentUser.FirstName) ? currentUser.FirstName[0].ToString().ToUpper() : "?";
+        var lastInitial = !string.IsNullOrEmpty(currentUser.LastName) ? currentUser.LastName[0].ToString().ToUpper() : "?";
+        avatarInitials = $"{firstInitial}{lastInitial}";
+    }
+    
+    // Determine role label for display next to avatar
+    string roleLabel = "User";
+    if (User.IsInRole("Admin"))
+    {
+        roleLabel = "Admin";
+    }
+    else if (User.IsInRole("YardManager"))
+    {
+        roleLabel = "Yard Manager";
+    }
+    else if (User.IsInRole("Driver"))
+    {
+        roleLabel = "Driver";
+    }
+}
+
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="nav-item dropdown">
             <a class="profile-dropdown-trigger dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="User menu">
-                <div class="profile-circle">AD</div>
-                <span class="fw-medium d-none d-sm-inline">Admin</span>
+                <div class="profile-circle">@avatarInitials</div>
+                <span class="fw-medium d-none d-sm-inline">@roleLabel</span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end shadow-sm profile-menu" aria-labelledby="profileDropdown">
                 <li>

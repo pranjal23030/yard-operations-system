@@ -1,0 +1,68 @@
+@* Admin Sidebar - Full access to all navigation items *@
+<aside id="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-brand">
+            <div class="sidebar-logo-box">
+                <img src="~/images/yardops-logo.png" alt="YardOps" class="sidebar-logo-img" />
+            </div>
+            <div class="sidebar-brand-text">
+                <span class="sidebar-brand-title">YardOps</span>
+                <span class="sidebar-brand-subtitle">Administrator</span>
+            </div>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <a asp-page="/Index" class="nav-item-link">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="#" class="nav-item-link">
+            <i class="fa-solid fa-table-cells-large"></i>
+            <span>Slot Allocation</span>
+        </a>
+        <a href="#" class="nav-item-link">
+            <i class="fa-solid fa-wave-square"></i>
+            <span>Operations</span>
+        </a>
+        <a href="#" class="nav-item-link">
+            <i class="fa-solid fa-truck"></i>
+            <span>Trailers</span>
+        </a>
+        <a href="#" class="nav-item-link">
+            <i class="fa-solid fa-location-dot"></i>
+            <span>Locations</span>
+        </a>
+        <a href="#" class="nav-item-link">
+            <i class="fa-solid fa-building"></i>
+            <span>Carriers</span>
+        </a>
+        <a href="#" class="nav-item-link">
+            <i class="fa-solid fa-eye"></i>
+            <span>Monitoring</span>
+        </a>
+        <a asp-page="/Admin/Users/Index" class="nav-item-link">
+            <i class="fa-solid fa-users"></i>
+            <span>Users</span>
+        </a>
+        <a asp-page="/Admin/Roles/Index" class="nav-item-link">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Roles</span>
+        </a>
+        <a asp-page="/Admin/Activities/Index" class="nav-item-link">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Activity Log</span>
+        </a>
+        <a href="#" class="nav-item-link">
+            <i class="fa-solid fa-gear"></i>
+            <span>Configuration</span>
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <button class="collapse-btn" id="sidebarToggle">
+            <i class="fa-solid fa-angles-left" id="toggleIcon"></i>
+            <span>Collapse Sidebar</span>
+        </button>
+    </div>
+</aside>
