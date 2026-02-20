@@ -55,10 +55,12 @@ app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
 
+// Seed database on startup
 using (var scope = app.Services.CreateScope())
 {
     await DbSeeder.SeedRoles(scope.ServiceProvider);
     await DbSeeder.SeedDefaultAdmin(scope.ServiceProvider);
+    await DbSeeder.SeedDefaultYard(scope.ServiceProvider);
 }
 
 app.Run();

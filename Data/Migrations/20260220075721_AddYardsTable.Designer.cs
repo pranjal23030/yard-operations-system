@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YardOps.Data;
 
@@ -11,9 +12,11 @@ using YardOps.Data;
 namespace YardOps.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260220075721_AddYardsTable")]
+    partial class AddYardsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -300,6 +303,9 @@ namespace YardOps.Data.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedByUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedOn")
@@ -317,7 +323,7 @@ namespace YardOps.Data.Migrations
 
                     b.HasKey("YardId");
 
-                    b.HasIndex("CreatedBy");
+                    b.HasIndex("CreatedByUserId");
 
                     b.ToTable("Yards");
                 });
@@ -388,8 +394,7 @@ namespace YardOps.Data.Migrations
                 {
                     b.HasOne("YardOps.Data.ApplicationUser", "CreatedByUser")
                         .WithMany()
-                        .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("CreatedByUserId");
 
                     b.Navigation("CreatedByUser");
                 });

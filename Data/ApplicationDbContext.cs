@@ -12,5 +12,18 @@ namespace YardOps.Data
         }
 
         public DbSet<ActivityLog> ActivityLogs { get; set; }
+        public DbSet<Yard> Yards { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Configure Yard -> User relationship
+            modelBuilder.Entity<Yard>()
+                .HasOne(y => y.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(y => y.CreatedBy)
+                .OnDelete(DeleteBehavior.SetNull); // If user deleted, set CreatedBy to null
+        }
     }
 }

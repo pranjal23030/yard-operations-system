@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using YardOps.Data;
+using YardOps.Models;
+using Microsoft.EntityFrameworkCore;
 
 public static class DbSeeder
 {
@@ -80,5 +82,40 @@ public static class DbSeeder
                 await userManager.AddToRoleAsync(adminUser, "Admin");
             }
         }
+    }
+
+    public static async Task SeedDefaultYard(IServiceProvider serviceProvider)
+    {
+        var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
+        var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+
+        // Check if any yards exist
+        if (await context.Yards.AnyAsync())
+        {
+            return; // Yards already seeded
+        }
+
+        // Get the admin user (who will be the creator)
+        string adminEmail = configuration["DefaultAdmin:Email"] ?? "admin@yardops.com";
+        var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+        if (adminUser == null)
+        {
+            throw new InvalidOperationException("Admin user must be created before seeding default yard. Ensure SeedDefaultAdmin runs first.");
+        }
+
+        // Create default yard
+        var defaultYard = new Yard
+        {
+            YardName = "YardOps Main Yard",
+            Address = "Kathmandu, Nepal",
+            Status = "Active",
+            CreatedBy = adminUser.Id,  // Use admin user's ID
+            CreatedOn = DateTime.UtcNow
+        };
+
+        context.Yards.Add(defaultYard);
+        await context.SaveChangesAsync();
     }
 }
