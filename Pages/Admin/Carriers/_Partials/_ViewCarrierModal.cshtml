@@ -1,0 +1,54 @@
+<div class="modal fade" id="viewCarrierModal" tabindex="-1" aria-labelledby="viewCarrierModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-custom">
+            <div class="modal-header modal-header-custom">
+                <h5 class="modal-title modal-title-custom" id="viewCarrierModalLabel">Carrier Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body modal-body-custom">
+                <div class="view-carrier-header">
+                    <div class="view-carrier-icon">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
+                    <div class="view-carrier-info">
+                        <h4 class="view-carrier-name" id="viewCompanyName"></h4>
+                        <span class="view-carrier-code" id="viewCarrierCode"></span>
+                    </div>
+                    <span class="status-badge" id="viewStatusBadge"></span>
+                </div>
+
+                <div class="view-carrier-details">
+                    <div class="view-carrier-grid">
+                        <div class="view-detail-block">
+                            <span class="view-detail-label">Contact Person</span>
+                            <span class="view-detail-value" id="viewContactPerson"></span>
+                        </div>
+                        <div class="view-detail-block">
+                            <span class="view-detail-label">Trailers Count</span>
+                            <span class="view-detail-value" id="viewTrailerCount"></span>
+                        </div>
+                    </div>
+
+                    <div class="view-detail-list">
+                        <div class="view-detail-item">
+                            <i class="fa-solid fa-phone"></i>
+                            <span id="viewPhone"></span>
+                        </div>
+                        <div class="view-detail-item">
+                            <i class="fa-solid fa-envelope"></i>
+                            <span id="viewEmail"></span>
+                        </div>
+                        <div class="view-detail-item">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span id="viewAddress"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer modal-footer-custom">
+                <button type="button" class="btn-cancel-neutral" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn-primary-custom" id="editFromViewBtn">Edit Carrier</button>
+            </div>
+        </div>
+    </div>
+</div>

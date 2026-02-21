@@ -1,0 +1,286 @@
+/* Carrier Management Page Specific Styles */
+
+/* Header Card */
+.carrier-header-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.carrier-header-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.carrier-header-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background-color: rgba(45, 164, 157, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    font-size: 1.25rem;
+}
+
+.carrier-header-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.carrier-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0;
+}
+
+carrier-subtitle {
+    font-size: 0.9rem;
+    color: var(--muted-foreground);
+    margin: 0;
+}
+
+/* Add Carrier Button */
+.btn-add-carrier {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-add-carrier:hover {
+    background-color: var(--accent);
+}
+
+/* Carrier Code */
+.carrier-code {
+    font-weight: 600;
+    color: var(--primary);
+    font-size: 0.9rem;
+}
+
+/* Company Cell */
+.company-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.company-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background-color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+.company-name {
+    font-weight: 500;
+    color: var(--foreground);
+}
+
+/* Contact Person */
+.contact-person {
+    color: var(--primary);
+    font-size: 0.9rem;
+}
+
+/* Phone Number */
+.phone-number {
+    color: var(--foreground);
+    font-size: 0.9rem;
+}
+
+/* Trailer Count Badge */
+.trailer-count-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 26px;
+    padding: 0 8px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background-color: #f1f5f9;
+    color: var(--foreground);
+    border: 1px solid var(--border);
+}
+
+/* View Carrier Modal */
+.view-carrier-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border-radius: 12px;
+    background-color: #f8fafc;
+    margin-bottom: 18px;
+}
+
+.view-carrier-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    background-color: #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1e40af;
+    font-size: 1.4rem;
+}
+
+.view-carrier-info {
+    flex: 1;
+}
+
+.view-carrier-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0 0 4px 0;
+}
+
+.view-carrier-code {
+    font-size: 0.85rem;
+    color: var(--muted-foreground);
+}
+
+.view-carrier-details {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.view-carrier-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.view-detail-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.view-detail-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--muted-foreground);
+}
+
+.view-detail-value {
+    font-size: 0.95rem;
+    color: var(--foreground);
+}
+
+.view-detail-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.view-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--foreground);
+    font-size: 0.9rem;
+}
+
+.view-detail-item i {
+    width: 16px;
+    text-align: center;
+    color: var(--muted-foreground);
+}
+
+/* Edit Carrier Code Display */
+.edit-carrier-code-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #f1f5f9;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.edit-carrier-code-display .label {
+    font-size: 0.8rem;
+    color: var(--muted-foreground);
+    font-weight: 500;
+}
+
+.edit-carrier-code-display .value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+/* Modal Subtitle */
+.modal-subtitle {
+    font-size: 0.9rem;
+    color: var(--muted-foreground);
+    margin-bottom: 20px;
+}
+
+/* Delete Warning */
+.delete-warning-icon {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.delete-warning-icon i {
+    font-size: 3rem;
+    color: #ef4444;
+}
+
+.delete-message {
+    text-align: center;
+    font-size: 1rem;
+    color: var(--foreground);
+    margin-bottom: 8px;
+}
+
+delete-submessage {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--muted-foreground);
+    margin-bottom: 16px;
+}
+
+.btn-delete-custom {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-delete-custom:hover {
+    background-color: #dc2626;
+}

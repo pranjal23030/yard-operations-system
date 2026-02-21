@@ -1,0 +1,31 @@
+@using YardOps.Pages.Admin.Carriers
+@model IndexModel
+
+<div class="modal fade" id="deleteCarrierModal" tabindex="-1" aria-labelledby="deleteCarrierModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-custom">
+            <div class="modal-header modal-header-custom">
+                <h5 class="modal-title modal-title-custom" id="deleteCarrierModalLabel">Delete Carrier</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" asp-page-handler="Delete">
+                <input type="hidden" name="carrierId" id="deleteCarrierId" />
+                <div class="modal-body modal-body-custom">
+                    <div class="delete-warning-icon">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <p class="delete-message">
+                        Are you sure you want to delete "<strong id="deleteCarrierName"></strong>"?
+                    </p>
+                    <p class="delete-submessage">
+                        This action cannot be undone and will remove all associated data.
+                    </p>
+                </div>
+                <div class="modal-footer modal-footer-custom">
+                    <button type="button" class="btn-cancel-neutral" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-delete-custom" id="deleteCarrierBtn">Delete Carrier</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

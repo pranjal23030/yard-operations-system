@@ -1,0 +1,80 @@
+@using YardOps.Pages.Admin.Carriers
+@model IndexModel
+
+<div class="modal fade" id="createCarrierModal" tabindex="-1" aria-labelledby="createCarrierModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-custom">
+            <div class="modal-header modal-header-custom">
+                <h5 class="modal-title modal-title-custom" id="createCarrierModalLabel">Add New Carrier</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" asp-page-handler="Create">
+                <div class="modal-body modal-body-custom">
+                    <p class="modal-subtitle">Add a new trucking company to the system.</p>
+
+                    @if (!ViewData.ModelState.IsValid && Model.ShowCreateModal)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            <i class="fa-solid fa-exclamation-circle me-2"></i>
+                            <strong>Please fix the following errors:</strong>
+                            <ul class="mb-0 mt-2">
+                                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                {
+                                    <li>@error.ErrorMessage</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    <div class="form-group-custom">
+                        <label asp-for="Input.CompanyName" class="form-label-custom">Company Name *</label>
+                        <input asp-for="Input.CompanyName" class="form-input-custom" placeholder="e.g., Nepal Freight Lines" />
+                        <span asp-validation-for="Input.CompanyName" class="validation-error-custom"></span>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label asp-for="Input.ContactPerson" class="form-label-custom">Contact Person *</label>
+                        <input asp-for="Input.ContactPerson" class="form-input-custom" placeholder="e.g., Ram Shrestha" />
+                        <span asp-validation-for="Input.ContactPerson" class="validation-error-custom"></span>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label asp-for="Input.Phone" class="form-label-custom">Phone</label>
+                                <input asp-for="Input.Phone" class="form-input-custom" placeholder="+977 9841234567" />
+                                <span asp-validation-for="Input.Phone" class="validation-error-custom"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label asp-for="Input.Email" class="form-label-custom">Email</label>
+                                <input asp-for="Input.Email" type="email" class="form-input-custom" placeholder="contact@company.com" />
+                                <span asp-validation-for="Input.Email" class="validation-error-custom"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label asp-for="Input.Address" class="form-label-custom">Address</label>
+                        <textarea asp-for="Input.Address" class="form-input-custom" rows="2" placeholder="Company address..."></textarea>
+                        <span asp-validation-for="Input.Address" class="validation-error-custom"></span>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label asp-for="Input.Status" class="form-label-custom">Status</label>
+                        <select asp-for="Input.Status" class="form-select-custom">
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                        <span asp-validation-for="Input.Status" class="validation-error-custom"></span>
+                    </div>
+                </div>
+                <div class="modal-footer modal-footer-custom">
+                    <button type="button" class="btn-cancel-neutral" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-primary-custom">Add Carrier</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

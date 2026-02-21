@@ -1,0 +1,123 @@
+@using YardOps.Pages.Admin.Carriers
+@model IndexModel
+
+<script>
+    // Auto-dismiss alerts after 5 seconds
+    setTimeout(function () {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+
+    // Auto-open create modal if there are validation errors
+    @if (Model.ShowCreateModal)
+    {
+        <text>
+        document.addEventListener('DOMContentLoaded', function() {
+            var modal = new bootstrap.Modal(document.getElementById('createCarrierModal'));
+            modal.show();
+        });
+        </text>
+    }
+
+    // Auto-open edit modal if there are validation errors
+    @if (Model.ShowEditModal)
+    {
+        <text>
+        document.addEventListener('DOMContentLoaded', function() {
+            var modal = new bootstrap.Modal(document.getElementById('editCarrierModal'));
+            modal.show();
+        });
+        </text>
+    }
+
+    // View modal data population
+    document.getElementById('viewCarrierModal').addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+
+        var companyName = button.getAttribute('data-carrier-companyname');
+        var carrierCode = button.getAttribute('data-carrier-code');
+        var contactPerson = button.getAttribute('data-carrier-contactperson');
+        var phone = button.getAttribute('data-carrier-phone');
+        var email = button.getAttribute('data-carrier-email');
+        var address = button.getAttribute('data-carrier-address');
+        var status = button.getAttribute('data-carrier-status');
+        var trailerCount = button.getAttribute('data-carrier-trailercount');
+
+        document.getElementById('viewCompanyName').textContent = companyName;
+        document.getElementById('viewCarrierCode').textContent = carrierCode;
+        document.getElementById('viewContactPerson').textContent = contactPerson || '—';
+        document.getElementById('viewPhone').textContent = phone || '—';
+        document.getElementById('viewEmail').textContent = email || '—';
+        document.getElementById('viewAddress').textContent = address || '—';
+        document.getElementById('viewTrailerCount').textContent = trailerCount;
+
+        var statusBadge = document.getElementById('viewStatusBadge');
+        statusBadge.textContent = status;
+        statusBadge.className = 'status-badge status-' + status.toLowerCase();
+
+        // Store data for edit button
+        document.getElementById('editFromViewBtn').setAttribute('data-carrier-id', button.getAttribute('data-carrier-id'));
+        document.getElementById('editFromViewBtn').setAttribute('data-carrier-code', carrierCode);
+        document.getElementById('editFromViewBtn').setAttribute('data-carrier-companyname', companyName);
+        document.getElementById('editFromViewBtn').setAttribute('data-carrier-contactperson', contactPerson);
+        document.getElementById('editFromViewBtn').setAttribute('data-carrier-phone', phone);
+        document.getElementById('editFromViewBtn').setAttribute('data-carrier-email', email);
+        document.getElementById('editFromViewBtn').setAttribute('data-carrier-address', address);
+        document.getElementById('editFromViewBtn').setAttribute('data-carrier-status', status);
+    });
+
+    // Edit from View modal
+    document.getElementById('editFromViewBtn').addEventListener('click', function () {
+        var btn = this;
+        
+        // Close view modal
+        var viewModal = bootstrap.Modal.getInstance(document.getElementById('viewCarrierModal'));
+        viewModal.hide();
+
+        // Populate edit modal
+        document.getElementById('editCarrierId').value = btn.getAttribute('data-carrier-id');
+        document.getElementById('editCarrierCode').value = btn.getAttribute('data-carrier-code');
+        document.getElementById('editCarrierCodeDisplay').textContent = btn.getAttribute('data-carrier-code');
+        document.getElementById('editCompanyName').value = btn.getAttribute('data-carrier-companyname');
+        document.getElementById('editContactPerson').value = btn.getAttribute('data-carrier-contactperson') || '';
+        document.getElementById('editPhone').value = btn.getAttribute('data-carrier-phone') || '';
+        document.getElementById('editEmail').value = btn.getAttribute('data-carrier-email') || '';
+        document.getElementById('editAddress').value = btn.getAttribute('data-carrier-address') || '';
+        document.getElementById('editStatus').value = btn.getAttribute('data-carrier-status');
+
+        // Open edit modal
+        setTimeout(function() {
+            var editModal = new bootstrap.Modal(document.getElementById('editCarrierModal'));
+            editModal.show();
+        }, 300);
+    });
+
+    // Edit modal data population
+    document.getElementById('editCarrierModal').addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        if (!button) return; // Skip if opened programmatically
+
+        document.getElementById('editCarrierId').value = button.getAttribute('data-carrier-id');
+        document.getElementById('editCarrierCode').value = button.getAttribute('data-carrier-code');
+        document.getElementById('editCarrierCodeDisplay').textContent = button.getAttribute('data-carrier-code');
+        document.getElementById('editCompanyName').value = button.getAttribute('data-carrier-companyname');
+        document.getElementById('editContactPerson').value = button.getAttribute('data-carrier-contactperson') || '';
+        document.getElementById('editPhone').value = button.getAttribute('data-carrier-phone') || '';
+        document.getElementById('editEmail').value = button.getAttribute('data-carrier-email') || '';
+        document.getElementById('editAddress').value = button.getAttribute('data-carrier-address') || '';
+        document.getElementById('editStatus').value = button.getAttribute('data-carrier-status');
+    });
+
+    // Delete modal data population
+    document.getElementById('deleteCarrierModal').addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var carrierId = button.getAttribute('data-carrier-id');
+        var carrierName = button.getAttribute('data-carrier-name');
+
+        document.getElementById('deleteCarrierId').value = carrierId;
+        document.getElementById('deleteCarrierName').textContent = carrierName;
+    });
+</script>
