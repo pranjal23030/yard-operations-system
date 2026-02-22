@@ -375,3 +375,65 @@ main {
     color: rgba(255,255,255,0.70);
     font-size: 0.85rem;
 }
+
+/* Sidebar Group (Admin Only) */
+.sidebar-group {
+    margin-top: 6px;
+}
+
+.nav-group-toggle {
+    width: 100%;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    color: rgba(255,255,255,0.82);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nav-group-toggle:hover {
+    background-color: var(--sidebar-accent);
+}
+
+.nav-group-toggle i {
+    font-size: 0.95rem;
+    min-width: 20px;
+    text-align: center;
+    opacity: 0.85;
+}
+
+.group-caret {
+    margin-left: auto;
+    font-size: 0.75rem;
+    opacity: 0.7;
+    transition: transform 0.2s ease;
+}
+
+.nav-group-toggle[aria-expanded="true"] .group-caret {
+    transform: rotate(180deg);
+}
+
+.nav-group {
+    padding-left: 6px;
+}
+
+.nav-subitem {
+    padding-left: 38px;
+    font-size: 0.85rem;
+}
+
+/* Collapsed Sidebar Behavior */
+#sidebar.collapsed .nav-group-toggle span,
+#sidebar.collapsed .group-caret {
+    display: none;
+}
+
+#sidebar.collapsed .nav-subitem {
+    padding-left: 0;
+    justify-content: center;
+}

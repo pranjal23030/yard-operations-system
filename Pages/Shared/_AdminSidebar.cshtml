@@ -41,18 +41,29 @@
             <i class="fa-solid fa-eye"></i>
             <span>Monitoring</span>
         </a>
-        <a asp-page="/Admin/Users/Index" class="nav-item-link">
-            <i class="fa-solid fa-users"></i>
-            <span>Users</span>
-        </a>
-        <a asp-page="/Admin/Roles/Index" class="nav-item-link">
-            <i class="fa-solid fa-shield-halved"></i>
-            <span>Roles</span>
-        </a>
-        <a asp-page="/Admin/Activities/Index" class="nav-item-link">
-            <i class="fa-solid fa-list-check"></i>
-            <span>Activity Log</span>
-        </a>
+
+        <div class="sidebar-group">
+            <button class="nav-group-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#adminUserGroup" aria-expanded="true">
+                <i class="fa-solid fa-users-gear"></i>
+                <span>Access Control</span>
+                <i class="fa-solid fa-chevron-down group-caret"></i>
+            </button>
+            <div class="collapse show nav-group" id="adminUserGroup">
+                <a asp-page="/Admin/Users/Index" class="nav-item-link nav-subitem">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a asp-page="/Admin/Roles/Index" class="nav-item-link nav-subitem">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Roles</span>
+                </a>
+                <a asp-page="/Admin/Activities/Index" class="nav-item-link nav-subitem">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>Activity Log</span>
+                </a>
+            </div>
+        </div>
+
         <a href="#" class="nav-item-link">
             <i class="fa-solid fa-gear"></i>
             <span>Configuration</span>
