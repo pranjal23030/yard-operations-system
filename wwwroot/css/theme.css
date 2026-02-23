@@ -19,12 +19,12 @@
     --error-red-light: rgba(217, 45, 32, 0.1);
 
     /* Legacy variables for compatibility */
-    --exotrac-navy: hsl(210, 50%, 25%);
-    --exotrac-navy-light: hsl(210, 50%, 30%);
-    --exotrac-gold: #c2850c;
-    --exotrac-gold-light: rgba(194, 133, 12, 0.1);
-    --exotrac-btn: #111827;
-    --exotrac-light-bg: hsl(210, 15%, 97%);
+    --yardops-navy: hsl(210, 50%, 25%);
+    --yardops-navy-light: hsl(210, 50%, 30%);
+    --yardops-gold: #c2850c;
+    --yardops-gold-light: rgba(194, 133, 12, 0.1);
+    --yardops-btn: #111827;
+    --yardops-light-bg: hsl(210, 15%, 97%);
     --border-color: hsl(210, 20%, 85%);
 
     /* Admin layout dimensions */

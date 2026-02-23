@@ -257,8 +257,8 @@ header {
 }
 
 .item-settings:hover {
-    background-color: var(--exotrac-gold-light) !important;
-    color: var(--exotrac-gold) !important;
+    background-color: var(--yardops-gold-light) !important;
+    color: var(--yardops-gold) !important;
 }
 
 .text-logout {
