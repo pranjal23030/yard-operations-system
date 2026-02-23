@@ -178,31 +178,6 @@
     color: #f59e0b;
 }
 
-/* ===== Delete Warning ===== */
-.delete-warning-icon {
-    text-align: center;
-    margin-bottom: 16px;
-}
-
-.delete-warning-icon i {
-    font-size: 3rem;
-    color: #ef4444;
-}
-
-.delete-message {
-    text-align: center;
-    font-size: 1rem;
-    color: var(--foreground);
-    margin-bottom: 8px;
-}
-
-.delete-submessage {
-    text-align: center;
-    font-size: 0.85rem;
-    color: var(--muted-foreground);
-    margin-bottom: 16px;
-}
-
 .delete-user-warning {
     display: flex;
     align-items: center;

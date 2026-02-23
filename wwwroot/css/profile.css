@@ -92,7 +92,7 @@
     font-weight: 500;
 }
 
-/* Form Styles */
+/* Form Layout */
 .profile-form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -110,46 +110,6 @@
     gap: 6px;
 }
 
-.profile-form-label {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--foreground);
-}
-
-.profile-form-input {
-    padding: 10px 12px;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    font-size: 0.9rem;
-    color: var(--foreground);
-    background: white;
-    transition: all 0.2s ease;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.profile-form-input:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(45, 164, 157, 0.15);
-}
-
-.profile-form-input:disabled {
-    background: var(--muted);
-    color: var(--muted-foreground);
-    cursor: not-allowed;
-}
-
-.profile-form-input::placeholder {
-    color: var(--muted-foreground);
-    opacity: 0.6;
-}
-
-.profile-form-error {
-    font-size: 0.8rem;
-    color: var(--destructive);
-}
-
 /* Password Input with Toggle */
 .profile-password-wrapper {
     position: relative;
@@ -157,7 +117,7 @@
     align-items: center;
 }
 
-.profile-password-wrapper .profile-form-input {
+.profile-password-wrapper .form-input-custom {
     padding-right: 40px;
 }
 
@@ -186,55 +146,13 @@
     font-size: 0.9rem;
 }
 
-/* Buttons */
+/* Buttons Layout */
 .profile-form-actions {
     display: flex;
     justify-content: flex-end;
     margin-top: 20px;
     padding-top: 16px;
     border-top: 1px solid var(--border);
-}
-
-.btn-save-profile {
-    background: var(--primary);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 500;
-    font-size: 0.9rem;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.btn-save-profile:hover {
-    filter: brightness(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transform: translateY(-1px);
-}
-
-.btn-update-password {
-    background: white;
-    color: var(--foreground);
-    border: 1.5px solid var(--border);
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 500;
-    font-size: 0.9rem;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.2s ease;
-}
-
-.btn-update-password:hover {
-    background: var(--muted);
-    border-color: var(--accent);
 }
 
 /* Success/Error Alerts */

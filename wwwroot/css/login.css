@@ -1,24 +1,4 @@
-﻿:root {
-    /* Industrial color palette - Steel gray with teal accents */
-    --primary: hsl(210, 50%, 25%);
-    --primary-foreground: hsl(0, 0%, 100%);
-    --accent: hsl(175, 60%, 35%);
-    --accent-foreground: hsl(0, 0%, 100%);
-    --background: hsl(210, 15%, 97%);
-    --foreground: hsl(220, 25%, 10%);
-    --card: hsl(0, 0%, 100%);
-    --card-foreground: hsl(220, 25%, 10%);
-    --muted: hsl(210, 15%, 94%);
-    --muted-foreground: hsl(220, 15%, 40%);
-    --border: hsl(210, 20%, 85%);
-    --input: hsl(210, 20%, 85%);
-    --ring: hsl(210, 50%, 35%);
-    --destructive: hsl(0, 65%, 50%);
-    --destructive-foreground: hsl(0, 0%, 100%);
-    --error-red: #d92d20;
-}
-
-body, html {
+﻿body, html {
     height: 100%;
     margin: 0;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;

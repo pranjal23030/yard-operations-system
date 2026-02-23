@@ -1,0 +1,39 @@
+/* Global Design Tokens */
+:root {
+    --primary: hsl(210, 50%, 25%);
+    --primary-foreground: hsl(0, 0%, 100%);
+    --accent: hsl(175, 60%, 35%);
+    --accent-foreground: hsl(0, 0%, 100%);
+    --background: hsl(210, 15%, 97%);
+    --foreground: hsl(220, 25%, 10%);
+    --card: hsl(0, 0%, 100%);
+    --card-foreground: hsl(220, 25%, 10%);
+    --muted: hsl(210, 15%, 94%);
+    --muted-foreground: hsl(220, 15%, 40%);
+    --border: hsl(210, 20%, 85%);
+    --input: hsl(210, 20%, 85%);
+    --ring: hsl(210, 50%, 35%);
+    --destructive: hsl(0, 65%, 50%);
+    --destructive-foreground: hsl(0, 0%, 100%);
+    --error-red: #d92d20;
+    --error-red-light: rgba(217, 45, 32, 0.1);
+
+    /* Legacy variables for compatibility */
+    --exotrac-navy: hsl(210, 50%, 25%);
+    --exotrac-navy-light: hsl(210, 50%, 30%);
+    --exotrac-gold: #c2850c;
+    --exotrac-gold-light: rgba(194, 133, 12, 0.1);
+    --exotrac-btn: #111827;
+    --exotrac-light-bg: hsl(210, 15%, 97%);
+    --border-color: hsl(210, 20%, 85%);
+
+    /* Admin layout dimensions */
+    --sidebar-width: 240px;
+    --sidebar-collapsed-width: 64px;
+
+    --sidebar-bg: hsl(210, 50%, 25%);
+    --sidebar-bg-2: hsl(210, 50%, 30%);
+    --sidebar-accent: rgba(255,255,255,0.08);
+    --sidebar-border: rgba(255,255,255,0.10);
+    --sidebar-primary: hsl(175, 60%, 35%);
+}
