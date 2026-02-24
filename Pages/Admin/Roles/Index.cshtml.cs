@@ -60,13 +60,18 @@ namespace YardOps.Pages.Admin.Roles
                 await ReloadPageData();
                 return Page();
             }
+            
+            // Get the current admin user (creator)
+            var currentAdmin = await _userManager.GetUserAsync(User);
+            
             var role = new ApplicationRole
             {
                 Name = Input.Name,
                 Description = Input.Description,
                 Status = Input.Status,
-                IsSystemRole = false, // New roles are NOT system roles
-                CreatedAt = DateTime.UtcNow
+                IsSystemRole = false,
+                CreatedOn = DateTime.UtcNow,
+                CreatedBy = currentAdmin?.Id 
             };
             var result = await _roleManager.CreateAsync(role);
             if (!result.Succeeded)
@@ -227,7 +232,7 @@ namespace YardOps.Pages.Admin.Roles
                     Status = role.Status,
                     IsSystemRole = role.IsSystemRole,
                     UserCount = usersInRole.Count,
-                    CreatedAt = role.CreatedAt
+                    CreatedOn = role.CreatedOn
                 });
             }
             // Custom ordering: Admin first, YardManager second, Driver third, then custom roles by CreatedAt descending
@@ -235,7 +240,7 @@ namespace YardOps.Pages.Admin.Roles
                 .OrderByDescending(r => r.Name == "Admin")
                 .ThenByDescending(r => r.Name == "YardManager")
                 .ThenByDescending(r => r.Name == "Driver")
-                .ThenByDescending(r => r.CreatedAt)
+                .ThenByDescending(r => r.CreatedOn)
                 .ToList();
             TotalRoles = orderedList.Count;
             TotalPages = Math.Max(1, (int)Math.Ceiling(TotalRoles / (double)PageSize));

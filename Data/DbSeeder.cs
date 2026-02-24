@@ -18,21 +18,24 @@ public static class DbSeeder
                 Name = "Admin",
                 Description = "System administrator with full access",
                 IsSystemRole = true,
-                Status = "Active"
+                Status = "Active",
+                CreatedBy = null  // Seeded role - no creator
             },
             new ApplicationRole
             {
                 Name = "YardManager",
                 Description = "Manages yard operations and drivers",
                 IsSystemRole = true,
-                Status = "Active"
+                Status = "Active",
+                CreatedBy = null  // Seeded role - no creator
             },
             new ApplicationRole
             {
                 Name = "Driver",
                 Description = "Driver with limited operational access",
                 IsSystemRole = true,
-                Status = "Active"
+                Status = "Active",
+                CreatedBy = null  // Seeded role - no creator
             }
         };
 
@@ -65,7 +68,8 @@ public static class DbSeeder
                 FirstName = firstName,
                 LastName = lastName,
                 Status = "Active",
-                CreatedAt = DateTime.UtcNow,
+                CreatedOn = DateTime.UtcNow,
+                CreatedBy = null,  // Self-created admin
                 EmailConfirmed = true
             };
 
@@ -111,7 +115,7 @@ public static class DbSeeder
             YardName = "YardOps Main Yard",
             Address = "Kathmandu, Nepal",
             Status = "Active",
-            CreatedBy = adminUser.Id,  // Use admin user's ID
+            CreatedBy = adminUser.Id,
             CreatedOn = DateTime.UtcNow
         };
 

@@ -8,6 +8,6 @@ namespace YardOps.Models.ViewModels.Roles
         public string Status { get; set; } = "Active";
         public bool IsSystemRole { get; set; }
         public int UserCount { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedOn { get; set; }
     }
 }

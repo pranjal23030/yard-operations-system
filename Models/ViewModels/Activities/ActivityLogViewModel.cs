@@ -1,4 +1,5 @@
 using System.Text.Json;
+
 namespace YardOps.Models.ViewModels.Activities
 {
     /// <summary>
@@ -9,11 +10,12 @@ namespace YardOps.Models.ViewModels.Activities
         public int Id { get; set; }
         public string UserFullName { get; set; } = "";
         public string UserEmail { get; set; } = "";
-        public string Timestamp { get; set; } = "";
-        public DateTime RawTimestamp { get; set; }
+        public string CreatedOn { get; set; } = "";
+        public DateTime RawCreatedOn { get; set; }
         public string Action { get; set; } = "";
         public string? Description { get; set; }
         public string? JsonData { get; set; }
+
         /// <summary>
         /// Returns initials for avatar display (e.g., "JD" for John Doe)
         /// </summary>
@@ -29,12 +31,9 @@ namespace YardOps.Models.ViewModels.Activities
                 return "?";
             }
         }
+
         /// <summary>
         /// Returns a formatted, human-readable version of JsonData.
-        /// Converts JSON to "Key: Value, Key2: Value2" format.
-        /// Fixes Unicode escaping like \u0027 → actual characters.
-        /// Returns "N/A" if JsonData is null or empty.
-        /// Skips "UserId" key if present (redundant).
         /// </summary>
         public string FormattedJsonData
         {
@@ -44,7 +43,6 @@ namespace YardOps.Models.ViewModels.Activities
                     return "N/A";
                 try
                 {
-                    // Parse the JSON to get key-value pairs
                     using var doc = JsonDocument.Parse(JsonData);
                     var root = doc.RootElement;
                     if (root.ValueKind == JsonValueKind.Object)
@@ -52,79 +50,18 @@ namespace YardOps.Models.ViewModels.Activities
                         var parts = new List<string>();
                         foreach (var prop in root.EnumerateObject())
                         {
-                            if (prop.Name.Equals("UserId", StringComparison.OrdinalIgnoreCase))
-                                continue;  // Skip UserId key
-                            var value = FormatJsonValue(prop.Value);
-                            parts.Add($"{prop.Name}: {value}");
+                            if (prop.Name == "UserId" || prop.Name == "CreatedBy") continue;
+                            parts.Add($"{prop.Name}: {prop.Value}");
                         }
-                        // Join all key-value pairs with comma separator
-                        return string.Join(", ", parts);
+                        return parts.Count > 0 ? string.Join(", ", parts) : "N/A";
                     }
-                    // If not an object, return the raw value (unescaped)
-                    return UnescapeUnicode(JsonData);
+                    return JsonData;
                 }
                 catch
                 {
-                    // If parsing fails, return raw data with Unicode unescaped
-                    return UnescapeUnicode(JsonData);
+                    return JsonData;
                 }
             }
-        }
-        /// <summary>
-        /// Formats a JSON element value to a readable string.
-        /// Handles arrays, objects, and primitives.
-        /// </summary>
-        private static string FormatJsonValue(JsonElement element)
-        {
-            return element.ValueKind switch
-            {
-                JsonValueKind.String => UnescapeUnicode(element.GetString() ?? ""),
-                JsonValueKind.Number => element.GetRawText(),
-                JsonValueKind.True => "true",
-                JsonValueKind.False => "false",
-                JsonValueKind.Null => "null",
-                JsonValueKind.Array => FormatJsonArray(element),
-                JsonValueKind.Object => FormatNestedObject(element),
-                _ => element.GetRawText()
-            };
-        }
-        /// <summary>
-        /// Formats a JSON array to a readable string like "[item1, item2]"
-        /// </summary>
-        private static string FormatJsonArray(JsonElement array)
-        {
-            var items = new List<string>();
-            foreach (var item in array.EnumerateArray())
-            {
-                items.Add(FormatJsonValue(item));
-            }
-            return $"[{string.Join(", ", items)}]";
-        }
-        /// <summary>
-        /// Formats a nested JSON object to a readable string like "{Key: Value}"
-        /// </summary>
-        private static string FormatNestedObject(JsonElement obj)
-        {
-            var parts = new List<string>();
-            foreach (var prop in obj.EnumerateObject())
-            {
-                parts.Add($"{prop.Name}: {FormatJsonValue(prop.Value)}");
-            }
-            return $"{{{string.Join(", ", parts)}}}";
-        }
-        /// <summary>
-        /// Unescapes Unicode sequences like \u0027 to actual characters (e.g., ')
-        /// </summary>
-        private static string UnescapeUnicode(string input)
-        {
-            if (string.IsNullOrEmpty(input))
-                return input;
-            // Use Regex to replace \uXXXX patterns with actual characters
-            return System.Text.RegularExpressions.Regex.Replace(
-                input,
-                @"\\u([0-9A-Fa-f]{4})",
-                m => ((char)Convert.ToInt32(m.Groups[1].Value, 16)).ToString()
-            );
         }
     }
 }

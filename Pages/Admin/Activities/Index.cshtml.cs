@@ -71,13 +71,13 @@ namespace YardOps.Pages.Admin.Activities
 
         /// <summary>
         /// Loads activity logs with applied filters and pagination.
-        /// Orders by Timestamp descending (most recent first).
+        /// Orders by CreatedOn descending (most recent first).
         /// </summary>
         private async Task LoadActivitiesAsync()
         {
-            // Start with base query including User navigation property
+            // Start with base query including CreatedByUser navigation property
             var query = _context.ActivityLogs
-                .Include(l => l.User)
+                .Include(l => l.CreatedByUser)
                 .AsQueryable();
 
             // Apply search filter (searches user name, email, action, description)
@@ -85,10 +85,10 @@ namespace YardOps.Pages.Admin.Activities
             {
                 var searchLower = SearchTerm.ToLower();
                 query = query.Where(l =>
-                    (l.User != null && (
-                        l.User.FirstName.ToLower().Contains(searchLower) ||
-                        l.User.LastName.ToLower().Contains(searchLower) ||
-                        l.User.Email!.ToLower().Contains(searchLower)
+                    (l.CreatedByUser != null && (
+                        l.CreatedByUser.FirstName.ToLower().Contains(searchLower) ||
+                        l.CreatedByUser.LastName.ToLower().Contains(searchLower) ||
+                        l.CreatedByUser.Email!.ToLower().Contains(searchLower)
                     )) ||
                     l.Action.ToLower().Contains(searchLower) ||
                     (l.Description != null && l.Description.ToLower().Contains(searchLower))
@@ -105,17 +105,17 @@ namespace YardOps.Pages.Admin.Activities
             if (DateFrom.HasValue)
             {
                 var fromDate = DateFrom.Value.Date;
-                query = query.Where(l => l.Timestamp >= fromDate);
+                query = query.Where(l => l.CreatedOn >= fromDate);
             }
 
             if (DateTo.HasValue)
             {
-                var toDate = DateTo.Value.Date.AddDays(1); // Include the entire "to" day
-                query = query.Where(l => l.Timestamp < toDate);
+                var toDate = DateTo.Value.Date.AddDays(1);
+                query = query.Where(l => l.CreatedOn < toDate);
             }
 
-            // Order by Timestamp descending (most recent first)
-            query = query.OrderByDescending(l => l.Timestamp);
+            // Order by CreatedOn descending (most recent first)
+            query = query.OrderByDescending(l => l.CreatedOn);
 
             // Get total count for pagination
             TotalActivities = await query.CountAsync();
@@ -132,12 +132,12 @@ namespace YardOps.Pages.Admin.Activities
             Activities = logs.Select(l => new ActivityLogViewModel
             {
                 Id = l.Id,
-                UserFullName = l.User != null 
-                    ? $"{l.User.FirstName} {l.User.LastName}" 
+                UserFullName = l.CreatedByUser != null 
+                    ? $"{l.CreatedByUser.FirstName} {l.CreatedByUser.LastName}" 
                     : "Unknown User",
-                UserEmail = l.User?.Email ?? "N/A",
-                Timestamp = l.Timestamp.ToLocalTime().ToString("yyyy-MM-dd hh:mm tt"),
-                RawTimestamp = l.Timestamp,
+                UserEmail = l.CreatedByUser?.Email ?? "N/A",
+                CreatedOn = l.CreatedOn.ToLocalTime().ToString("yyyy-MM-dd hh:mm tt"),
+                RawCreatedOn = l.CreatedOn,
                 Action = l.Action,
                 Description = l.Description,
                 JsonData = l.JsonData

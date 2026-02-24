@@ -25,14 +25,15 @@ namespace YardOps.Services
         public async Task LogAsync(string action, string? description = null, object? extraData = null)
         {
             var httpContext = _httpContextAccessor.HttpContext;
-            if (httpContext == null) return; // Rare: no request context
+            if (httpContext == null) return;
 
             var user = await _userManager.GetUserAsync(httpContext.User);
-            if (user == null) return; // Skip anonymous actions for now
+            if (user == null) return;
 
             var log = new ActivityLog
             {
-                UserId = user.Id,
+                CreatedBy = user.Id,
+                CreatedOn = DateTime.UtcNow,
                 Action = action,
                 Description = description,
                 JsonData = extraData != null ? JsonSerializer.Serialize(extraData) : null

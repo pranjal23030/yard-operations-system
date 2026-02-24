@@ -76,6 +76,10 @@ namespace YardOps.Pages.Admin.Users
                 await ReloadPageData();
                 return Page();
             }
+            
+            // Get the current admin user (creator)
+            var currentAdmin = await _userManager.GetUserAsync(User);
+            
             // Get default password from configuration
             var defaultPassword = _configuration["DefaultUserPassword"] ?? "Password@123";
             var user = new ApplicationUser
@@ -84,9 +88,10 @@ namespace YardOps.Pages.Admin.Users
                 Email = Input.Email,
                 FirstName = Input.FirstName,
                 LastName = Input.LastName,
-                Status = "Inactive", // Set to Inactive until email confirmed
-                CreatedAt = DateTime.UtcNow,
-                EmailConfirmed = false // Requires email confirmation
+                Status = "Inactive",
+                CreatedOn = DateTime.UtcNow, 
+                CreatedBy = currentAdmin?.Id,
+                EmailConfirmed = false
             };
             var result = await _userManager.CreateAsync(user, defaultPassword);
             if (!result.Succeeded)
@@ -379,7 +384,7 @@ namespace YardOps.Pages.Admin.Users
                     u.LastName.Contains(SearchTerm) ||
                     u.Email!.Contains(SearchTerm));
             // Order by CreatedAt
-            usersQuery = usersQuery.OrderBy(u => u.CreatedAt);
+            usersQuery = usersQuery.OrderBy(u => u.CreatedOn);
             var users = await usersQuery.ToListAsync();
             var list = new List<UserViewModel>();
             foreach (var user in users)
@@ -396,7 +401,7 @@ namespace YardOps.Pages.Admin.Users
                     Role = role,
                     Status = user.Status,
                     LastLogin = user.LastLogin,
-                    CreatedAt = user.CreatedAt,
+                    CreatedOn = user.CreatedOn,
                     EmailConfirmed = user.EmailConfirmed
                 });
             }
