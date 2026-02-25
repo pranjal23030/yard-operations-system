@@ -79,7 +79,7 @@
                 @foreach (var role in Model.Roles)
                 {
                     <tr>
-                        <td>
+                        <td data-label="Role Name">
                             <span class="role-name-cell">
                                 @role.Name
                                 @if (role.IsSystemRole)
@@ -88,12 +88,12 @@
                                 }
                             </span>
                         </td>
-                        <td>
+                        <td data-label="Description">
                             <span class="role-description">@(role.Description ?? "No description")</span>
                         </td>
-                        <td><span class="status-badge status-@role.Status.ToLower()">@role.Status</span></td>
-                        <td><span class="user-count">@role.UserCount</span></td>
-                        <td>
+                        <td data-label="Status"><span class="status-badge status-@role.Status.ToLower()">@role.Status</span></td>
+                        <td data-label="Users"><span class="user-count">@role.UserCount</span></td>
+                        <td data-label="Actions">
                             <button class="action-btn" type="button" data-bs-toggle="dropdown">
                                 <i class="fa-solid fa-ellipsis-vertical"></i>
                             </button>

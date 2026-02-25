@@ -101,14 +101,13 @@
                 @foreach (var log in Model.Activities)
                 {
                     <tr>
-
                         <!-- Timestamp Column -->
-                        <td>
+                        <td data-label="Timestamp">
                             <span class="timestamp-value">@log.CreatedOn</span>
                         </td>
 
-                        <!-- User Column - REMOVED avatar, kept name and email -->
-                        <td>
+                        <!-- User Column -->
+                        <td data-label="User">
                             <div class="user-info-cell-simple">
                                 <span class="user-name">@log.UserFullName</span>
                                 <span class="user-email-small">@log.UserEmail</span>
@@ -116,17 +115,17 @@
                         </td>
 
                         <!-- Action Column with Badge -->
-                        <td>
+                        <td data-label="Action">
                             <span class="action-badge action-@log.Action.ToLower().Replace(" ", "-")">@log.Action</span>
                         </td>
 
-                        <!-- Description Column - Full text, no truncation -->
-                        <td>
+                        <!-- Description Column -->
+                        <td data-label="Description">
                             <span class="description-text-full">@(log.Description ?? "—")</span>
                         </td>
 
-                        <!-- Details Column - Inline formatted JsonData, no accordion -->
-                        <td>
+                        <!-- Details Column -->
+                        <td data-label="Details">
                             <span class="details-text">@log.FormattedJsonData</span>
                         </td>
                     </tr>

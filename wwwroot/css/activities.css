@@ -155,3 +155,155 @@
     border-color: #fca5a5;
     color: #b91c1c;
 }
+
+/* ===== Responsive Styles for Activity Log Page ===== */
+@media (max-width: 900px) {
+    .filters-row {
+        flex-wrap: wrap;
+    }
+
+    .search-box {
+        flex: 1 1 100%;
+        order: 1;
+    }
+
+    .filter-dropdown-wrapper {
+        flex: 1 1 auto;
+        order: 2;
+    }
+
+    .filter-date-wrapper {
+        flex: 1 1 auto;
+        order: 3;
+    }
+
+    .btn-clear-filters {
+        order: 4;
+    }
+}
+
+@media (max-width: 768px) {
+    .filters-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-dropdown-wrapper,
+    .filter-date-wrapper {
+        width: 100%;
+    }
+
+    .filter-select {
+        width: 100%;
+    }
+
+    .filter-date {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .filter-date-wrapper {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .btn-clear-filters {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Make activities table responsive */
+    .users-table table {
+        min-width: unset;
+    }
+
+    .users-table thead {
+        display: none;
+    }
+
+    .users-table tbody,
+    .users-table tr {
+        display: block;
+        width: 100%;
+    }
+
+    .users-table tr {
+        padding: 16px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .users-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 8px 0;
+        border: none;
+    }
+
+    .users-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+        text-transform: uppercase;
+        flex-shrink: 0;
+        min-width: 80px;
+    }
+
+    .users-table tbody tr:hover {
+        background-color: transparent;
+    }
+
+    /* Activity specific mobile styles */
+    .user-info-cell-simple {
+        align-items: flex-end;
+        text-align: right;
+    }
+
+    .timestamp-value {
+        white-space: normal;
+        text-align: right;
+    }
+
+    .description-text-full {
+        text-align: right;
+    }
+
+    .details-text {
+        text-align: right;
+    }
+
+    .action-badge {
+        margin-left: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .users-table tr {
+        padding: 12px;
+    }
+
+    .users-table td {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .users-table td::before {
+        margin-bottom: 2px;
+    }
+
+    .user-info-cell-simple,
+    .timestamp-value,
+    .description-text-full,
+    .details-text {
+        text-align: left;
+        align-items: flex-start;
+    }
+
+    .action-badge {
+        margin-left: 0;
+    }
+}

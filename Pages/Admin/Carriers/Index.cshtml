@@ -97,10 +97,10 @@
                 @foreach (var carrier in Model.Carriers)
                 {
                     <tr>
-                        <td>
+                        <td data-label="Carrier ID">
                             <span class="carrier-code">@carrier.CarrierCode</span>
                         </td>
-                        <td>
+                        <td data-label="Company">
                             <div class="company-cell">
                                 <div class="company-icon">
                                     <i class="fa-solid fa-building"></i>
@@ -108,19 +108,19 @@
                                 <span class="company-name">@carrier.CompanyName</span>
                             </div>
                         </td>
-                        <td>
+                        <td data-label="Contact">
                             <span class="contact-person">@(carrier.ContactPerson ?? "—")</span>
                         </td>
-                        <td>
+                        <td data-label="Phone">
                             <span class="phone-number">@(carrier.Phone ?? "—")</span>
                         </td>
-                        <td>
+                        <td data-label="Trailers">
                             <span class="trailer-count-badge">@carrier.TrailerCount</span>
                         </td>
-                        <td>
+                        <td data-label="Status">
                             <span class="status-badge status-@carrier.Status.ToLower()">@carrier.Status</span>
                         </td>
-                        <td>
+                        <td data-label="Actions">
                             <div class="dropdown">
                                 <button class="action-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fa-solid fa-ellipsis-vertical"></i>

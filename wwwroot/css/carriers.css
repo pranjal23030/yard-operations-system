@@ -259,3 +259,153 @@ carrier-subtitle {
 .btn-delete-custom:hover {
     background-color: #dc2626;
 }
+
+/* ===== Responsive Styles for Carriers Page ===== */
+@media (max-width: 900px) {
+    .carrier-header-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .btn-add-carrier {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .filters-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-select,
+    .search-box input {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .view-carrier-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .carrier-header-card {
+        padding: 16px;
+    }
+
+    .carrier-header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .carrier-title {
+        font-size: 1.15rem;
+    }
+
+    /* Make carriers table responsive */
+    .users-table table {
+        min-width: unset;
+    }
+
+    .users-table thead {
+        display: none;
+    }
+
+    .users-table tbody,
+    .users-table tr {
+        display: block;
+        width: 100%;
+    }
+
+    .users-table tr {
+        padding: 16px;
+        border-bottom: 1px solid var(--border);
+        position: relative;
+    }
+
+    .users-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 0;
+        border: none;
+    }
+
+    .users-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+        text-transform: uppercase;
+        flex-shrink: 0;
+    }
+
+    .users-table tbody tr:hover {
+        background-color: transparent;
+    }
+
+    /* Company cell adjustments for mobile */
+    .company-cell {
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+    }
+
+    /* Actions column styling for mobile */
+    .users-table td:last-child {
+        justify-content: flex-end;
+        padding-top: 12px;
+        border-top: 1px solid var(--border);
+        margin-top: 8px;
+    }
+
+    .users-table td:last-child::before {
+        display: none;
+    }
+
+    /* View modal responsive */
+    .view-carrier-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .view-carrier-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .carrier-header-card {
+        padding: 12px;
+    }
+
+    .carrier-header-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .users-table tr {
+        padding: 12px;
+    }
+
+    .users-table td {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .users-table td::before {
+        margin-bottom: 2px;
+    }
+
+    .company-cell {
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+}

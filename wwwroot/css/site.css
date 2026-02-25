@@ -308,6 +308,10 @@ header {
 .profile-menu {
     border: 1px solid var(--border-color);
     min-width: 140px;
+    position: absolute;
+    right: 0 !important;
+    left: auto !important;
+    transform: none !important;
 }
 
 .dropdown-item {
@@ -502,11 +506,44 @@ main {
     .admin-dash-text {
         font-size: 0.9rem;
     }
+
+    /* Fix profile dropdown position on mobile */
+    .profile-menu {
+        position: absolute !important;
+        right: 0 !important;
+        left: auto !important;
+        top: 100% !important;
+        transform: none !important;
+        margin-top: 4px;
+    }
 }
 
 @media (max-width: 480px) {
     .admin-dash-text {
         font-size: 0.85rem;
         max-width: 120px;
+    }
+
+    /* Ensure footer stays at bottom on small screens */
+    #main-wrapper {
+        min-height: 100dvh;
+    }
+
+    .footer.admin-footer {
+        padding: 12px 0;
+    }
+
+    .admin-footer-inner {
+        padding: 0 12px;
+    }
+
+    .admin-footer-left {
+        font-size: 0.8rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .admin-footer-right {
+        font-size: 0.75rem;
     }
 }
