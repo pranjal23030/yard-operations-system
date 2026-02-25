@@ -127,6 +127,15 @@
     background-color: var(--muted);
 }
 
+.users-table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.users-table-responsive table {
+    min-width: 900px;
+}
+
 .user-name {
     font-weight: 500;
     color: var(--foreground);
@@ -526,4 +535,79 @@
     font-size: 0.85rem;
     color: var(--muted-foreground);
     margin-bottom: 16px;
+}
+
+/* Responsive for Users page */
+@media (max-width: 900px) {
+    .users-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .filters-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-select,
+    .search-box input {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .btn-add-user {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .pagination-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .pagination-controls {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 600px) {
+    .users-table-responsive table {
+        min-width: unset;
+        display: block;
+    }
+
+    .users-table-responsive thead {
+        display: none;
+    }
+
+    .users-table-responsive tbody,
+    .users-table-responsive tr {
+        display: block;
+        width: 100%;
+    }
+
+    .users-table-responsive tr {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .users-table-responsive td {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 6px 0;
+        border: none;
+    }
+
+    .users-table-responsive td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--muted-foreground);
+    }
+
+    .users-table-responsive tbody tr:hover {
+        background-color: transparent;
+    }
 }

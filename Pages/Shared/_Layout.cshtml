@@ -44,10 +44,15 @@
         }
     }
 
+    <div id="sidebar-backdrop"></div>
+
     <div id="main-wrapper">
         <header>
             <nav class="navbar navbar-expand-sm admin-header">
                 <div class="container-fluid">
+                    <button class="sidebar-toggle-btn mobile-toggle" type="button" aria-label="Toggle sidebar">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
                     <span class="admin-dash-text">@ViewData["PageHeader"]</span>
                     <div class="ms-auto d-flex align-items-center gap-2">
                         <partial name="_LoginPartial" />
@@ -100,28 +105,70 @@
 
     <script>
         const sidebar = document.getElementById('sidebar');
-        const toggleBtn = document.getElementById('sidebarToggle');
+        const toggleButtons = document.querySelectorAll('.sidebar-toggle-btn');
         const toggleIcon = document.getElementById('toggleIcon');
+        const backdrop = document.getElementById('sidebar-backdrop');
+        const mediaQuery = window.matchMedia('(max-width: 992px)');
+        let wasCollapsed = false;
 
-        if (toggleBtn && sidebar) {
-            toggleBtn.addEventListener('click', () => {
-                sidebar.classList.toggle('collapsed');
-
-                if (toggleIcon) {
-                    if (sidebar.classList.contains('collapsed')) {
-                        toggleIcon.classList.remove('fa-angles-left');
-                        toggleIcon.classList.add('fa-bars');
-                    } else {
-                        toggleIcon.classList.remove('fa-bars');
-                        toggleIcon.classList.add('fa-angles-left');
-                    }
+        const syncCollapsedState = () => {
+            if (!sidebar) return;
+            const collapsed = sidebar.classList.contains('collapsed');
+            document.body.classList.toggle('sidebar-collapsed', collapsed);
+            if (toggleIcon) {
+                if (collapsed) {
+                    toggleIcon.classList.remove('fa-angles-left');
+                    toggleIcon.classList.add('fa-bars');
+                } else {
+                    toggleIcon.classList.remove('fa-bars');
+                    toggleIcon.classList.add('fa-angles-left');
                 }
+            }
+        };
+
+        const applySidebarMode = () => {
+            document.body.classList.toggle('is-mobile', mediaQuery.matches);
+
+            if (mediaQuery.matches) {
+                if (sidebar) {
+                    wasCollapsed = sidebar.classList.contains('collapsed');
+                    sidebar.classList.remove('collapsed');
+                }
+                document.body.classList.remove('sidebar-collapsed');
+                document.body.classList.remove('sidebar-open');
+            } else {
+                if (sidebar && wasCollapsed) {
+                    sidebar.classList.add('collapsed');
+                }
+                syncCollapsedState();
+            }
+        };
+
+        applySidebarMode();
+        mediaQuery.addEventListener('change', applySidebarMode);
+
+        toggleButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (!sidebar) return;
+
+                if (document.body.classList.contains('is-mobile')) {
+                    document.body.classList.toggle('sidebar-open');
+                } else {
+                    sidebar.classList.toggle('collapsed');
+                    syncCollapsedState();
+                }
+            });
+        });
+
+        if (backdrop) {
+            backdrop.addEventListener('click', () => {
+                document.body.classList.remove('sidebar-open');
             });
         }
 
         // Highlight active nav link based on current page
         const currentPath = window.location.pathname;
-        $('.nav-item-link').each(function() {
+        $('.nav-item-link').each(function () {
             const href = $(this).attr('href');
             if (href && href !== '#' && currentPath.includes(href)) {
                 $('.nav-item-link').removeClass('active');

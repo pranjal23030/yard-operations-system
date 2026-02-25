@@ -5,6 +5,8 @@
     flex-direction: column;
     gap: 24px;
     max-width: 700px;
+    width: 100%;
+    margin: 0;
 }
 
 /* Profile Card */
@@ -67,6 +69,10 @@
     font-weight: 600;
     color: white;
     letter-spacing: 1px;
+}
+
+.profile-user-info {
+    width: 100%;
 }
 
 .profile-user-info h3 {
@@ -180,4 +186,37 @@
 
 .profile-alert i {
     font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .profile-card-body {
+        padding: 16px;
+    }
+
+    .profile-card-header {
+        padding: 14px 16px;
+    }
+
+    .profile-avatar-section {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 600px) {
+    .profile-form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-form-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .profile-form-actions .btn-primary-custom,
+    .profile-form-actions .btn-cancel-neutral {
+        width: 100%;
+        justify-content: center;
+    }
 }

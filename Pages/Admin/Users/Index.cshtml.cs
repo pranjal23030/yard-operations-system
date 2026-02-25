@@ -89,7 +89,7 @@ namespace YardOps.Pages.Admin.Users
                 FirstName = Input.FirstName,
                 LastName = Input.LastName,
                 Status = "Inactive",
-                CreatedOn = DateTime.UtcNow, 
+                CreatedOn = DateTime.UtcNow,
                 CreatedBy = currentAdmin?.Id,
                 EmailConfirmed = false
             };
@@ -400,6 +400,7 @@ namespace YardOps.Pages.Admin.Users
                     Email = user.Email!,
                     Role = role,
                     Status = user.Status,
+                    PhoneNumber = user.PhoneNumber,
                     LastLogin = user.LastLogin,
                     CreatedOn = user.CreatedOn,
                     EmailConfirmed = user.EmailConfirmed
