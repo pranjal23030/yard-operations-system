@@ -11,6 +11,13 @@ namespace YardOps.Services
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        
+        // JSON serializer options for human-readable output
+        private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        {
+            WriteIndented = false,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        };
 
         public ActivityLogger(
             ApplicationDbContext context,
@@ -36,7 +43,7 @@ namespace YardOps.Services
                 CreatedOn = DateTime.UtcNow,
                 Action = action,
                 Description = description,
-                JsonData = extraData != null ? JsonSerializer.Serialize(extraData) : null
+                JsonData = extraData != null ? JsonSerializer.Serialize(extraData, _jsonOptions) : null
             };
 
             _context.ActivityLogs.Add(log);
