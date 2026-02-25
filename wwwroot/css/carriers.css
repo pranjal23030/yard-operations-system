@@ -353,12 +353,9 @@ carrier-subtitle {
         justify-content: flex-end;
     }
 
-    /* Actions column styling for mobile */
+    /* Actions column styling for mobile - matches Users page */
     .users-table td:last-child {
         justify-content: flex-end;
-        padding-top: 12px;
-        border-top: 1px solid var(--border);
-        margin-top: 8px;
     }
 
     .users-table td:last-child::before {
