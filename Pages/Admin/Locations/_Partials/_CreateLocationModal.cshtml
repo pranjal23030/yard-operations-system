@@ -31,7 +31,7 @@
                         <span asp-validation-for="Input.LocationName" class="validation-error-custom"></span>
                     </div>
 
-                    <!-- Capacity (shown only for Zone and Dock) -->
+                    <!-- Capacity (shown only for Zone) -->
                     <div class="form-group-custom" id="createCapacityGroup" style="display: none;">
                         <label class="form-label-custom">Capacity <span class="text-danger">*</span></label>
                         <input type="number" asp-for="Input.Capacity" class="form-input-custom"
@@ -58,6 +58,7 @@
                         <span asp-validation-for="Input.Description" class="validation-error-custom"></span>
                     </div>
                 </div>
+
                 <div class="modal-footer modal-footer-custom">
                     <button type="button" class="btn-cancel-neutral" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-primary-custom">Create Location</button>

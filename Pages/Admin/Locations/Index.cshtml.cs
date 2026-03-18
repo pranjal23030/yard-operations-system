@@ -156,12 +156,12 @@ namespace YardOps.Pages.Admin.Locations
             // Manually bind the Input model
             this.Input = Input;
 
-            // Validate capacity for Zone and Dock types
-            if (Input.LocationType == "Zone" || Input.LocationType == "Dock")
+            // Validate capacity for Zone type only
+            if (Input.LocationType == "Zone")
             {
                 if (!Input.Capacity.HasValue || Input.Capacity < 1 || Input.Capacity > 1000)
                 {
-                    TempData["Error"] = "Capacity is required for Zone and Dock types (1-1000).";
+                    TempData["Error"] = "Capacity is required for Zone types (1-1000).";
                     return RedirectToPage();
                 }
             }
@@ -202,7 +202,7 @@ namespace YardOps.Pages.Admin.Locations
             int? capacity = Input.LocationType switch
             {
                 "Zone" => Input.Capacity ?? 10,
-                "Dock" => Input.Capacity ?? 1,
+                "Dock" => 1,  // Docks always have fixed capacity 1
                 "Slot" => 1,  // Slots always have capacity 1
                 "Gate" => null,  // Gates don't have capacity
                 _ => null

@@ -9,6 +9,8 @@ obj/
 *.userosscache
 *.sln.docstates
 
+*.github
+
 ## ASP.NET Core
 appsettings.Development.json
 appsettings.json
