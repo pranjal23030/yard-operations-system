@@ -25,8 +25,9 @@
             <i class="fa-solid fa-truck"></i>
             <span>Trailers</span>
         </a>
-        <a href="#" class="nav-item-link">
-            <i class="fa-solid fa-location-dot"></i>
+        <a class="nav-item-link @(ViewContext.RouteData.Values["page"]?.ToString()?.Contains("Locations") == true ? "active" : "")" 
+           asp-page="/Admin/Locations/Index">
+            <i class="fa-solid fa-map-location-dot"></i>
             <span>Locations</span>
         </a>
         <a href="#" class="nav-item-link">

@@ -1,0 +1,395 @@
+@page
+@using YardOps.Pages.Admin.Locations
+@model IndexModel
+@{
+    ViewData["Title"] = "Locations";
+    ViewData["PageHeader"] = "Location Management";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/components.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/locations.css" asp-append-version="true" />
+}
+
+<!-- Alerts -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fa-solid fa-check-circle me-2"></i>
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fa-solid fa-circle-exclamation me-2"></i>
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["Info"] != null)
+{
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <i class="fa-solid fa-info-circle me-2"></i>
+        @TempData["Info"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- Yard Overview Card -->
+@if (Model.CurrentYard != null)
+{
+    <div class="yard-overview-card">
+        <div class="yard-header">
+            <div class="yard-info">
+                <div class="yard-icon">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+                <div class="yard-details">
+                    <h2 class="yard-name">@Model.CurrentYard.YardName</h2>
+                    <p class="yard-address">@Model.CurrentYard.Address</p>
+                </div>
+            </div>
+        </div>
+        <div class="yard-stats">
+            <div class="stat-card stat-zones">
+                <span class="stat-count">@Model.ZoneCount</span>
+                <span class="stat-label">Zones</span>
+            </div>
+            <div class="stat-card stat-slots">
+                <span class="stat-count">@Model.SlotCount</span>
+                <span class="stat-label">Slots</span>
+            </div>
+            <div class="stat-card stat-docks">
+                <span class="stat-count">@Model.DockCount</span>
+                <span class="stat-label">Docks</span>
+            </div>
+            <div class="stat-card stat-gates">
+                <span class="stat-count">@Model.GateCount</span>
+                <span class="stat-label">Gates</span>
+            </div>
+        </div>
+        <div class="yard-occupancy">
+            <div class="occupancy-header">
+                <span class="occupancy-label">Overall Occupancy</span>
+                <span class="occupancy-value">@Model.TotalOccupancy/@Model.TotalCapacity (@Model.OverallOccupancyPercentage%)</span>
+            </div>
+            <div class="occupancy-bar">
+                <div class="occupancy-fill" style="width: @Model.OverallOccupancyPercentage%"></div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Main Content: Two Column Layout -->
+<div class="locations-container">
+    <!-- Left Panel: Location List -->
+    <div class="locations-list-panel">
+        <div class="list-header">
+            <h3 class="list-title">All Locations</h3>
+            <button type="button" class="btn-add-location" data-bs-toggle="modal" data-bs-target="#createLocationModal">
+                <i class="fa-solid fa-plus"></i>
+                Add
+            </button>
+        </div>
+
+        <!-- Search -->
+        <form method="get" id="filterForm" class="location-filters">
+            <div class="search-box">
+                <i class="fa-solid fa-search search-icon"></i>
+                <input type="text" name="SearchTerm" value="@Model.SearchTerm" 
+                       placeholder="Search locations..." 
+                       onchange="this.form.submit()" />
+            </div>
+            <div class="filter-select-wrapper">
+                <i class="fa-solid fa-filter filter-icon"></i>
+                <select name="TypeFilter" class="filter-select" onchange="this.form.submit()">
+                    <option value="all" selected="@(string.IsNullOrEmpty(Model.TypeFilter) || Model.TypeFilter == "all")">All Types</option>
+                    <option value="Zone" selected="@(Model.TypeFilter == "Zone")">Zones</option>
+                    <option value="Slot" selected="@(Model.TypeFilter == "Slot")">Slots</option>
+                    <option value="Dock" selected="@(Model.TypeFilter == "Dock")">Docks</option>
+                    <option value="Gate" selected="@(Model.TypeFilter == "Gate")">Gates</option>
+                </select>
+            </div>
+            @if (Model.SelectedLocationId.HasValue)
+            {
+                <input type="hidden" name="selectedId" value="@Model.SelectedLocationId" />
+            }
+        </form>
+
+        <!-- Location Groups -->
+        <div class="location-groups">
+            @if (!Model.AllLocations.Any())
+            {
+                <div class="empty-state">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <p>No locations found</p>
+                    <span>Create your first location to get started</span>
+                </div>
+            }
+            else
+            {
+                <!-- Zones -->
+                @if (Model.Zones.Any() && (string.IsNullOrEmpty(Model.TypeFilter) || Model.TypeFilter == "all" || Model.TypeFilter == "Zone"))
+                {
+                    <div class="location-group">
+                        <div class="group-header">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <span>ZONES (@Model.Zones.Count)</span>
+                        </div>
+                        <ul class="location-list">
+                            @foreach (var zone in Model.Zones)
+                            {
+                                <li class="location-item @(Model.SelectedLocationId == zone.LocationId ? "selected" : "")"
+                                    data-location-id="@zone.LocationId"
+                                    onclick="selectLocation(@zone.LocationId)">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                    <span class="location-name">@zone.LocationName</span>
+                                    @if (zone.Status == "Maintenance")
+                                    {
+                                        <span class="status-dot maintenance" title="Maintenance"></span>
+                                    }
+                                    else if (zone.Status == "Inactive")
+                                    {
+                                        <span class="status-dot inactive" title="Inactive"></span>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+
+                <!-- Slots -->
+                @if (Model.Slots.Any() && (string.IsNullOrEmpty(Model.TypeFilter) || Model.TypeFilter == "all" || Model.TypeFilter == "Slot"))
+                {
+                    <div class="location-group">
+                        <div class="group-header">
+                            <i class="fa-solid fa-border-all"></i>
+                            <span>SLOTS (@Model.Slots.Count)</span>
+                        </div>
+                        <ul class="location-list">
+                            @foreach (var slot in Model.Slots)
+                            {
+                                <li class="location-item @(Model.SelectedLocationId == slot.LocationId ? "selected" : "")"
+                                    data-location-id="@slot.LocationId"
+                                    onclick="selectLocation(@slot.LocationId)">
+                                    <i class="fa-solid fa-border-all"></i>
+                                    <span class="location-name">@slot.LocationName</span>
+                                    @if (slot.Status == "Maintenance")
+                                    {
+                                        <span class="status-dot maintenance" title="Maintenance"></span>
+                                    }
+                                    else if (slot.Status == "Inactive")
+                                    {
+                                        <span class="status-dot inactive" title="Inactive"></span>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+
+                <!-- Docks -->
+                @if (Model.Docks.Any() && (string.IsNullOrEmpty(Model.TypeFilter) || Model.TypeFilter == "all" || Model.TypeFilter == "Dock"))
+                {
+                    <div class="location-group">
+                        <div class="group-header">
+                            <i class="fa-solid fa-warehouse"></i>
+                            <span>DOCKS (@Model.Docks.Count)</span>
+                        </div>
+                        <ul class="location-list">
+                            @foreach (var dock in Model.Docks)
+                            {
+                                <li class="location-item @(Model.SelectedLocationId == dock.LocationId ? "selected" : "")"
+                                    data-location-id="@dock.LocationId"
+                                    onclick="selectLocation(@dock.LocationId)">
+                                    <i class="fa-solid fa-warehouse"></i>
+                                    <span class="location-name">@dock.LocationName</span>
+                                    @if (dock.Status == "Maintenance")
+                                    {
+                                        <span class="status-dot maintenance" title="Maintenance"></span>
+                                    }
+                                    else if (dock.Status == "Inactive")
+                                    {
+                                        <span class="status-dot inactive" title="Inactive"></span>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+
+                <!-- Gates -->
+                @if (Model.Gates.Any() && (string.IsNullOrEmpty(Model.TypeFilter) || Model.TypeFilter == "all" || Model.TypeFilter == "Gate"))
+                {
+                    <div class="location-group">
+                        <div class="group-header">
+                            <i class="fa-solid fa-door-open"></i>
+                            <span>GATES (@Model.Gates.Count)</span>
+                        </div>
+                        <ul class="location-list">
+                            @foreach (var gate in Model.Gates)
+                            {
+                                <li class="location-item @(Model.SelectedLocationId == gate.LocationId ? "selected" : "")"
+                                    data-location-id="@gate.LocationId"
+                                    onclick="selectLocation(@gate.LocationId)">
+                                    <i class="fa-solid fa-door-open"></i>
+                                    <span class="location-name">@gate.LocationName</span>
+                                    @if (gate.Status == "Maintenance")
+                                    {
+                                        <span class="status-dot maintenance" title="Maintenance"></span>
+                                    }
+                                    else if (gate.Status == "Inactive")
+                                    {
+                                        <span class="status-dot inactive" title="Inactive"></span>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <!-- Right Panel: Location Detail -->
+    <div class="location-detail-panel">
+        @if (Model.SelectedLocation != null)
+        {
+            <div class="detail-card">
+                <!-- Header -->
+                <div class="detail-header">
+                    <div class="detail-title">
+                        <i class="fa-solid @Model.SelectedLocation.TypeIcon"></i>
+                        <h2>@Model.SelectedLocation.LocationName</h2>
+                    </div>
+                    <div class="detail-actions">
+                        <button type="button" class="btn-edit"
+                                data-bs-toggle="modal" data-bs-target="#editLocationModal"
+                                data-location-id="@Model.SelectedLocation.LocationId"
+                                data-location-name="@Model.SelectedLocation.LocationName"
+                                data-location-type="@Model.SelectedLocation.LocationType"
+                                data-location-capacity="@Model.SelectedLocation.Capacity"
+                                data-location-status="@Model.SelectedLocation.Status"
+                                data-location-description="@Model.SelectedLocation.Description">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            Edit
+                        </button>
+                        <button type="button" class="btn-delete"
+                                data-bs-toggle="modal" data-bs-target="#deleteLocationModal"
+                                data-location-id="@Model.SelectedLocation.LocationId"
+                                data-location-name="@Model.SelectedLocation.LocationName"
+                                data-location-type="@Model.SelectedLocation.LocationType"
+                                data-location-occupancy="@Model.SelectedLocation.CurrentOccupancy">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Info Grid -->
+                <div class="detail-info-grid">
+                    <div class="info-box">
+                        <span class="info-label">Type</span>
+                        <span class="type-badge @Model.SelectedLocation.TypeBadgeClass">@Model.SelectedLocation.LocationType</span>
+                    </div>
+                    <div class="info-box">
+                        <span class="info-label">Status</span>
+                        <span class="status-badge @Model.SelectedLocation.StatusBadgeClass">@Model.SelectedLocation.Status</span>
+                    </div>
+                </div>
+
+                @if (Model.SelectedLocation.LocationType != "Gate")
+                {
+                    <div class="detail-info-grid">
+                        <div class="info-box">
+                            <span class="info-label">Capacity</span>
+                            <span class="info-value">@(Model.SelectedLocation.Capacity ?? 0)</span>
+                        </div>
+                        <div class="info-box">
+                            <span class="info-label">Available</span>
+                            <span class="info-value available">@Model.SelectedLocation.Available</span>
+                        </div>
+                    </div>
+
+                    <!-- Occupancy Bar -->
+                    <div class="detail-occupancy">
+                        <div class="occupancy-header">
+                            <span class="occupancy-label">Occupancy</span>
+                            <span class="occupancy-value">@Model.SelectedLocation.CurrentOccupancy/@(Model.SelectedLocation.Capacity ?? 0)</span>
+                        </div>
+                        <div class="occupancy-bar">
+                            <div class="occupancy-fill @(Model.SelectedLocation.OccupancyPercentage >= 90 ? "high" : Model.SelectedLocation.OccupancyPercentage >= 70 ? "medium" : "")" 
+                                 style="width: @Model.SelectedLocation.OccupancyPercentage%"></div>
+                        </div>
+                    </div>
+                }
+
+                <!-- Description -->
+                @if (!string.IsNullOrEmpty(Model.SelectedLocation.Description))
+                {
+                    <div class="detail-description">
+                        <span class="info-label">Description</span>
+                        <p>@Model.SelectedLocation.Description</p>
+                    </div>
+                }
+            </div>
+
+            <!-- Slot Layout Preview (Zone & Slot only) -->
+            @if (Model.SelectedLocation.ShowSlotPreview && Model.SelectedLocation.Capacity.HasValue)
+            {
+                <div class="slot-preview-card">
+                    <div class="preview-header">
+                        <i class="fa-solid fa-border-all"></i>
+                        <h3>Slot Layout Preview</h3>
+                    </div>
+                    <div class="preview-legend">
+                        <span class="legend-item">
+                            <span class="legend-box occupied"></span>
+                            Occupied
+                        </span>
+                        <span class="legend-item">
+                            <span class="legend-box available"></span>
+                            Available
+                        </span>
+                        <span class="legend-item">
+                            <span class="legend-box maintenance"></span>
+                            Maintenance
+                        </span>
+                    </div>
+                    <div class="slot-grid">
+                        @{
+                            var capacity = Model.SelectedLocation.Capacity ?? 1;
+                            var occupied = Model.SelectedLocation.CurrentOccupancy;
+                            var isMaintenance = Model.SelectedLocation.Status == "Maintenance";
+                        }
+                        @for (int i = 0; i < capacity; i++)
+                        {
+                            var slotClass = isMaintenance ? "maintenance" : (i < occupied ? "occupied" : "available");
+                            <div class="slot-box @slotClass" title="@(isMaintenance ? "Maintenance" : (i < occupied ? "Occupied" : "Available"))"></div>
+                        }
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="no-selection">
+                <i class="fa-solid fa-hand-pointer"></i>
+                <p>Select a location to view details</p>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Modals -->
+<partial name="_Partials/_CreateLocationModal" model="Model" />
+<partial name="_Partials/_EditLocationModal" model="Model" />
+<partial name="_Partials/_DeleteLocationModal" model="Model" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_Partials/_LocationScripts" />
+}

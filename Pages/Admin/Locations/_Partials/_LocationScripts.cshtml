@@ -1,0 +1,113 @@
+<script>
+    // Auto-dismiss alerts after 5 seconds
+    setTimeout(function () {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+
+    // Select location (navigate with selectedId)
+    function selectLocation(locationId) {
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('selectedId', locationId);
+        window.location.href = currentUrl.toString();
+    }
+
+    // Create Modal: Show/hide capacity field based on type
+    document.getElementById('createLocationType')?.addEventListener('change', function() {
+        const capacityGroup = document.getElementById('createCapacityGroup');
+        const capacityInput = document.querySelector('input[name="Input.Capacity"]');
+        
+        if (this.value === 'Zone' || this.value === 'Dock') {
+            capacityGroup.style.display = 'block';
+            capacityInput.required = true;
+            if (this.value === 'Zone') {
+                capacityInput.placeholder = 'e.g., 30 (for zone capacity)';
+            } else {
+                capacityInput.placeholder = 'e.g., 3 (for dock bays)';
+            }
+        } else {
+            capacityGroup.style.display = 'none';
+            capacityInput.required = false;
+            capacityInput.value = '';
+        }
+    });
+
+    // Edit Modal: Populate fields when opened
+    const editModal = document.getElementById('editLocationModal');
+    if (editModal) {
+        editModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            
+            const id = button.getAttribute('data-location-id');
+            const name = button.getAttribute('data-location-name');
+            const type = button.getAttribute('data-location-type');
+            const capacity = button.getAttribute('data-location-capacity');
+            const status = button.getAttribute('data-location-status');
+            const description = button.getAttribute('data-location-description');
+            
+            document.getElementById('editLocationId').value = id;
+            document.getElementById('editLocationType').value = type;
+            document.getElementById('editLocationTypeDisplay').value = type;
+            document.getElementById('editLocationName').value = name;
+            document.getElementById('editLocationStatus').value = status;
+            document.getElementById('editLocationDescription').value = description || '';
+            
+            // Show/hide capacity field based on type
+            const capacityGroup = document.getElementById('editCapacityGroup');
+            const capacityInput = document.getElementById('editLocationCapacity');
+            
+            if (type === 'Zone' || type === 'Dock') {
+                capacityGroup.style.display = 'block';
+                capacityInput.value = capacity || '';
+                capacityInput.required = true;
+            } else {
+                capacityGroup.style.display = 'none';
+                capacityInput.value = '';
+                capacityInput.required = false;
+            }
+        });
+    }
+
+    // Delete Modal: Populate fields and check occupancy
+    const deleteModal = document.getElementById('deleteLocationModal');
+    if (deleteModal) {
+        deleteModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            
+            const id = button.getAttribute('data-location-id');
+            const name = button.getAttribute('data-location-name');
+            const type = button.getAttribute('data-location-type');
+            const occupancy = parseInt(button.getAttribute('data-location-occupancy')) || 0;
+            
+            document.getElementById('deleteLocationId').value = id;
+            document.getElementById('deleteLocationName').textContent = name + ' (' + type + ')';
+            
+            const warningDiv = document.getElementById('deleteOccupancyWarning');
+            const deleteBtn = document.getElementById('confirmDeleteBtn');
+            
+            if (occupancy > 0) {
+                document.getElementById('deleteOccupancyCount').textContent = occupancy;
+                warningDiv.style.display = 'block';
+                deleteBtn.disabled = true;
+                deleteBtn.classList.add('btn-disabled');
+            } else {
+                warningDiv.style.display = 'none';
+                deleteBtn.disabled = false;
+                deleteBtn.classList.remove('btn-disabled');
+            }
+        });
+    }
+
+    // Reset create modal when closed
+    const createModal = document.getElementById('createLocationModal');
+    if (createModal) {
+        createModal.addEventListener('hidden.bs.modal', function() {
+            const form = this.querySelector('form');
+            form.reset();
+            document.getElementById('createCapacityGroup').style.display = 'none';
+        });
+    }
+</script>

@@ -14,6 +14,7 @@ namespace YardOps.Data
         public DbSet<ActivityLog> ActivityLogs { get; set; }
         public DbSet<Yard> Yards { get; set; }
         public DbSet<Carrier> Carriers { get; set; }
+        public DbSet<Location> Locations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -58,6 +59,25 @@ namespace YardOps.Data
                 .WithMany()
                 .HasForeignKey(r => r.CreatedBy)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            // Configure Location -> Yard relationship
+            modelBuilder.Entity<Location>()
+                .HasOne(l => l.Yard)
+                .WithMany()
+                .HasForeignKey(l => l.YardId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Configure Location -> User relationship
+            modelBuilder.Entity<Location>()
+                .HasOne(l => l.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(l => l.CreatedBy)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // Unique constraint on LocationName per Yard
+            modelBuilder.Entity<Location>()
+                .HasIndex(l => new { l.YardId, l.LocationName })
+                .IsUnique();
         }
     }
 }
