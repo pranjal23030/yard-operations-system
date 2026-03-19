@@ -1,0 +1,239 @@
+.dash-grid {
+    display: grid;
+    gap: 14px;
+    padding: 6px 16px 16px;
+    font-size: 0.9rem;
+    color: var(--foreground);
+}
+
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(170px, 1fr));
+    gap: 12px;
+}
+
+.kpi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    min-width: 0;
+}
+
+.kpi-label {
+    font-size: 0.85rem;
+    color: var(--muted-foreground);
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.kpi-value {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--foreground);
+    line-height: 1.2;
+}
+
+.kpi-sub {
+    font-size: 0.82rem;
+    color: var(--muted-foreground);
+    font-weight: 500;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 0.9fr;
+    gap: 12px;
+    align-items: start;
+}
+
+.panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    min-width: 0;
+}
+
+.panel-title {
+    margin: 0 0 10px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--foreground);
+}
+
+.chart-wrap {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+.chart-wrap canvas {
+    max-width: 100% !important;
+}
+.chart-wrap-sm {
+    height: 250px;
+}
+.chart-wrap-md {
+    height: 250px;
+}
+
+.status-list {
+    margin-top: 10px;
+    display: grid;
+    gap: 6px;
+}
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.side-stack {
+    display: grid;
+    gap: 12px;
+}
+
+.quick-links {
+    display: grid;
+    gap: 8px;
+}
+.quick-links-single {
+    grid-template-columns: 1fr;
+}
+.quick-link {
+    display: block;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    color: var(--foreground);
+    font-weight: 500;
+    background: #fff;
+    font-size: 0.9rem;
+}
+.quick-link:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.activity-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+}
+.activity-item {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+}
+.activity-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.activity-action {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.78rem;
+    line-height: 1;
+    background-color: var(--muted);
+    color: var(--foreground);
+    border: 1px solid var(--border);
+}
+.activity-time {
+    color: var(--muted-foreground);
+    font-size: 0.82rem;
+    font-weight: 500;
+}
+.activity-desc {
+    margin-top: 4px;
+    font-size: 0.88rem;
+    font-weight: 400;
+    line-height: 1.35;
+    word-break: break-word;
+}
+.activity-actor {
+    margin-top: 4px;
+    color: var(--muted-foreground);
+    font-size: 0.82rem;
+    font-weight: 500;
+}
+
+/* Large laptops */
+@media (max-width: 1366px) {
+    .kpi-grid {
+        grid-template-columns: repeat(4, minmax(150px, 1fr));
+    }
+
+    .content-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Tablets */
+@media (max-width: 1100px) {
+    .kpi-grid {
+        grid-template-columns: repeat(2, minmax(180px, 1fr));
+    }
+
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .chart-wrap-sm,
+    .chart-wrap-md {
+        height: 230px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .dash-grid {
+        padding: 8px 12px 12px;
+        gap: 12px;
+    }
+
+    .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .panel {
+        padding: 12px;
+    }
+
+    .panel-title {
+        font-size: 0.95rem;
+    }
+
+    .kpi-value {
+        font-size: 1.25rem;
+    }
+
+    .chart-wrap-sm,
+    .chart-wrap-md {
+        height: 210px;
+    }
+}
+
+/* Very small phones */
+@media (max-width: 480px) {
+    .dash-grid {
+        padding: 8px 10px 10px;
+    }
+
+    .activity-time,
+    .activity-actor {
+        font-size: 0.78rem;
+    }
+
+    .activity-desc {
+        font-size: 0.84rem;
+    }
+}

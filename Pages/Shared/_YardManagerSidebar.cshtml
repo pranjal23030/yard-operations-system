@@ -1,4 +1,8 @@
-@* YardManager Sidebar - Limited access (Dashboard, Operations, Trailers, Locations, Monitoring) *@
+@* YardManager Sidebar - Limited access *@
+@{
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? string.Empty;
+    var isDashboardActive = currentPage.Contains("/YardManager/Dashboard");
+}
 <aside id="sidebar">
     <div class="sidebar-header">
         <div class="sidebar-brand">
@@ -13,7 +17,7 @@
     </div>
 
     <nav class="sidebar-nav">
-        <a asp-page="/Index" class="nav-item-link">
+        <a asp-page="/YardManager/Dashboard" class="nav-item-link @(isDashboardActive ? "active" : "")">
             <i class="fa-solid fa-chart-line"></i>
             <span>Dashboard</span>
         </a>
@@ -26,7 +30,7 @@
             <i class="fa-solid fa-truck"></i>
             <span>Trailers</span>
         </a>
-        <a class="nav-item-link @(ViewContext.RouteData.Values["page"]?.ToString()?.Contains("Locations") == true ? "active" : "")" 
+        <a class="nav-item-link @(ViewContext.RouteData.Values["page"]?.ToString()?.Contains("Locations") == true ? "active" : "")"
            asp-page="/Admin/Locations/Index">
             <i class="fa-solid fa-map-location-dot"></i>
             <span>Locations</span>

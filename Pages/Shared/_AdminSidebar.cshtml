@@ -2,6 +2,7 @@
 @{
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? string.Empty;
 
+    var isDashboardActive = currentPage.Contains("/Admin/Dashboard");
     var isTrailersActive = currentPage.Contains("Trailers");
     var isCarriersActive = currentPage.Contains("Carriers");
     var isLocationsActive = currentPage.Contains("Locations");
@@ -27,7 +28,7 @@
     </div>
 
     <nav class="sidebar-nav">
-        <a asp-page="/Index" class="nav-item-link">
+        <a asp-page="/Admin/Dashboard" class="nav-item-link @(isDashboardActive ? "active" : "")">
             <i class="fa-solid fa-chart-line"></i>
             <span>Dashboard</span>
         </a>

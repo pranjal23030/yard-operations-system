@@ -1,4 +1,8 @@
-@* Driver Sidebar - Same style as Admin/YardManager, with limited navigation *@
+@* Driver Sidebar *@
+@{
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? string.Empty;
+    var isDashboardActive = currentPage.Contains("/Driver/Dashboard");
+}
 <aside id="sidebar">
     <div class="sidebar-header">
         <div class="sidebar-brand">
@@ -13,6 +17,10 @@
     </div>
 
     <nav class="sidebar-nav">
+        <a asp-page="/Driver/Dashboard" class="nav-item-link @(isDashboardActive ? "active" : "")">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Dashboard</span>
+        </a>
         <a href="#" class="nav-item-link">
             <i class="fa-solid fa-clipboard-list"></i>
             <span>My Assignment</span>
