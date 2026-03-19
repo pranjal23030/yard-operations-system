@@ -1,4 +1,18 @@
 @* Admin Sidebar - Full access to all navigation items *@
+@{
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? string.Empty;
+
+    var isTrailersActive = currentPage.Contains("Trailers");
+    var isCarriersActive = currentPage.Contains("Carriers");
+    var isLocationsActive = currentPage.Contains("Locations");
+    var isMasterDataActive = isTrailersActive || isCarriersActive || isLocationsActive;
+
+    var isUsersActive = currentPage.Contains("Users");
+    var isRolesActive = currentPage.Contains("Roles");
+    var isActivitiesActive = currentPage.Contains("Activities");
+    var isAccessControlActive = isUsersActive || isRolesActive || isActivitiesActive;
+}
+
 <aside id="sidebar">
     <div class="sidebar-header">
         <div class="sidebar-brand">
@@ -17,49 +31,60 @@
             <i class="fa-solid fa-chart-line"></i>
             <span>Dashboard</span>
         </a>
+
         <a href="#" class="nav-item-link">
             <i class="fa-solid fa-table-cells-large"></i>
             <span>Slot Allocation</span>
         </a>
+
         <a href="#" class="nav-item-link">
             <i class="fa-solid fa-wave-square"></i>
             <span>Operations</span>
         </a>
-        <a class="nav-item-link @(ViewContext.RouteData.Values["page"]?.ToString()?.Contains("Trailers") == true ? "active" : "")"
-           asp-page="/Admin/Trailers/Index">
-            <i class="fa-solid fa-truck"></i>
-            <span>Trailers</span>
-        </a>
-        <a asp-page="/Admin/Carriers/Index" class="nav-item-link">
-            <i class="fa-solid fa-building"></i>
-            <span>Carriers</span>
-        </a>
-        <a class="nav-item-link @(ViewContext.RouteData.Values["page"]?.ToString()?.Contains("Locations") == true ? "active" : "")"
-           asp-page="/Admin/Locations/Index">
-            <i class="fa-solid fa-map-location-dot"></i>
-            <span>Locations</span>
-        </a>
+
+        <div class="sidebar-group">
+            <button class="nav-group-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#adminMasterDataGroup" aria-expanded="@(isMasterDataActive ? "true" : "false")">
+                <i class="fa-solid fa-database"></i>
+                <span>Master Data</span>
+                <i class="fa-solid fa-chevron-down group-caret"></i>
+            </button>
+            <div class="collapse @(isMasterDataActive ? "show" : "") nav-group" id="adminMasterDataGroup">
+                <a asp-page="/Admin/Trailers/Index" class="nav-item-link nav-subitem @(isTrailersActive ? "active" : "")">
+                    <i class="fa-solid fa-truck"></i>
+                    <span>Trailers</span>
+                </a>
+                <a asp-page="/Admin/Carriers/Index" class="nav-item-link nav-subitem @(isCarriersActive ? "active" : "")">
+                    <i class="fa-solid fa-building"></i>
+                    <span>Carriers</span>
+                </a>
+                <a asp-page="/Admin/Locations/Index" class="nav-item-link nav-subitem @(isLocationsActive ? "active" : "")">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <span>Locations</span>
+                </a>
+            </div>
+        </div>
+
         <a href="#" class="nav-item-link">
             <i class="fa-solid fa-eye"></i>
             <span>Monitoring</span>
         </a>
 
         <div class="sidebar-group">
-            <button class="nav-group-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#adminUserGroup" aria-expanded="true">
+            <button class="nav-group-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#adminUserGroup" aria-expanded="@(isAccessControlActive ? "true" : "false")">
                 <i class="fa-solid fa-users-gear"></i>
                 <span>Access Control</span>
                 <i class="fa-solid fa-chevron-down group-caret"></i>
             </button>
-            <div class="collapse show nav-group" id="adminUserGroup">
-                <a asp-page="/Admin/Users/Index" class="nav-item-link nav-subitem">
+            <div class="collapse @(isAccessControlActive ? "show" : "") nav-group" id="adminUserGroup">
+                <a asp-page="/Admin/Users/Index" class="nav-item-link nav-subitem @(isUsersActive ? "active" : "")">
                     <i class="fa-solid fa-users"></i>
                     <span>Users</span>
                 </a>
-                <a asp-page="/Admin/Roles/Index" class="nav-item-link nav-subitem">
+                <a asp-page="/Admin/Roles/Index" class="nav-item-link nav-subitem @(isRolesActive ? "active" : "")">
                     <i class="fa-solid fa-shield-halved"></i>
                     <span>Roles</span>
                 </a>
-                <a asp-page="/Admin/Activities/Index" class="nav-item-link nav-subitem">
+                <a asp-page="/Admin/Activities/Index" class="nav-item-link nav-subitem @(isActivitiesActive ? "active" : "")">
                     <i class="fa-solid fa-list-check"></i>
                     <span>Activity Log</span>
                 </a>
