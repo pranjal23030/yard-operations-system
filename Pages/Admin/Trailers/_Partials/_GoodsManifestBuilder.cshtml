@@ -1,0 +1,29 @@
+@model string
+@{
+    var prefix = Model; // "Create" or "Edit"
+}
+
+<div class="goods-builder" data-prefix="@prefix">
+    <div class="row g-2 mb-3">
+        <div class="col-md-4"><input type="text" class="form-input-custom" id="@($"{prefix}GoodsDescription")" placeholder="Description" /></div>
+        <div class="col-md-2"><input type="number" step="0.01" min="0.01" class="form-input-custom" id="@($"{prefix}GoodsWeight")" placeholder="Weight" /></div>
+        <div class="col-md-2"><input type="number" min="1" class="form-input-custom" id="@($"{prefix}GoodsQuantity")" placeholder="Qty" value="1" /></div>
+        <div class="col-md-3"><input type="text" class="form-input-custom" id="@($"{prefix}GoodsNotes")" placeholder="Handling notes" /></div>
+        <div class="col-md-1 d-grid"><button type="button" class="btn btn-sm btn-outline-primary" id="@($"{prefix}AddGoodsBtn")">+</button></div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-sm align-middle">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Weight</th>
+                    <th>Qty</th>
+                    <th>Notes</th>
+                    <th style="width: 60px;">#</th>
+                </tr>
+            </thead>
+            <tbody id="@($"{prefix}GoodsRows")"></tbody>
+        </table>
+    </div>
+</div>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YardOps.Data;
 
@@ -11,9 +12,11 @@ using YardOps.Data;
 namespace YardOps.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260318123553_AddTrailersModule")]
+    partial class AddTrailersModule
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -563,8 +566,8 @@ namespace YardOps.Data.Migrations
                     b.Property<DateTime?>("DepartureTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("DriverUserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int?>("DriverUserId")
+                        .HasColumnType("int");
 
                     b.Property<string>("GoodsType")
                         .IsRequired()
@@ -583,8 +586,6 @@ namespace YardOps.Data.Migrations
                     b.HasIndex("CreatedBy");
 
                     b.HasIndex("CurrentLocationId");
-
-                    b.HasIndex("DriverUserId");
 
                     b.HasIndex("TrailerCode")
                         .IsUnique();
@@ -876,18 +877,11 @@ namespace YardOps.Data.Migrations
                         .HasForeignKey("CurrentLocationId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("YardOps.Data.ApplicationUser", "DriverUser")
-                        .WithMany()
-                        .HasForeignKey("DriverUserId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.Navigation("Carrier");
 
                     b.Navigation("CreatedByUser");
 
                     b.Navigation("CurrentLocation");
-
-                    b.Navigation("DriverUser");
                 });
 
             modelBuilder.Entity("YardOps.Models.TrailerHistory", b =>

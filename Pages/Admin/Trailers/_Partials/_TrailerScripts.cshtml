@@ -1,0 +1,255 @@
+@using YardOps.Pages.Admin.Trailers
+@model IndexModel
+
+<script>
+    let editGoodsItems = [];
+
+    setTimeout(() => {
+        document.querySelectorAll('.alert').forEach(a => {
+            try { new bootstrap.Alert(a).close(); } catch (e) {}
+        });
+    }, 5000);
+
+    document.addEventListener('DOMContentLoaded', function () {
+        @if (Model.ShowCreateModal)
+        {
+            <text>new bootstrap.Modal(document.getElementById('createTrailerModal')).show();</text>
+        }
+
+        const ingateModal = document.getElementById('ingateModal');
+        if (ingateModal) {
+            ingateModal.addEventListener('show.bs.modal', function (event) {
+                const btn = event.relatedTarget;
+                if (!btn) return;
+                document.getElementById('ingateTrailerId').value = btn.getAttribute('data-trailer-id') || '';
+                document.getElementById('ingateTrailerCode').textContent = btn.getAttribute('data-trailer-code') || '—';
+            });
+        }
+
+        const outgateModal = document.getElementById('outgateModal');
+        if (outgateModal) {
+            outgateModal.addEventListener('show.bs.modal', function (event) {
+                const btn = event.relatedTarget;
+                if (!btn) return;
+                document.getElementById('outgateTrailerId').value = btn.getAttribute('data-trailer-id') || '';
+                document.getElementById('outgateTrailerCode').textContent = btn.getAttribute('data-trailer-code') || '—';
+            });
+        }
+
+        const deleteModal = document.getElementById('deleteTrailerModal');
+        if (deleteModal) {
+            deleteModal.addEventListener('show.bs.modal', function (event) {
+                const btn = event.relatedTarget;
+                if (!btn) return;
+                document.getElementById('deleteTrailerId').value = btn.getAttribute('data-trailer-id') || '';
+                document.getElementById('deleteTrailerCode').textContent = btn.getAttribute('data-trailer-code') || '—';
+            });
+        }
+
+        const viewModal = document.getElementById('viewTrailerModal');
+        if (viewModal) {
+            viewModal.addEventListener('show.bs.modal', async function (event) {
+                const btn = event.relatedTarget;
+                if (!btn) return;
+                const trailerId = btn.getAttribute('data-trailer-id');
+                if (!trailerId) return;
+
+                const res = await fetch(`?handler=TrailerDetails&trailerId=${trailerId}`);
+                if (!res.ok) return;
+
+                const data = await res.json();
+
+                document.getElementById('viewTrailerCode').textContent = data.trailerCode ?? '—';
+                document.getElementById('viewCarrierName').textContent = data.carrierName ?? '—';
+                document.getElementById('viewDriverName').textContent = data.driverName ?? '—';
+                document.getElementById('viewDriverContact').textContent = data.driverContact ?? '—';
+                document.getElementById('viewGoodsType').textContent = data.goodsType ?? '—';
+                document.getElementById('viewLocationName').textContent = data.locationName ?? '—';
+                document.getElementById('viewArrivalTime').textContent = data.arrival ?? '—';
+
+                const status = document.getElementById('viewStatusBadge');
+                status.textContent = data.currentStatus ?? '—';
+                status.className = `status-badge ${getStatusClass(data.currentStatus)}`;
+
+                const goodsRows = document.getElementById('viewGoodsRows');
+                goodsRows.innerHTML = '';
+                if (data.goods && data.goods.length > 0) {
+                    data.goods.forEach(g => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${g.description ?? ''}</td>
+                            <td>${g.weight ?? ''}</td>
+                            <td>${g.quantity ?? ''}</td>
+                            <td>${g.totalWeight ?? ''}</td>
+                            <td>${g.handlingNotes ?? '—'}</td>
+                            <td>${g.createdByEmail ?? 'Unknown'}</td>`;
+                        goodsRows.appendChild(tr);
+                    });
+                } else {
+                    goodsRows.innerHTML = `<tr><td colspan="6" class="text-muted text-center">No goods manifest found.</td></tr>`;
+                }
+
+                const historyRows = document.getElementById('viewHistoryRows');
+                historyRows.innerHTML = '';
+                if (data.history && data.history.length > 0) {
+                    data.history.forEach(h => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${h.locationName ?? '—'}</td>
+                            <td>${h.startTime ?? '—'}</td>
+                            <td>${h.endTime ?? '—'}</td>
+                            <td>${h.dwellTimeMinutes ?? 0}</td>
+                            <td>${h.createdByEmail ?? 'Unknown'}</td>`;
+                        historyRows.appendChild(tr);
+                    });
+                } else {
+                    historyRows.innerHTML = `<tr><td colspan="5" class="text-muted text-center">No history records found.</td></tr>`;
+                }
+            });
+        }
+
+        const editModal = document.getElementById('editTrailerModal');
+        if (editModal) {
+            editModal.addEventListener('show.bs.modal', async function (event) {
+                const btn = event.relatedTarget;
+                if (!btn) return;
+
+                const trailerId = btn.getAttribute('data-trailer-id');
+                if (!trailerId) return;
+
+                const res = await fetch(`?handler=TrailerDetails&trailerId=${trailerId}`);
+                if (!res.ok) return;
+
+                const data = await res.json();
+
+                document.getElementById('editTrailerCodeDisplay').textContent = data.trailerCode ?? '—';
+                document.getElementById('EditInput_TrailerId').value = data.trailerId ?? '';
+                document.getElementById('EditInput_CarrierId').value = data.carrierId ?? '';
+                document.getElementById('EditInput_DriverUserId').value = data.driverUserId ?? '';
+                document.getElementById('EditInput_GoodsType').value = data.goodsType ?? '';
+                document.getElementById('EditInput_CurrentStatus').value = data.currentStatus ?? '';
+                document.getElementById('EditInput_LocationId').value = data.locationId ?? '';
+
+                editGoodsItems = (data.goods || []).map(g => ({
+                    Description: g.description,
+                    Weight: g.weight,
+                    Quantity: g.quantity,
+                    HandlingNotes: g.handlingNotes
+                }));
+
+                document.getElementById('EditGoodsJson').value = JSON.stringify(editGoodsItems);
+                renderEditGoods();
+            });
+        }
+
+        initCreateGoodsBuilder();
+        initEditGoodsBuilder();
+    });
+
+    function getStatusClass(status) {
+        switch (status) {
+            case 'Incoming': return 'status-incoming';
+            case 'In-Yard': return 'status-inyard';
+            case 'Outgoing': return 'status-outgoing';
+            case 'Checked Out': return 'status-checkedout';
+            default: return 'status-default';
+        }
+    }
+
+    function initCreateGoodsBuilder() {
+        initGoodsBuilder('Create', 'GoodsJson');
+    }
+
+    function initEditGoodsBuilder() {
+        initGoodsBuilder('Edit', 'EditGoodsJson');
+    }
+
+    function initGoodsBuilder(prefix, jsonFieldId) {
+        const rows = document.getElementById(prefix + 'GoodsRows');
+        const btn = document.getElementById(prefix + 'AddGoodsBtn');
+        const hidden = document.getElementById(jsonFieldId);
+
+        if (!rows || !btn || !hidden) return;
+
+        let items = [];
+        try {
+            items = hidden.value ? JSON.parse(hidden.value) : [];
+            if (!Array.isArray(items)) items = [];
+        } catch (e) {
+            items = [];
+        }
+
+        function sync() {
+            hidden.value = JSON.stringify(items);
+            render();
+        }
+
+        function render() {
+            rows.innerHTML = '';
+            items.forEach((i, idx) => {
+                const description = i.Description ?? i.description ?? '';
+                const weight = i.Weight ?? i.weight ?? '';
+                const quantity = i.Quantity ?? i.quantity ?? '';
+                const notes = i.HandlingNotes ?? i.handlingNotes ?? '';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${description}</td>
+                    <td>${weight}</td>
+                    <td>${quantity}</td>
+                    <td>${notes || ''}</td>
+                    <td><button type="button" class="btn btn-sm btn-outline-danger" data-idx="${idx}">x</button></td>`;
+                rows.appendChild(tr);
+            });
+
+            rows.querySelectorAll('button[data-idx]').forEach(b => {
+                b.addEventListener('click', function () {
+                    const idx = parseInt(this.getAttribute('data-idx'), 10);
+                    items.splice(idx, 1);
+                    sync();
+                });
+            });
+        }
+
+        btn.addEventListener('click', function () {
+            const descEl = document.getElementById(prefix + 'GoodsDescription');
+            const weightEl = document.getElementById(prefix + 'GoodsWeight');
+            const qtyEl = document.getElementById(prefix + 'GoodsQuantity');
+            const notesEl = document.getElementById(prefix + 'GoodsNotes');
+
+            const description = (descEl.value || '').trim();
+            const weight = parseFloat(weightEl.value || '0');
+            const quantity = parseInt(qtyEl.value || '0', 10);
+            const handlingNotes = (notesEl.value || '').trim();
+
+            if (!description || weight <= 0 || quantity <= 0) return;
+
+            items.push({
+                Description: description,
+                Weight: weight,
+                Quantity: quantity,
+                HandlingNotes: handlingNotes
+            });
+
+            if (prefix === 'Edit') {
+                editGoodsItems = items;
+            }
+
+            descEl.value = '';
+            weightEl.value = '';
+            qtyEl.value = '1';
+            notesEl.value = '';
+
+            sync();
+        });
+
+        if (prefix === 'Edit') {
+            window.renderEditGoods = function () {
+                items = editGoodsItems;
+                sync();
+            };
+        }
+
+        render();
+    }
+</script>

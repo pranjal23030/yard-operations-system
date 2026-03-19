@@ -1,0 +1,96 @@
+@using YardOps.Pages.Admin.Trailers
+@model IndexModel
+
+<div class="modal fade" id="createTrailerModal" tabindex="-1" aria-labelledby="createTrailerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content modal-custom">
+            <div class="modal-header modal-header-custom">
+                <h5 class="modal-title modal-title-custom" id="createTrailerModalLabel">Add Trailer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post" asp-page-handler="Create">
+                <input type="hidden" asp-for="GoodsJson" id="GoodsJson" />
+
+                <div class="modal-body modal-body-custom">
+                    <ul class="nav nav-tabs mb-3" id="createTrailerTabs" role="tablist">
+                        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#create-basic" type="button">Basic Info</button></li>
+                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#create-goods" type="button">Goods Manifest</button></li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="create-basic">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label asp-for="Input.CarrierId" class="form-label-custom">Carrier *</label>
+                                    <select asp-for="Input.CarrierId" class="form-select-custom">
+                                        <option value="">Select carrier</option>
+                                        @foreach (var c in Model.CarrierOptions.Where(c => c.Value != "all"))
+                                        {
+                                            <option value="@c.Value">@c.Text</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="Input.CarrierId" class="validation-error-custom"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="Input.DriverUserId" class="form-label-custom">Driver *</label>
+                                    <select asp-for="Input.DriverUserId" class="form-select-custom">
+                                        <option value="">Select driver</option>
+                                        @foreach (var d in Model.DriverOptions)
+                                        {
+                                            <option value="@d.Value">@d.Text</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="Input.DriverUserId" class="validation-error-custom"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="Input.GoodsType" class="form-label-custom">Goods Type *</label>
+                                    <select asp-for="Input.GoodsType" class="form-select-custom">
+                                        @foreach (var g in Model.GoodsTypeOptions)
+                                        {
+                                            <option value="@g.Value">@g.Text</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="Input.GoodsType" class="validation-error-custom"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="Input.CurrentStatus" class="form-label-custom">Status *</label>
+                                    <select asp-for="Input.CurrentStatus" class="form-select-custom">
+                                        @foreach (var s in Model.StatusOptions.Where(s => s.Value != "all"))
+                                        {
+                                            <option value="@s.Value">@s.Text</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="Input.CurrentStatus" class="validation-error-custom"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="Input.LocationId" class="form-label-custom">Location</label>
+                                    <select asp-for="Input.LocationId" class="form-select-custom">
+                                        <option value="">Not assigned</option>
+                                        @foreach (var l in Model.LocationOptions.Where(l => l.Value != "all"))
+                                        {
+                                            <option value="@l.Value">@l.Text</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="create-goods">
+                            <partial name="_Partials/_GoodsManifestBuilder" model='"Create"' />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer modal-footer-custom">
+                    <button type="button" class="btn-cancel-neutral" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-primary-custom">Add Trailer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

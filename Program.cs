@@ -3,11 +3,15 @@ using YardOps.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// QuestPDF license (Community)
+QuestPDF.Settings.License = LicenseType.Community;
+
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -24,11 +28,9 @@ builder.Services
     .AddRoles<ApplicationRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// Email Sender
 builder.Services.AddTransient<IEmailSender, EmailSender>();
-
-builder.Services.AddHttpContextAccessor();           // Required for IHttpContextAccessor
-builder.Services.AddScoped<ActivityLogger>();       // Scoped = new instance per request
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ActivityLogger>();
 
 builder.Services.AddRazorPages(options =>
 {
@@ -37,7 +39,6 @@ builder.Services.AddRazorPages(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -52,10 +53,8 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthorization();
 app.MapStaticAssets();
-app.MapRazorPages()
-   .WithStaticAssets();
+app.MapRazorPages().WithStaticAssets();
 
-// Seed database on startup
 using (var scope = app.Services.CreateScope())
 {
     await DbSeeder.SeedRoles(scope.ServiceProvider);

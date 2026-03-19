@@ -25,7 +25,8 @@
             <i class="fa-solid fa-wave-square"></i>
             <span>Operations</span>
         </a>
-        <a href="#" class="nav-item-link">
+        <a class="nav-item-link @(ViewContext.RouteData.Values["page"]?.ToString()?.Contains("Trailers") == true ? "active" : "")"
+           asp-page="/Admin/Trailers/Index">
             <i class="fa-solid fa-truck"></i>
             <span>Trailers</span>
         </a>

@@ -1,0 +1,252 @@
+/* Trailer Management - follows carriers/locations style */
+
+.trailer-header-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.trailer-header-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.trailer-header-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background-color: rgba(45, 164, 157, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    font-size: 1.25rem;
+}
+
+.trailer-title {
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--foreground);
+}
+
+.trailer-subtitle {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--muted-foreground);
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-export,
+.btn-add-trailer {
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--foreground);
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.btn-add-trailer {
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.btn-add-trailer:hover {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+
+.trailer-code {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.status-incoming {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+.status-inyard {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+.status-outgoing {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+.status-checkedout {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+.status-default {
+    background-color: #e5e7eb;
+    color: #374151;
+}
+
+.view-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 18px;
+}
+
+.view-grid .label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--muted-foreground);
+    font-weight: 600;
+}
+
+.view-grid .value {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--foreground);
+}
+
+.edit-code-display {
+    display: flex;
+    gap: 8px;
+    background: #f1f5f9;
+    padding: 10px 14px;
+    border-radius: 8px;
+}
+.edit-code-display .label {
+    font-size: 0.8rem;
+    color: var(--muted-foreground);
+}
+.edit-code-display .value {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+@media (max-width: 900px) {
+    .trailer-header-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .header-actions {
+        width: 100%;
+    }
+
+    .btn-export, .btn-add-trailer {
+        flex: 1;
+    }
+
+    .filters-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-select, .search-box input {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .users-table thead { display: none; }
+    .users-table tbody, .users-table tr { display: block; width: 100%; }
+    .users-table tr {
+        padding: 14px;
+        border-bottom: 1px solid var(--border);
+    }
+    .users-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        border: none;
+        padding: 8px 0;
+    }
+    .users-table td::before {
+        content: attr(data-label);
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--muted-foreground);
+        text-transform: uppercase;
+    }
+
+    .view-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Trailer modal overrides (keep global modal styles intact for other modules) */
+#createTrailerModal .modal-dialog,
+#editTrailerModal .modal-dialog,
+#viewTrailerModal .modal-dialog {
+    margin: 1.75rem auto;
+}
+
+#createTrailerModal .modal-custom,
+#editTrailerModal .modal-custom,
+#viewTrailerModal .modal-custom {
+    max-width: 100%;
+}
+
+#createTrailerModal .modal-dialog.modal-lg,
+#editTrailerModal .modal-dialog.modal-lg {
+    max-width: 860px;
+}
+
+/* Tabs polish */
+.modal-body-custom .nav-tabs {
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-body-custom .nav-tabs .nav-link {
+    border: 1px solid transparent;
+    color: var(--muted-foreground);
+    font-weight: 500;
+}
+
+.modal-body-custom .nav-tabs .nav-link.active {
+    color: var(--primary);
+    border-color: var(--border) var(--border) #fafafa;
+    background: #fafafa;
+}
+
+/* Goods builder polish */
+.goods-builder .table {
+    margin-bottom: 0;
+}
+
+.goods-builder thead th {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted-foreground);
+}
+
+.goods-builder tbody td {
+    vertical-align: middle;
+}
+
+/* prevent action menu clipping inside table container */
+.users-table {
+    overflow: visible;
+}
+
+.users-table tbody tr,
+.users-table td {
+    overflow: visible;
+}
+
+.users-table .dropdown {
+    position: relative;
+}
+
+.users-table .action-dropdown {
+    z-index: 2000;
+}
