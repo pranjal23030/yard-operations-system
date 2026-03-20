@@ -192,8 +192,12 @@ namespace YardOps.Pages.Admin.Carriers
                 return RedirectToPage();
             }
 
-            // TODO: Check if carrier has trailers assigned (when trailers feature is implemented)
-            // For now, allow deletion
+            var linkedTrailersCount = await _context.Trailers.CountAsync(t => t.CarrierId == carrierId);
+            if (linkedTrailersCount > 0)
+            {
+                TempData["Error"] = $"Cannot delete carrier '{carrier.CompanyName}'. It is linked to {linkedTrailersCount} trailer(s).";
+                return RedirectToPage();
+            }
 
             var carrierName = carrier.CompanyName;
             var carrierCode = carrier.CarrierCode;
@@ -256,6 +260,14 @@ namespace YardOps.Pages.Admin.Carriers
                 .Take(PageSize)
                 .ToListAsync();
 
+            var carrierIds = carriers.Select(c => c.CarrierId).ToList();
+
+            var trailerCounts = await _context.Trailers
+                .Where(t => carrierIds.Contains(t.CarrierId))
+                .GroupBy(t => t.CarrierId)
+                .Select(g => new { CarrierId = g.Key, Count = g.Count() })
+                .ToDictionaryAsync(x => x.CarrierId, x => x.Count);
+
             Carriers = carriers.Select(c => new CarrierViewModel
             {
                 CarrierId = c.CarrierId,
@@ -266,7 +278,7 @@ namespace YardOps.Pages.Admin.Carriers
                 Email = c.Email,
                 Address = c.Address,
                 Status = c.Status,
-                TrailerCount = 0, // Static for now
+                TrailerCount = trailerCounts.TryGetValue(c.CarrierId, out var count) ? count : 0,
                 CreatedOn = c.CreatedOn,
                 CreatedByEmail = c.CreatedByUser?.Email
             }).ToList();
@@ -280,6 +292,7 @@ namespace YardOps.Pages.Admin.Carriers
                 new("Active", "Active"),
                 new("Inactive", "Inactive")
             ];
+
             return Task.CompletedTask;
         }
     }

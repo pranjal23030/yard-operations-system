@@ -1,0 +1,195 @@
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-export {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    background-color: white;
+    color: var(--foreground);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-export:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.filter-date-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-date-label {
+    font-size: 0.8rem;
+    color: var(--muted-foreground);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.filter-date {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    height: 42px;
+    padding: 0 12px;
+    background-color: white;
+    font-size: 0.85rem;
+    color: var(--foreground);
+    cursor: pointer;
+    min-width: 140px;
+}
+
+.filter-date:hover {
+    border-color: var(--accent);
+}
+
+.filter-date:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(45, 164, 157, 0.15);
+}
+
+.btn-generate-report {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    background-color: var(--primary);
+    color: #fff;
+    border: 1px solid var(--primary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-generate-report:hover {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+
+.btn-clear-filters {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-clear-filters:hover {
+    background-color: #fee2e2;
+    border-color: #fca5a5;
+    color: #b91c1c;
+}
+
+.report-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+    color: var(--muted-foreground);
+}
+
+/* Report status badge colors (match trailer module style) */
+.status-incoming {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+.status-in-yard,
+.status-inyard {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+.status-outgoing {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+.status-checked-out,
+.status-checkedout {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+.status-default {
+    background-color: #e5e7eb;
+    color: #374151;
+}
+
+@media (max-width: 900px) {
+    .report-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .filters-row {
+        flex-wrap: wrap;
+    }
+
+    .search-box {
+        flex: 1 1 100%;
+    }
+
+    .report-summary {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+}
+
+@media (max-width: 768px) {
+    .report-header {
+        align-items: stretch;
+    }
+
+    .btn-export {
+        justify-content: center;
+    }
+
+    .filters-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-date-wrapper {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .filter-date {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .btn-generate-report,
+    .btn-clear-filters {
+        width: 100%;
+        justify-content: center;
+    }
+}

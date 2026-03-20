@@ -12,6 +12,8 @@
     var isRolesActive = currentPage.Contains("Roles");
     var isActivitiesActive = currentPage.Contains("Activities");
     var isAccessControlActive = isUsersActive || isRolesActive || isActivitiesActive;
+
+    var isTrailerReportActive = currentPage.Contains("/Admin/Reports/TrailerReport");
 }
 
 <aside id="sidebar">
@@ -65,9 +67,9 @@
             </div>
         </div>
 
-        <a href="#" class="nav-item-link">
-            <i class="fa-solid fa-eye"></i>
-            <span>Monitoring</span>
+        <a asp-page="/Admin/Reports/TrailerReport" class="nav-item-link @(isTrailerReportActive ? "active" : "")">
+            <i class="fa-solid fa-file-lines"></i>
+            <span>Reports</span>
         </a>
 
         <div class="sidebar-group">
