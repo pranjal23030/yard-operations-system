@@ -1,0 +1,26 @@
+@model YardOps.Pages.Admin.Operations.Ingates.IndexModel
+
+<script>
+    // Auto-dismiss alerts after 5s
+    setTimeout(function () {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            try {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            } catch {}
+        });
+    }, 5000);
+
+    // Re-open modal when server asks (validation case)
+    document.addEventListener('DOMContentLoaded', function () {
+        const shouldOpen = '@Model.ShowLogModal'.toLowerCase() === 'true';
+        if (shouldOpen) {
+            const modalEl = document.getElementById('logIngateModal');
+            if (modalEl) {
+                const modal = new bootstrap.Modal(modalEl);
+                modal.show();
+            }
+        }
+    });
+</script>

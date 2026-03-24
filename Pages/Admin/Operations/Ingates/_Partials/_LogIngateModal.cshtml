@@ -1,0 +1,64 @@
+@model YardOps.Pages.Admin.Operations.Ingates.IndexModel
+
+<div class="modal fade" id="logIngateModal" tabindex="-1" aria-labelledby="logIngateModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content modal-custom">
+            <div class="modal-header modal-header-custom">
+                <h5 class="modal-title modal-title-custom" id="logIngateModalLabel">Log Ingate</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post" asp-page-handler="LogIngate">
+                <div class="modal-body modal-body-custom">
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label asp-for="Input.TrailerId" class="form-label-custom">Trailer *</label>
+                            <select asp-for="Input.TrailerId" class="form-select-custom">
+                                @foreach (var t in Model.TrailerOptions)
+                                {
+                                    <option value="@t.Value">@t.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Input.TrailerId" class="validation-error-custom"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Input.GateLocationId" class="form-label-custom">Entry Gate *</label>
+                            <select asp-for="Input.GateLocationId" class="form-select-custom">
+                                @foreach (var g in Model.GateOptions)
+                                {
+                                    <option value="@g.Value">@g.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Input.GateLocationId" class="validation-error-custom"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Input.AssignedLocationId" class="form-label-custom">Assign Location *</label>
+                            <select asp-for="Input.AssignedLocationId" class="form-select-custom">
+                                @foreach (var l in Model.AssignableLocationOptions)
+                                {
+                                    <option value="@l.Value">@l.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Input.AssignedLocationId" class="validation-error-custom"></span>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label asp-for="Input.Notes" class="form-label-custom">Notes (Optional)</label>
+                            <textarea asp-for="Input.Notes" class="form-input-custom" rows="3" placeholder="Add any notes..."></textarea>
+                            <span asp-validation-for="Input.Notes" class="validation-error-custom"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer modal-footer-custom">
+                    <button type="button" class="btn-cancel-neutral" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-primary-custom">
+                        <i class="fa-solid fa-right-to-bracket me-1"></i>Log Ingate
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

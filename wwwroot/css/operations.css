@@ -1,0 +1,142 @@
+/* Operations module styles
+   Reuses visual language from components.css / activities.css
+   Loaded only by Operations pages (no global overrides) */
+
+.user-info-cell-simple {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.user-email-small {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+}
+
+/* Date filters */
+.filter-date-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-date-label {
+    font-size: 0.8rem;
+    color: var(--muted-foreground);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.filter-date {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    height: 42px;
+    padding: 0 12px;
+    background-color: white;
+    font-size: 0.85rem;
+    color: var(--foreground);
+    cursor: pointer;
+    min-width: 140px;
+}
+
+.filter-date:hover {
+    border-color: var(--accent);
+}
+
+.filter-date:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(45, 164, 157, 0.15);
+}
+
+/* Clear button */
+.btn-clear-filters {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-clear-filters:hover {
+    background-color: #fee2e2;
+    border-color: #fca5a5;
+    color: #b91c1c;
+}
+
+/* AllOperations type badges */
+.op-type-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.op-type-ingate {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.op-type-outgate {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+/* Keep ingate/outgate modals centered */
+#logIngateModal .modal-dialog,
+#logOutgateModal .modal-dialog {
+    margin: 1.75rem auto;
+}
+
+#logIngateModal.modal.show,
+#logOutgateModal.modal.show {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+@media (max-width: 900px) {
+    .filters-row {
+        flex-wrap: wrap;
+    }
+
+    .search-box {
+        flex: 1 1 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .filters-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-date-wrapper {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .filter-date {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .btn-clear-filters {
+        width: 100%;
+        justify-content: center;
+    }
+}

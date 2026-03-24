@@ -31,6 +31,7 @@ builder.Services
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ActivityLogger>();
+builder.Services.AddScoped<GateOperationService>();
 
 builder.Services.AddRazorPages(options =>
 {

@@ -38,7 +38,7 @@
         <div class="trailer-header-icon"><i class="fa-solid fa-truck"></i></div>
         <div class="trailer-header-text">
             <h1 class="trailer-title">All Trailers</h1>
-            <p class="trailer-subtitle">Manage trailers, carriers, and goods. Trailers integrate with locations for Ingate/Outgate operations.</p>
+            <p class="trailer-subtitle">Manage trailer master data (carrier, driver, goods, and status).</p>
         </div>
     </div>
 
@@ -137,29 +137,6 @@
                                         </a>
                                     </li>
 
-                                    @if (trailer.CanIngate)
-                                    {
-                                        <li>
-                                            <a class="dropdown-item action-item" href="#"
-                                               data-bs-toggle="modal" data-bs-target="#ingateModal"
-                                               data-trailer-id="@trailer.TrailerId"
-                                               data-trailer-code="@trailer.TrailerCode">
-                                                <i class="fa-solid fa-right-to-bracket me-2"></i>Ingate
-                                            </a>
-                                        </li>
-                                    }
-                                    @if (trailer.CanOutgate)
-                                    {
-                                        <li>
-                                            <a class="dropdown-item action-item" href="#"
-                                               data-bs-toggle="modal" data-bs-target="#outgateModal"
-                                               data-trailer-id="@trailer.TrailerId"
-                                               data-trailer-code="@trailer.TrailerCode">
-                                                <i class="fa-solid fa-right-from-bracket me-2"></i>Outgate
-                                            </a>
-                                        </li>
-                                    }
-
                                     <li><hr class="dropdown-divider" /></li>
                                     <li>
                                         <a class="dropdown-item action-item-delete" href="#"
@@ -232,8 +209,6 @@
 <partial name="_Partials/_CreateTrailerModal" model="Model" />
 <partial name="_Partials/_EditTrailerModal" model="Model" />
 <partial name="_Partials/_ViewTrailerModal" model="Model" />
-<partial name="_Partials/_IngateModal" model="Model" />
-<partial name="_Partials/_OutgateModal" model="Model" />
 <partial name="_Partials/_DeleteTrailerModal" model="Model" />
 
 @section Scripts {

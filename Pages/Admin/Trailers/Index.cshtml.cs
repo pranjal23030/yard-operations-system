@@ -39,7 +39,6 @@ namespace YardOps.Pages.Admin.Trailers
         public List<SelectListItem> StatusOptions { get; set; } = [];
         public List<SelectListItem> CarrierOptions { get; set; } = [];
         public List<SelectListItem> LocationOptions { get; set; } = [];
-        public List<SelectListItem> GateLocationOptions { get; set; } = [];
         public List<SelectListItem> GoodsTypeOptions { get; set; } = [];
         public List<SelectListItem> DriverOptions { get; set; } = [];
 
@@ -52,8 +51,6 @@ namespace YardOps.Pages.Admin.Trailers
 
         [BindProperty] public CreateTrailerInput Input { get; set; } = new();
         [BindProperty] public EditTrailerInput EditInput { get; set; } = new();
-        [BindProperty] public CreateIngateInput IngateInput { get; set; } = new();
-        [BindProperty] public CreateOutgateInput OutgateInput { get; set; } = new();
 
         [BindProperty] public string GoodsJson { get; set; } = "[]";
         [BindProperty] public string EditGoodsJson { get; set; } = "[]";
@@ -350,158 +347,6 @@ namespace YardOps.Pages.Admin.Trailers
             return RedirectToPage();
         }
 
-        public async Task<IActionResult> OnPostIngateAsync()
-        {
-            ModelState.Clear();
-            TryValidateModel(IngateInput, nameof(IngateInput));
-
-            if (!ModelState.IsValid)
-            {
-                TempData["Error"] = "Invalid ingate request.";
-                return RedirectToPage();
-            }
-
-            var trailer = await _context.Trailers.FirstOrDefaultAsync(t => t.TrailerId == IngateInput.TrailerId);
-            if (trailer == null)
-            {
-                TempData["Error"] = "Trailer not found.";
-                return RedirectToPage();
-            }
-
-            var gate = await _context.Locations.FirstOrDefaultAsync(l => l.LocationId == IngateInput.LocationId);
-            if (gate == null || gate.LocationType != "Gate")
-            {
-                TempData["Error"] = "Selected location is not a valid gate.";
-                return RedirectToPage();
-            }
-
-            var currentUser = await _userManager.GetUserAsync(User);
-            var now = DateTime.UtcNow;
-
-            _context.Ingates.Add(new Ingate
-            {
-                TrailerId = trailer.TrailerId,
-                LocationId = IngateInput.LocationId,
-                PerformedByUserId = currentUser?.Id,
-                Timestamp = now,
-                Notes = IngateInput.Notes?.Trim(),
-                CreatedBy = currentUser?.Id,
-                CreatedOn = now
-            });
-
-            trailer.CurrentStatus = "In-Yard";
-            trailer.ArrivalTime ??= now;
-            trailer.CurrentLocationId = IngateInput.LocationId;
-
-            _context.TrailerHistories.Add(new TrailerHistory
-            {
-                TrailerId = trailer.TrailerId,
-                LocationId = IngateInput.LocationId,
-                StartTime = now,
-                EndTime = null,
-                CreatedBy = currentUser?.Id,
-                CreatedOn = now
-            });
-
-            await _context.SaveChangesAsync();
-
-            await _activityLogger.LogAsync(
-                action: "Ingate",
-                description: $"Trailer {trailer.TrailerCode} entered through {gate.LocationName}",
-                extraData: new
-                {
-                    TrailerCode = trailer.TrailerCode,
-                    Gate = gate.LocationName,
-                    IngateInput.Notes
-                });
-
-            TempData["Success"] = $"Ingate recorded for trailer '{trailer.TrailerCode}'.";
-            return RedirectToPage();
-        }
-
-        public async Task<IActionResult> OnPostOutgateAsync()
-        {
-            ModelState.Clear();
-            TryValidateModel(OutgateInput, nameof(OutgateInput));
-
-            if (!ModelState.IsValid)
-            {
-                TempData["Error"] = "Invalid outgate request.";
-                return RedirectToPage();
-            }
-
-            var trailer = await _context.Trailers.FirstOrDefaultAsync(t => t.TrailerId == OutgateInput.TrailerId);
-            if (trailer == null)
-            {
-                TempData["Error"] = "Trailer not found.";
-                return RedirectToPage();
-            }
-
-            var gate = await _context.Locations.FirstOrDefaultAsync(l => l.LocationId == OutgateInput.LocationId);
-            if (gate == null || gate.LocationType != "Gate")
-            {
-                TempData["Error"] = "Selected location is not a valid gate.";
-                return RedirectToPage();
-            }
-
-            var currentUser = await _userManager.GetUserAsync(User);
-            var now = DateTime.UtcNow;
-            var previousLocationId = trailer.CurrentLocationId;
-
-            _context.Outgates.Add(new Outgate
-            {
-                TrailerId = trailer.TrailerId,
-                LocationId = OutgateInput.LocationId,
-                PerformedByUserId = currentUser?.Id,
-                Timestamp = now,
-                Notes = OutgateInput.Notes?.Trim(),
-                CreatedBy = currentUser?.Id,
-                CreatedOn = now
-            });
-
-            trailer.CurrentStatus = "Checked Out";
-            trailer.DepartureTime = now;
-            trailer.CurrentLocationId = null;
-
-            var activeHistory = await _context.TrailerHistories
-                .Where(h => h.TrailerId == trailer.TrailerId && h.EndTime == null)
-                .OrderByDescending(h => h.StartTime)
-                .FirstOrDefaultAsync();
-
-            if (activeHistory != null)
-            {
-                activeHistory.EndTime = now;
-            }
-            else
-            {
-                // fallback so Outgate also leaves a history row even without prior Ingate
-                _context.TrailerHistories.Add(new TrailerHistory
-                {
-                    TrailerId = trailer.TrailerId,
-                    LocationId = previousLocationId ?? OutgateInput.LocationId,
-                    StartTime = trailer.ArrivalTime ?? trailer.CreatedOn,
-                    EndTime = now,
-                    CreatedBy = currentUser?.Id,
-                    CreatedOn = now
-                });
-            }
-
-            await _context.SaveChangesAsync();
-
-            await _activityLogger.LogAsync(
-                action: "Outgate",
-                description: $"Trailer {trailer.TrailerCode} exited through {gate.LocationName}",
-                extraData: new
-                {
-                    TrailerCode = trailer.TrailerCode,
-                    Gate = gate.LocationName,
-                    OutgateInput.Notes
-                });
-
-            TempData["Success"] = $"Outgate recorded for trailer '{trailer.TrailerCode}'.";
-            return RedirectToPage();
-        }
-
         // kept for backward compatibility (not used in UI)
         public async Task<IActionResult> OnGetExportCsvAsync()
         {
@@ -724,12 +569,6 @@ namespace YardOps.Pages.Admin.Trailers
                     .Select(l => new SelectListItem($"{l.LocationName} ({l.LocationType})", l.LocationId.ToString()))
                     .ToListAsync())
             ];
-
-            GateLocationOptions = await _context.Locations
-                .Where(l => l.LocationType == "Gate")
-                .OrderBy(l => l.LocationName)
-                .Select(l => new SelectListItem(l.LocationName, l.LocationId.ToString()))
-                .ToListAsync();
 
             var drivers = await _userManager.GetUsersInRoleAsync("Driver");
             DriverOptions = drivers

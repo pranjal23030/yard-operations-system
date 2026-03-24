@@ -16,26 +16,6 @@
             <text>new bootstrap.Modal(document.getElementById('createTrailerModal')).show();</text>
         }
 
-        const ingateModal = document.getElementById('ingateModal');
-        if (ingateModal) {
-            ingateModal.addEventListener('show.bs.modal', function (event) {
-                const btn = event.relatedTarget;
-                if (!btn) return;
-                document.getElementById('ingateTrailerId').value = btn.getAttribute('data-trailer-id') || '';
-                document.getElementById('ingateTrailerCode').textContent = btn.getAttribute('data-trailer-code') || '—';
-            });
-        }
-
-        const outgateModal = document.getElementById('outgateModal');
-        if (outgateModal) {
-            outgateModal.addEventListener('show.bs.modal', function (event) {
-                const btn = event.relatedTarget;
-                if (!btn) return;
-                document.getElementById('outgateTrailerId').value = btn.getAttribute('data-trailer-id') || '';
-                document.getElementById('outgateTrailerCode').textContent = btn.getAttribute('data-trailer-code') || '—';
-            });
-        }
-
         const deleteModal = document.getElementById('deleteTrailerModal');
         if (deleteModal) {
             deleteModal.addEventListener('show.bs.modal', function (event) {

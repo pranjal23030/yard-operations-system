@@ -1,0 +1,160 @@
+@page
+@model YardOps.Pages.Admin.Operations.Outgates.IndexModel
+@{
+    ViewData["Title"] = "Outgates";
+    ViewData["PageHeader"] = "Outgate Operations";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/components.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/operations.css" asp-append-version="true" />
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fa-solid fa-check-circle me-2"></i>@TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fa-solid fa-circle-exclamation me-2"></i>@TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="users-header">
+    <h1 class="users-title">Outgate Operations</h1>
+    <button type="button" class="btn-add-user" data-bs-toggle="modal" data-bs-target="#logOutgateModal">
+        <i class="fa-solid fa-right-from-bracket"></i>Log Outgate
+    </button>
+</div>
+
+<form method="get" id="filterForm">
+    <input type="hidden" name="PageNumber" value="1" />
+    <div class="filters-row">
+        <div class="search-box">
+            <i class="fa-solid fa-search search-icon"></i>
+            <input type="text" name="SearchTerm" value="@Model.SearchTerm" class="form-control"
+                   placeholder="Search trailer, carrier, gate, user..." onchange="this.form.submit()" />
+        </div>
+
+        <div class="filter-date-wrapper">
+            <label class="filter-date-label">From</label>
+            <input type="date" name="DateFrom" value="@Model.DateFrom?.ToString("yyyy-MM-dd")"
+                   class="filter-date" onchange="this.form.submit()" />
+        </div>
+
+        <div class="filter-date-wrapper">
+            <label class="filter-date-label">To</label>
+            <input type="date" name="DateTo" value="@Model.DateTo?.ToString("yyyy-MM-dd")"
+                   class="filter-date" onchange="this.form.submit()" />
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.SearchTerm) || Model.DateFrom.HasValue || Model.DateTo.HasValue)
+        {
+            <a asp-page="/Admin/Operations/Outgates/Index" class="btn-clear-filters">
+                <i class="fa-solid fa-times me-1"></i>Clear
+            </a>
+        }
+    </div>
+</form>
+
+<div class="users-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Trailer</th>
+                <th>Carrier</th>
+                <th>Exit Gate</th>
+                <th>Performed By</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Outgates.Any())
+            {
+                @foreach (var row in Model.Outgates)
+                {
+                    <tr>
+                        <td data-label="Timestamp">@row.Timestamp.ToLocalTime().ToString("yyyy-MM-dd hh:mm tt")</td>
+                        <td data-label="Trailer">@row.TrailerCode</td>
+                        <td data-label="Carrier">@row.CarrierName</td>
+                        <td data-label="Exit Gate">@row.GateName</td>
+                        <td data-label="Performed By">
+                            <div class="user-info-cell-simple">
+                                <span class="user-name">@row.PerformedByName</span>
+                                <span class="user-email-small">@row.PerformedByEmail</span>
+                            </div>
+                        </td>
+                        <td data-label="Notes">@(string.IsNullOrWhiteSpace(row.Notes) ? "—" : row.Notes)</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center py-5 text-muted">
+                        <i class="fa-solid fa-right-from-bracket fa-3x mb-3 d-block"></i>
+                        No outgate records found
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="pagination-footer">
+    <div class="pagination-info">
+        @{
+            var startItem = Model.TotalOutgates == 0 ? 0 : ((Model.CurrentPage - 1) * 10) + 1;
+            var endItem = Math.Min(Model.CurrentPage * 10, Model.TotalOutgates);
+        }
+        Showing @startItem to @endItem of @Model.TotalOutgates outgate records
+    </div>
+    <div class="pagination-controls">
+        @if (Model.CurrentPage > 1)
+        {
+            <a href="?PageNumber=@(Model.CurrentPage - 1)&SearchTerm=@Model.SearchTerm&DateFrom=@Model.DateFrom?.ToString("yyyy-MM-dd")&DateTo=@Model.DateTo?.ToString("yyyy-MM-dd")" class="page-btn">
+                <i class="fa-solid fa-chevron-left"></i>
+            </a>
+        }
+        else
+        {
+            <button class="page-btn" disabled><i class="fa-solid fa-chevron-left"></i></button>
+        }
+
+        @for (var i = 1; i <= Model.TotalPages; i++)
+        {
+            if (i == Model.CurrentPage)
+            {
+                <button class="page-btn active">@i</button>
+            }
+            else
+            {
+                <a href="?PageNumber=@i&SearchTerm=@Model.SearchTerm&DateFrom=@Model.DateFrom?.ToString("yyyy-MM-dd")&DateTo=@Model.DateTo?.ToString("yyyy-MM-dd")" class="page-btn">@i</a>
+            }
+        }
+
+        @if (Model.CurrentPage < Model.TotalPages)
+        {
+            <a href="?PageNumber=@(Model.CurrentPage + 1)&SearchTerm=@Model.SearchTerm&DateFrom=@Model.DateFrom?.ToString("yyyy-MM-dd")&DateTo=@Model.DateTo?.ToString("yyyy-MM-dd")" class="page-btn">
+                <i class="fa-solid fa-chevron-right"></i>
+            </a>
+        }
+        else
+        {
+            <button class="page-btn" disabled><i class="fa-solid fa-chevron-right"></i></button>
+        }
+    </div>
+</div>
+
+<partial name="_Partials/_LogOutgateModal" model="Model" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_Partials/_OutgateScripts" model="Model" />
+}
