@@ -33,6 +33,9 @@ namespace YardOps.Services
             if (trailer == null)
                 return GateOperationResult.Fail("Trailer not found.");
 
+            if (trailer.CurrentStatus == "In-Yard")
+                return GateOperationResult.Fail("Trailer is already in yard.");
+
             var gate = await _context.Locations.FirstOrDefaultAsync(l => l.LocationId == input.GateLocationId);
             if (gate == null || gate.LocationType != "Gate")
                 return GateOperationResult.Fail("Selected location is not a valid gate.");
@@ -56,7 +59,8 @@ namespace YardOps.Services
             });
 
             trailer.CurrentStatus = "In-Yard";
-            trailer.ArrivalTime ??= now;
+            trailer.ArrivalTime = now;      // always set current cycle arrival
+            trailer.DepartureTime = null;   // reset departure for new cycle
             trailer.CurrentLocationId = resolvedLocationId;
 
             _context.TrailerHistories.Add(new TrailerHistory

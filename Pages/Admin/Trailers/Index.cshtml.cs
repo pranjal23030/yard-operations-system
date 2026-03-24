@@ -39,6 +39,7 @@ namespace YardOps.Pages.Admin.Trailers
         public List<SelectListItem> StatusOptions { get; set; } = [];
         public List<SelectListItem> CarrierOptions { get; set; } = [];
         public List<SelectListItem> LocationOptions { get; set; } = [];
+        public List<SelectListItem> AssignableLocationOptions { get; set; } = [];
         public List<SelectListItem> GoodsTypeOptions { get; set; } = [];
         public List<SelectListItem> DriverOptions { get; set; } = [];
 
@@ -134,6 +135,19 @@ namespace YardOps.Pages.Admin.Trailers
             if (goodsItems.Count == 0)
                 ModelState.AddModelError("", "At least one goods item is required.");
 
+            if (Input.LocationId.HasValue)
+            {
+                var locationType = await _context.Locations
+                    .Where(l => l.LocationId == Input.LocationId.Value)
+                    .Select(l => l.LocationType)
+                    .FirstOrDefaultAsync();
+
+                if (locationType == null)
+                    ModelState.AddModelError("Input.LocationId", "Selected location is invalid.");
+                else if (locationType == "Gate")
+                    ModelState.AddModelError("Input.LocationId", "Gate cannot be assigned from Trailer master data.");
+            }
+
             if (!ModelState.IsValid)
             {
                 ShowCreateModal = true;
@@ -210,6 +224,19 @@ namespace YardOps.Pages.Admin.Trailers
             var goodsItems = ParseGoodsJson(EditGoodsJson);
             if (goodsItems.Count == 0)
                 ModelState.AddModelError("", "At least one goods item is required.");
+
+            if (EditInput.LocationId.HasValue)
+            {
+                var locationType = await _context.Locations
+                    .Where(l => l.LocationId == EditInput.LocationId.Value)
+                    .Select(l => l.LocationType)
+                    .FirstOrDefaultAsync();
+
+                if (locationType == null)
+                    ModelState.AddModelError("EditInput.LocationId", "Selected location is invalid.");
+                else if (locationType == "Gate")
+                    ModelState.AddModelError("EditInput.LocationId", "Gate cannot be assigned from Trailer master data.");
+            }
 
             if (!ModelState.IsValid)
             {
@@ -564,6 +591,17 @@ namespace YardOps.Pages.Admin.Trailers
             [
                 new("All Locations", "all"),
                 .. (await _context.Locations
+                    .OrderBy(l => l.LocationType)
+                    .ThenBy(l => l.LocationName)
+                    .Select(l => new SelectListItem($"{l.LocationName} ({l.LocationType})", l.LocationId.ToString()))
+                    .ToListAsync())
+            ];
+
+            AssignableLocationOptions =
+            [
+                new("All Locations", "all"),
+                .. (await _context.Locations
+                    .Where(l => l.LocationType != "Gate")
                     .OrderBy(l => l.LocationType)
                     .ThenBy(l => l.LocationName)
                     .Select(l => new SelectListItem($"{l.LocationName} ({l.LocationType})", l.LocationId.ToString()))

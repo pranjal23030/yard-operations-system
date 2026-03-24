@@ -71,11 +71,12 @@
                                     <label asp-for="Input.LocationId" class="form-label-custom">Location</label>
                                     <select asp-for="Input.LocationId" class="form-select-custom">
                                         <option value="">Not assigned</option>
-                                        @foreach (var l in Model.LocationOptions.Where(l => l.Value != "all"))
+                                        @foreach (var l in Model.AssignableLocationOptions.Where(l => l.Value != "all"))
                                         {
                                             <option value="@l.Value">@l.Text</option>
                                         }
                                     </select>
+                                    <span asp-validation-for="Input.LocationId" class="validation-error-custom"></span>
                                 </div>
                             </div>
                         </div>

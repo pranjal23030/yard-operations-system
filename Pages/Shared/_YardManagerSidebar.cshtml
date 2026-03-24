@@ -2,6 +2,14 @@
 @{
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? string.Empty;
     var isDashboardActive = currentPage.Contains("/YardManager/Dashboard");
+
+    var isIngatesActive = currentPage.Contains("/Admin/Operations/Ingates");
+    var isOutgatesActive = currentPage.Contains("/Admin/Operations/Outgates");
+    var isAllOperationsActive = currentPage.Contains("/Admin/Operations/AllOperations");
+    var isOperationsActive = isIngatesActive || isOutgatesActive || isAllOperationsActive;
+
+    var isTrailersActive = currentPage.Contains("Trailers");
+    var isLocationsActive = currentPage.Contains("Locations");
 }
 <aside id="sidebar">
     <div class="sidebar-header">
@@ -21,20 +29,41 @@
             <i class="fa-solid fa-chart-line"></i>
             <span>Dashboard</span>
         </a>
-        <a href="#" class="nav-item-link">
-            <i class="fa-solid fa-wave-square"></i>
-            <span>Operations</span>
-        </a>
-        <a class="nav-item-link @(ViewContext.RouteData.Values["page"]?.ToString()?.Contains("Trailers") == true ? "active" : "")"
+
+        <div class="sidebar-group">
+            <button class="nav-group-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#yardManagerOperationsGroup" aria-expanded="@(isOperationsActive ? "true" : "false")">
+                <i class="fa-solid fa-wave-square"></i>
+                <span>Operations</span>
+                <i class="fa-solid fa-chevron-down group-caret"></i>
+            </button>
+            <div class="collapse @(isOperationsActive ? "show" : "") nav-group" id="yardManagerOperationsGroup">
+                <a asp-page="/Admin/Operations/Ingates/Index" class="nav-item-link nav-subitem @(isIngatesActive ? "active" : "")">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <span>Ingates</span>
+                </a>
+                <a asp-page="/Admin/Operations/Outgates/Index" class="nav-item-link nav-subitem @(isOutgatesActive ? "active" : "")">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Outgates</span>
+                </a>
+                <a asp-page="/Admin/Operations/AllOperations/Index" class="nav-item-link nav-subitem @(isAllOperationsActive ? "active" : "")">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>All Operations</span>
+                </a>
+            </div>
+        </div>
+
+        <a class="nav-item-link @(isTrailersActive ? "active" : "")"
            asp-page="/Admin/Trailers/Index">
             <i class="fa-solid fa-truck"></i>
             <span>Trailers</span>
         </a>
-        <a class="nav-item-link @(ViewContext.RouteData.Values["page"]?.ToString()?.Contains("Locations") == true ? "active" : "")"
+
+        <a class="nav-item-link @(isLocationsActive ? "active" : "")"
            asp-page="/Admin/Locations/Index">
             <i class="fa-solid fa-map-location-dot"></i>
             <span>Locations</span>
         </a>
+
         <a href="#" class="nav-item-link">
             <i class="fa-solid fa-eye"></i>
             <span>Monitoring</span>
