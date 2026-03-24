@@ -98,20 +98,33 @@
 .view-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px 18px;
+    gap: 10px 24px;
+}
+
+/* Removed boxed cards, now clean key/value rows */
+.view-grid > div {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    padding: 6px 0 10px;
 }
 
 .view-grid .label {
     display: block;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: var(--muted-foreground);
     font-weight: 600;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
 }
 
 .view-grid .value {
     display: block;
-    font-size: 0.95rem;
+    font-size: 0.98rem;
     color: var(--foreground);
+    font-weight: 500;
 }
 
 .edit-code-display {
@@ -201,6 +214,53 @@
     max-width: 860px;
 }
 
+/* View modal reduced size + module-consistent look */
+#viewTrailerModal .modal-dialog.modal-lg {
+    max-width: 920px;
+}
+
+#viewTrailerModal .modal-body-custom {
+    padding: 20px;
+}
+
+.view-trailer-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background-color: #f8fafc;
+    margin-bottom: 14px;
+}
+
+.view-trailer-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 12px;
+    background-color: #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1e40af;
+    font-size: 1.3rem;
+}
+
+.view-trailer-info {
+    flex: 1;
+}
+
+.view-trailer-name {
+    font-size: 1.08rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0 0 3px 0;
+}
+
+.view-trailer-sub {
+    font-size: 0.84rem;
+    color: var(--muted-foreground);
+}
+
 /* Tabs polish */
 .modal-body-custom .nav-tabs {
     border-bottom: 1px solid var(--border);
@@ -218,6 +278,42 @@
     background: #fafafa;
 }
 
+/* Goods/History table UI polish */
+.trailer-view-table {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: white;
+}
+
+#viewTrailerModal .trailer-view-table .table {
+    margin-bottom: 0;
+}
+
+#viewTrailerModal .trailer-view-table thead th {
+    font-size: 0.8rem;
+    color: var(--muted-foreground);
+    font-weight: 600;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 12px;
+}
+
+#viewTrailerModal .trailer-view-table tbody td {
+    font-size: 0.88rem;
+    vertical-align: middle;
+    padding: 10px 12px;
+    border-bottom: 1px solid #eef2f7;
+}
+
+#viewTrailerModal .trailer-view-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+#viewTrailerModal .trailer-view-table tbody tr:hover {
+    background: #fbfdff;
+}
+
 /* Goods builder polish */
 .goods-builder .table {
     margin-bottom: 0;
@@ -231,6 +327,26 @@
 
 .goods-builder tbody td {
     vertical-align: middle;
+}
+
+/* Goods manifest "+" button same theme as module primary buttons */
+.btn-add-goods {
+    width: 100%;
+    height: 38px;
+    border: 1px solid var(--primary);
+    background: var(--primary);
+    color: white;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.btn-add-goods:hover {
+    background: var(--accent);
+    border-color: var(--accent);
 }
 
 /* prevent action menu clipping inside table container */

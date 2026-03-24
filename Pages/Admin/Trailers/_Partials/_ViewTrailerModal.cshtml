@@ -2,7 +2,7 @@
 @model IndexModel
 
 <div class="modal fade" id="viewTrailerModal" tabindex="-1" aria-labelledby="viewTrailerModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content modal-custom">
             <div class="modal-header modal-header-custom">
                 <h5 class="modal-title modal-title-custom" id="viewTrailerModalLabel">Trailer Details</h5>
@@ -10,6 +10,17 @@
             </div>
 
             <div class="modal-body modal-body-custom">
+                <div class="view-trailer-header">
+                    <div class="view-trailer-icon">
+                        <i class="fa-solid fa-truck"></i>
+                    </div>
+                    <div class="view-trailer-info">
+                        <h4 class="view-trailer-name" id="viewTrailerCode">—</h4>
+                        <span class="view-trailer-sub" id="viewCarrierName">—</span>
+                    </div>
+                    <span class="status-badge" id="viewStatusBadge">—</span>
+                </div>
+
                 <ul class="nav nav-tabs mb-3" role="tablist">
                     <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#view-tab-detail" type="button">Trailer</button></li>
                     <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#view-tab-goods" type="button">Goods</button></li>
@@ -19,20 +30,17 @@
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="view-tab-detail">
                         <div class="view-grid">
-                            <div><span class="label">Trailer ID</span><span class="value" id="viewTrailerCode">—</span></div>
-                            <div><span class="label">Carrier</span><span class="value" id="viewCarrierName">—</span></div>
                             <div><span class="label">Driver</span><span class="value" id="viewDriverName">—</span></div>
                             <div><span class="label">Contact</span><span class="value" id="viewDriverContact">—</span></div>
                             <div><span class="label">Goods Type</span><span class="value" id="viewGoodsType">—</span></div>
-                            <div><span class="label">Status</span><span class="value"><span class="status-badge" id="viewStatusBadge">—</span></span></div>
                             <div><span class="label">Location</span><span class="value" id="viewLocationName">—</span></div>
                             <div><span class="label">Arrival</span><span class="value" id="viewArrivalTime">—</span></div>
                         </div>
                     </div>
 
                     <div class="tab-pane fade" id="view-tab-goods">
-                        <div class="table-responsive">
-                            <table class="table table-sm">
+                        <div class="table-responsive trailer-view-table">
+                            <table class="table table-sm mb-0">
                                 <thead>
                                     <tr>
                                         <th>Description</th>
@@ -49,8 +57,8 @@
                     </div>
 
                     <div class="tab-pane fade" id="view-tab-history">
-                        <div class="table-responsive">
-                            <table class="table table-sm">
+                        <div class="table-responsive trailer-view-table">
+                            <table class="table table-sm mb-0">
                                 <thead>
                                     <tr>
                                         <th>Location</th>
