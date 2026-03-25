@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
@@ -28,11 +27,9 @@ namespace YardOps.Pages.Admin.Reports.Snapshots
 
         public List<SnapshotRunViewModel> Runs { get; set; } = [];
         public List<SnapshotItemViewModel> Items { get; set; } = [];
-        public List<SelectListItem> StatusOptions { get; set; } = [];
 
         [BindProperty(SupportsGet = true)] public int? SelectedRunId { get; set; }
         [BindProperty(SupportsGet = true)] public string? SearchTerm { get; set; }
-        [BindProperty(SupportsGet = true)] public string? StatusFilter { get; set; } = "all";
         [BindProperty(SupportsGet = true)] public int PageNumber { get; set; } = 1;
 
         [BindProperty] public CaptureSnapshotInput CaptureInput { get; set; } = new();
@@ -48,7 +45,6 @@ namespace YardOps.Pages.Admin.Reports.Snapshots
 
             CurrentPage = PageNumber < 1 ? 1 : PageNumber;
 
-            await LoadStatusOptionsAsync();
             await LoadRunsAsync();
 
             if (!Runs.Any())
@@ -80,7 +76,6 @@ namespace YardOps.Pages.Admin.Reports.Snapshots
                 {
                     SelectedRunId = result.SnapshotRunId.Value,
                     SearchTerm,
-                    StatusFilter = "all",
                     PageNumber = 1
                 });
             }
@@ -90,7 +85,6 @@ namespace YardOps.Pages.Admin.Reports.Snapshots
 
         public async Task<IActionResult> OnGetExportPdfAsync()
         {
-            await LoadStatusOptionsAsync();
             await LoadRunsAsync();
 
             if (!Runs.Any())
@@ -122,11 +116,10 @@ namespace YardOps.Pages.Admin.Reports.Snapshots
                             $"Run #{selectedRun.SnapshotRunId} | Captured: {selectedRun.CapturedAt.ToLocalTime():yyyy-MM-dd hh:mm tt} | Captured By: {selectedRun.CapturedBy}"
                         ).FontColor(Colors.Grey.Darken1);
 
-                        var filterInfo = string.IsNullOrWhiteSpace(SearchTerm) && (string.IsNullOrWhiteSpace(StatusFilter) || StatusFilter == "all")
-                            ? "Filters: None"
-                            : $"Filters: Search='{SearchTerm ?? ""}', Status='{StatusFilter ?? "all"}'";
-
-                        col.Item().Text(filterInfo).FontColor(Colors.Grey.Darken1);
+                        if (!string.IsNullOrWhiteSpace(SearchTerm))
+                        {
+                            col.Item().Text($"Search: '{SearchTerm}'").FontColor(Colors.Grey.Darken1);
+                        }
                     });
 
                     page.Content().PaddingTop(8).Table(table =>
@@ -253,26 +246,7 @@ namespace YardOps.Pages.Admin.Reports.Snapshots
                     si.GoodsType.Contains(term));
             }
 
-            if (!string.IsNullOrWhiteSpace(StatusFilter) && StatusFilter != "all")
-            {
-                query = query.Where(si => si.Status == StatusFilter);
-            }
-
             return query;
-        }
-
-        private Task LoadStatusOptionsAsync()
-        {
-            StatusOptions =
-            [
-                new SelectListItem("All Status", "all"),
-                new SelectListItem("In-Yard", "In-Yard"),
-                new SelectListItem("Incoming", "Incoming"),
-                new SelectListItem("Outgoing", "Outgoing"),
-                new SelectListItem("Checked Out", "Checked Out")
-            ];
-
-            return Task.CompletedTask;
         }
     }
 }

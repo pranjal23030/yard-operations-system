@@ -36,10 +36,9 @@
             <ul class="dropdown-menu dropdown-menu-end">
                 <li>
                     <a class="dropdown-item"
-                       asp-page-handler="ExportPdf"
-                       asp-route-SelectedRunId="@Model.SelectedRunId"
-                       asp-route-SearchTerm="@Model.SearchTerm"
-                       asp-route-StatusFilter="@Model.StatusFilter">
+                           asp-page-handler="ExportPdf"
+                           asp-route-SelectedRunId="@Model.SelectedRunId"
+                           asp-route-SearchTerm="@Model.SearchTerm">
                         <i class="fa-solid fa-file-pdf me-2"></i>PDF
                     </a>
                 </li>
@@ -79,16 +78,6 @@
             <i class="fa-solid fa-search search-icon"></i>
             <input type="text" name="SearchTerm" value="@Model.SearchTerm" class="form-control"
                    placeholder="Search trailer, carrier, driver, location..." />
-        </div>
-
-        <div class="filter-dropdown-wrapper">
-            <select name="StatusFilter" class="filter-select">
-                @foreach (var status in Model.StatusOptions)
-                {
-                    var selected = Model.StatusFilter == status.Value || (string.IsNullOrWhiteSpace(Model.StatusFilter) && status.Value == "all");
-                    <option value="@status.Value" selected="@selected">@status.Text</option>
-                }
-            </select>
         </div>
 
         <button type="submit" class="btn-generate-report">
@@ -175,7 +164,7 @@
     <div class="pagination-controls">
         @if (Model.CurrentPage > 1)
         {
-            <a href="?PageNumber=@(Model.CurrentPage - 1)&SelectedRunId=@Model.SelectedRunId&SearchTerm=@Model.SearchTerm&StatusFilter=@Model.StatusFilter" class="page-btn">
+            <a href="?PageNumber=@(Model.CurrentPage - 1)&SelectedRunId=@Model.SelectedRunId&SearchTerm=@Model.SearchTerm" class="page-btn">
                 <i class="fa-solid fa-chevron-left"></i>
             </a>
         }
@@ -192,13 +181,13 @@
             }
             else
             {
-                <a href="?PageNumber=@i&SelectedRunId=@Model.SelectedRunId&SearchTerm=@Model.SearchTerm&StatusFilter=@Model.StatusFilter" class="page-btn">@i</a>
+                <a href="?PageNumber=@i&SelectedRunId=@Model.SelectedRunId&SearchTerm=@Model.SearchTerm" class="page-btn">@i</a>
             }
         }
 
         @if (Model.CurrentPage < Model.TotalPages)
         {
-            <a href="?PageNumber=@(Model.CurrentPage + 1)&SelectedRunId=@Model.SelectedRunId&SearchTerm=@Model.SearchTerm&StatusFilter=@Model.StatusFilter" class="page-btn">
+            <a href="?PageNumber=@(Model.CurrentPage + 1)&SelectedRunId=@Model.SelectedRunId&SearchTerm=@Model.SearchTerm" class="page-btn">
                 <i class="fa-solid fa-chevron-right"></i>
             </a>
         }
