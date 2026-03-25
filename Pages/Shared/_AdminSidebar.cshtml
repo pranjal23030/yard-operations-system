@@ -20,6 +20,8 @@
     var isAccessControlActive = isUsersActive || isRolesActive || isActivitiesActive;
 
     var isTrailerReportActive = currentPage.Contains("/Admin/Reports/TrailerReport");
+    var isSnapshotReportActive = currentPage.Contains("/Admin/Reports/Snapshots");
+    var isReportsActive = isTrailerReportActive || isSnapshotReportActive;
 }
 
 <aside id="sidebar">
@@ -90,10 +92,23 @@
             </div>
         </div>
 
-        <a asp-page="/Admin/Reports/TrailerReport" class="nav-item-link @(isTrailerReportActive ? "active" : "")">
-            <i class="fa-solid fa-file-lines"></i>
-            <span>Reports</span>
-        </a>
+        <div class="sidebar-group">
+            <button class="nav-group-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#adminReportsGroup" aria-expanded="@(isReportsActive ? "true" : "false")">
+                <i class="fa-solid fa-file-lines"></i>
+                <span>Reports</span>
+                <i class="fa-solid fa-chevron-down group-caret"></i>
+            </button>
+            <div class="collapse @(isReportsActive ? "show" : "") nav-group" id="adminReportsGroup">
+                <a asp-page="/Admin/Reports/TrailerReport" class="nav-item-link nav-subitem @(isTrailerReportActive ? "active" : "")">
+                    <i class="fa-solid fa-truck"></i>
+                    <span>Trailer Report</span>
+                </a>
+                <a asp-page="/Admin/Reports/Snapshots/Index" class="nav-item-link nav-subitem @(isSnapshotReportActive ? "active" : "")">
+                    <i class="fa-solid fa-camera"></i>
+                    <span>Snapshot Report</span>
+                </a>
+            </div>
+        </div>
 
         <div class="sidebar-group">
             <button class="nav-group-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#adminUserGroup" aria-expanded="@(isAccessControlActive ? "true" : "false")">

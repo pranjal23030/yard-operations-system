@@ -37,7 +37,7 @@ namespace YardOps.Data
         /// </summary>
         public DbSet<Location> Locations { get; set; }
 
-        // ==================== NEW DBSETS - TRAILERS MODULE ====================
+        // ==================== DBSETS - TRAILERS MODULE ====================
 
         /// <summary>
         /// Trailers in the yard operations system
@@ -64,6 +64,18 @@ namespace YardOps.Data
         /// Gate exit operations (outgate audit log)
         /// </summary>
         public DbSet<Outgate> Outgates { get; set; }
+
+        // ==================== DBSETS - SNAPSHOT MODULE ====================
+
+        /// <summary>
+        /// Snapshot capture run headers.
+        /// </summary>
+        public DbSet<SnapshotRun> SnapshotRuns { get; set; }
+
+        /// <summary>
+        /// Snapshot capture detail rows (one per trailer per run).
+        /// </summary>
+        public DbSet<SnapshotItem> SnapshotItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -130,229 +142,184 @@ namespace YardOps.Data
                 .HasIndex(l => new { l.YardId, l.LocationName })
                 .IsUnique();
 
-            // ==================== NEW CONFIGURATIONS - TRAILERS MODULE ====================
+            // ==================== CONFIGURATIONS - TRAILERS MODULE ====================
 
             // ========== TRAILER CONFIGURATION ==========
-            
-            /// <summary>
-            /// Configure Trailer -> Carrier relationship
-            /// A trailer must belong to exactly one carrier.
-            /// If carrier is deleted, trailer cascade deletes (orphaned trailers cleanup).
-            /// </summary>
             modelBuilder.Entity<Trailer>()
                 .HasOne(t => t.Carrier)
                 .WithMany()
                 .HasForeignKey(t => t.CarrierId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            /// <summary>
-            /// Configure Trailer -> Location relationship (optional)
-            /// A trailer may or may not have a current location assigned.
-            /// </summary>
             modelBuilder.Entity<Trailer>()
                 .HasOne(t => t.CurrentLocation)
                 .WithMany()
                 .HasForeignKey(t => t.CurrentLocationId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            /// <summary>
-            /// Configure Trailer -> CreatedByUser relationship
-            /// Track who created the trailer record
-            /// </summary>
             modelBuilder.Entity<Trailer>()
                 .HasOne(t => t.CreatedByUser)
                 .WithMany()
                 .HasForeignKey(t => t.CreatedBy)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            /// <summary>
-            /// Configure Trailer -> DriverUser relationship
-            /// Track which driver is assigned to the trailer
-            /// </summary>
             modelBuilder.Entity<Trailer>()
                 .HasOne(t => t.DriverUser)
                 .WithMany()
                 .HasForeignKey(t => t.DriverUserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            /// <summary>
-            /// Unique constraint on TrailerCode
-            /// Ensures each trailer has a unique identifier
-            /// </summary>
             modelBuilder.Entity<Trailer>()
                 .HasIndex(t => t.TrailerCode)
                 .IsUnique();
 
             // ========== GOODS CONFIGURATION ==========
-
-            /// <summary>
-            /// Configure Goods -> Trailer relationship
-            /// A goods item must belong to exactly one trailer.
-            /// If trailer is deleted, all its goods are cascade deleted.
-            /// </summary>
             modelBuilder.Entity<Goods>()
                 .HasOne(g => g.Trailer)
                 .WithMany(t => t.GoodsItems)
                 .HasForeignKey(g => g.TrailerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            /// <summary>
-            /// Configure Goods -> CreatedByUser relationship
-            /// Track who added this goods item
-            /// </summary>
             modelBuilder.Entity<Goods>()
                 .HasOne(g => g.CreatedByUser)
                 .WithMany()
                 .HasForeignKey(g => g.CreatedBy)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            // Set precision for Goods.Weight column
             modelBuilder.Entity<Goods>()
                 .Property(g => g.Weight)
                 .HasPrecision(18, 2);
 
             // ========== TRAILER HISTORY CONFIGURATION ==========
-
-            /// <summary>
-            /// Configure TrailerHistory -> Trailer relationship
-            /// A history record must belong to exactly one trailer.
-            /// If trailer is deleted, all its history is cascade deleted.
-            /// </summary>
             modelBuilder.Entity<TrailerHistory>()
                 .HasOne(th => th.Trailer)
                 .WithMany(t => t.HistoryRecords)
                 .HasForeignKey(th => th.TrailerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            /// <summary>
-            /// Configure TrailerHistory -> Location relationship
-            /// A history record references a location where trailer stayed.
-            /// If location is deleted, set to null (historical record remains).
-            /// </summary>
             modelBuilder.Entity<TrailerHistory>()
                 .HasOne(th => th.Location)
                 .WithMany()
                 .HasForeignKey(th => th.LocationId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            /// <summary>
-            /// Configure TrailerHistory -> CreatedByUser relationship
-            /// Track who created this history record
-            /// </summary>
             modelBuilder.Entity<TrailerHistory>()
                 .HasOne(th => th.CreatedByUser)
                 .WithMany()
                 .HasForeignKey(th => th.CreatedBy)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            /// <summary>
-            /// Create composite index on TrailerId and StartTime
-            /// Optimizes queries for finding trailer history within a date range
-            /// </summary>
             modelBuilder.Entity<TrailerHistory>()
                 .HasIndex(th => new { th.TrailerId, th.StartTime });
 
             // ========== INGATE CONFIGURATION ==========
-
-            /// <summary>
-            /// Configure Ingate -> Trailer relationship
-            /// An ingate record must reference exactly one trailer.
-            /// If trailer is deleted, cascade delete the ingate record.
-            /// </summary>
             modelBuilder.Entity<Ingate>()
                 .HasOne(ig => ig.Trailer)
                 .WithMany(t => t.IngateRecords)
                 .HasForeignKey(ig => ig.TrailerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            /// <summary>
-            /// Configure Ingate -> Location relationship
-            /// An ingate record references the gate location through which trailer entered.
-            /// If location is deleted, set to null (audit record still valuable).
-            /// </summary>
             modelBuilder.Entity<Ingate>()
                 .HasOne(ig => ig.Location)
                 .WithMany()
                 .HasForeignKey(ig => ig.LocationId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            /// <summary>
-            /// Configure Ingate -> PerformedByUser relationship
-            /// References the ApplicationUser who performed the ingate operation.
-            /// </summary>
             modelBuilder.Entity<Ingate>()
                 .HasOne(ig => ig.PerformedByUser)
                 .WithMany()
                 .HasForeignKey(ig => ig.PerformedByUserId)
-                .OnDelete(DeleteBehavior.NoAction); // CHANGED from SetNull
+                .OnDelete(DeleteBehavior.NoAction);
 
-            /// <summary>
-            /// Configure Ingate -> CreatedByUser relationship
-            /// Track who created this audit record
-            /// </summary>
             modelBuilder.Entity<Ingate>()
                 .HasOne(ig => ig.CreatedByUser)
                 .WithMany()
                 .HasForeignKey(ig => ig.CreatedBy)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            /// <summary>
-            /// Create composite index on TrailerId and Timestamp
-            /// Optimizes queries for finding ingate operations for a specific trailer
-            /// </summary>
             modelBuilder.Entity<Ingate>()
                 .HasIndex(ig => new { ig.TrailerId, ig.Timestamp });
 
             // ========== OUTGATE CONFIGURATION ==========
-
-            /// <summary>
-            /// Configure Outgate -> Trailer relationship
-            /// An outgate record must reference exactly one trailer.
-            /// If trailer is deleted, cascade delete the outgate record.
-            /// </summary>
             modelBuilder.Entity<Outgate>()
                 .HasOne(og => og.Trailer)
                 .WithMany(t => t.OutgateRecords)
                 .HasForeignKey(og => og.TrailerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            /// <summary>
-            /// Configure Outgate -> Location relationship
-            /// An outgate record references the gate location through which trailer exited.
-            /// If location is deleted, set to null (audit record still valuable).
-            /// </summary>
             modelBuilder.Entity<Outgate>()
                 .HasOne(og => og.Location)
                 .WithMany()
                 .HasForeignKey(og => og.LocationId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            /// <summary>
-            /// Configure Outgate -> PerformedByUser relationship
-            /// References the ApplicationUser who performed the outgate operation.
-            /// </summary>
             modelBuilder.Entity<Outgate>()
                 .HasOne(og => og.PerformedByUser)
                 .WithMany()
                 .HasForeignKey(og => og.PerformedByUserId)
-                .OnDelete(DeleteBehavior.NoAction); // CHANGED from SetNull
+                .OnDelete(DeleteBehavior.NoAction);
 
-            /// <summary>
-            /// Configure Outgate -> CreatedByUser relationship
-            /// Track who created this audit record
-            /// </summary>
             modelBuilder.Entity<Outgate>()
                 .HasOne(og => og.CreatedByUser)
                 .WithMany()
                 .HasForeignKey(og => og.CreatedBy)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            /// <summary>
-            /// Create composite index on TrailerId and Timestamp
-            /// Optimizes queries for finding outgate operations for a specific trailer
-            /// </summary>
             modelBuilder.Entity<Outgate>()
                 .HasIndex(og => new { og.TrailerId, og.Timestamp });
+
+            // ==================== CONFIGURATIONS - SNAPSHOT MODULE ====================
+
+            // SnapshotRun -> CapturedByUser
+            modelBuilder.Entity<SnapshotRun>()
+                .HasOne(sr => sr.CapturedByUser)
+                .WithMany()
+                .HasForeignKey(sr => sr.CapturedBy)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<SnapshotRun>()
+                .HasIndex(sr => sr.CapturedAt);
+
+            // SnapshotItem -> SnapshotRun
+            modelBuilder.Entity<SnapshotItem>()
+                .HasOne(si => si.SnapshotRun)
+                .WithMany(sr => sr.SnapshotItems)
+                .HasForeignKey(si => si.SnapshotRunId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // SnapshotItem -> Trailer
+            modelBuilder.Entity<SnapshotItem>()
+                .HasOne(si => si.Trailer)
+                .WithMany()
+                .HasForeignKey(si => si.TrailerId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // SnapshotItem -> Location
+            modelBuilder.Entity<SnapshotItem>()
+                .HasOne(si => si.Location)
+                .WithMany()
+                .HasForeignKey(si => si.LocationId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // SnapshotItem -> CreatedByUser
+            modelBuilder.Entity<SnapshotItem>()
+                .HasOne(si => si.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(si => si.CreatedBy)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<SnapshotItem>()
+                .HasIndex(si => si.SnapshotRunId);
+
+            modelBuilder.Entity<SnapshotItem>()
+                .HasIndex(si => si.CapturedAt);
+
+            modelBuilder.Entity<SnapshotItem>()
+                .HasIndex(si => si.Status);
+
+            modelBuilder.Entity<SnapshotItem>()
+                .HasIndex(si => new { si.SnapshotRunId, si.TrailerId })
+                .IsUnique();
         }
     }
 }

@@ -1,0 +1,13 @@
+@model YardOps.Pages.Admin.Reports.Snapshots.IndexModel
+
+<script>
+    setTimeout(function () {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            try {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            } catch (e) { }
+        });
+    }, 5000);
+</script>

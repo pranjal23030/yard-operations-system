@@ -1,0 +1,31 @@
+@model YardOps.Pages.Admin.Reports.Snapshots.IndexModel
+
+<div class="modal fade" id="captureSnapshotModal" tabindex="-1" aria-labelledby="captureSnapshotModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-custom">
+            <div class="modal-header modal-header-custom">
+                <h5 class="modal-title modal-title-custom" id="captureSnapshotModalLabel">Capture Snapshot</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post" asp-page-handler="CaptureSnapshot">
+                <div class="modal-body modal-body-custom">
+                    <p class="mb-2">
+                        This will capture the current point-in-time state of trailers that are
+                        <strong>currently inside the yard</strong>.
+                    </p>
+                    <p class="text-muted mb-0">
+                        A new snapshot run will be created and saved for reporting.
+                    </p>
+                </div>
+
+                <div class="modal-footer modal-footer-custom">
+                    <button type="button" class="btn-cancel-neutral" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-primary-custom">
+                        <i class="fa-solid fa-camera me-1"></i>Capture Now
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

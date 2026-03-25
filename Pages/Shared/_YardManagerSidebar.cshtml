@@ -10,6 +10,7 @@
 
     var isTrailersActive = currentPage.Contains("Trailers");
     var isLocationsActive = currentPage.Contains("Locations");
+    var isSnapshotReportActive = currentPage.Contains("/Admin/Reports/Snapshots");
 }
 <aside id="sidebar">
     <div class="sidebar-header">
@@ -62,6 +63,12 @@
            asp-page="/Admin/Locations/Index">
             <i class="fa-solid fa-map-location-dot"></i>
             <span>Locations</span>
+        </a>
+
+        <a class="nav-item-link @(isSnapshotReportActive ? "active" : "")"
+           asp-page="/Admin/Reports/Snapshots/Index">
+            <i class="fa-solid fa-camera"></i>
+            <span>Snapshot Report</span>
         </a>
 
         <a href="#" class="nav-item-link">
